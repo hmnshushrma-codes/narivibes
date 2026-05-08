@@ -10,7 +10,7 @@ compatibility_date = "2024-09-01"
 [vars]
 RAZORPAY_KEY_ID      = "rzp_test_YOUR_KEY_ID"        # TODO: replace with live key in prod
 RAZORPAY_KEY_SECRET  = "YOUR_KEY_SECRET"              # TODO: set via `wrangler secret put`
-ALLOWED_ORIGIN       = "http://localhost:8080"        # TODO: update to production domain
+ALLOWED_ORIGIN       = "https://narivibes.oyenino.com,https://narivibes.pages.dev"
 ENVIRONMENT          = "development"                  # "production" in prod deployment
 
 # Admin panel credentials
@@ -28,7 +28,7 @@ ADMIN_SECRET         = "YOUR_ADMIN_SECRET_KEY"        # TODO: set via `wrangler 
 [[d1_databases]]
 binding       = "DB"
 database_name = "narivibe-db"
-database_id   = "YOUR_D1_DATABASE_ID"            # TODO: replace after `wrangler d1 create`
+database_id   = "e4a09f5f-f041-40c9-96d4-bfa2a1e64d8d"
 
 # ---------------------------------------------------------------------------
 # Cloudflare KV — OTP + session storage
@@ -36,7 +36,7 @@ database_id   = "YOUR_D1_DATABASE_ID"            # TODO: replace after `wrangler
 # ---------------------------------------------------------------------------
 [[kv_namespaces]]
 binding = "OTP_STORE"
-id      = "YOUR_KV_NAMESPACE_ID"                 # TODO: replace after `wrangler kv:namespace create`
+id      = "567754178ce446c8af72dc9184bf1f28"
 
 # ---------------------------------------------------------------------------
 # Production environment overrides
@@ -44,4 +44,4 @@ id      = "YOUR_KV_NAMESPACE_ID"                 # TODO: replace after `wrangler
 [env.production]
 [env.production.vars]
 ENVIRONMENT    = "production"
-ALLOWED_ORIGIN = "https://narivibe.com"          # TODO: replace with actual production domain
+ALLOWED_ORIGIN = "https://narivibes.oyenino.com,https://narivibes.pages.dev"

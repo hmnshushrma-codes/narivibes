@@ -5,12 +5,12 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 
   <!-- SEO Meta Tags -->
-  <title>Summer Collection | L'ÉTÉ Luxury Fashion</title>
-  <meta name="description" content="Explore L'ÉTÉ's Summer Collection — ethereal linens and silks designed for the effortless pursuit of summer ease. Filter by size, color, and price."/>
+  <title>Summer Collection | NariVibes Luxury Fashion</title>
+  <meta name="description" content="Explore NariVibes's Summer Collection — ethereal linens and silks designed for the effortless pursuit of summer ease. Filter by size, color, and price."/>
   <meta name="robots" content="index, follow"/>
   <link rel="canonical" href="https://narivibe.com/collections.html"/>
-  <meta property="og:title" content="Summer Collection | L'ÉTÉ Luxury Fashion"/>
-  <meta property="og:description" content="Explore L'ÉTÉ's Summer Collection — ethereal linens and silks designed for the effortless pursuit of summer ease."/>
+  <meta property="og:title" content="Summer Collection | NariVibes Luxury Fashion"/>
+  <meta property="og:description" content="Explore NariVibes's Summer Collection — ethereal linens and silks designed for the effortless pursuit of summer ease."/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://narivibe.com/collections.html"/>
 
@@ -202,7 +202,7 @@
           <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="#">About</a>
         </div>
       </div>
-      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-primary">L'ÉTÉ</a>
+      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-primary">NariVibes</a>
       <div class="flex items-center gap-6">
         <button class="hidden md:block cursor-pointer active:scale-95 transition-transform text-on-surface-variant hover:text-primary">
           <span class="material-symbols-outlined">search</span>
@@ -281,10 +281,10 @@
       <!-- PRICE RANGE filter -->
       <div class="mb-6 pb-6 border-b border-outline-variant">
         <p class="font-[Inter] text-[11px] font-semibold tracking-[0.12em] uppercase text-on-surface-variant mb-4">Price Range</p>
-        <input type="range" id="price-slider" min="5000" max="35000" step="500" value="35000" class="w-full mb-3"/>
+        <input type="range" id="price-slider" min="500" max="3000" step="100" value="3000" class="w-full mb-3"/>
         <div class="flex justify-between font-[Inter] text-[12px] text-on-surface-variant">
-          <span>₹5,000</span>
-          <span id="price-max-display">₹35,000</span>
+          <span>₹500</span>
+          <span id="price-max-display">₹3,000</span>
         </div>
       </div>
 
@@ -361,7 +361,7 @@
   <footer class="w-full py-16 bg-surface-container-lowest">
     <div class="flex flex-col md:flex-row justify-between items-start px-4 md:px-16 gap-6 w-full max-w-[1280px] mx-auto">
       <div class="flex flex-col gap-4">
-        <span class="font-[Playfair_Display] text-2xl text-primary">L'ÉTÉ</span>
+        <span class="font-[Playfair_Display] text-2xl text-primary">NariVibes</span>
         <p class="text-sm text-on-tertiary-fixed-variant max-w-xs">Crafting the essence of summer into timeless pieces for the modern wanderer.</p>
       </div>
       <div class="flex flex-wrap gap-12 mt-8 md:mt-0">
@@ -392,7 +392,7 @@
     </div>
     <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16 mt-12 pt-8 border-t border-surface-container-high">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-xs text-on-tertiary-fixed-variant opacity-60">© 2024 L'ÉTÉ SUMMER COLLECTIONS. ALL RIGHTS RESERVED.</p>
+        <p class="text-xs text-on-tertiary-fixed-variant opacity-60">© 2024 NariVibes SUMMER COLLECTIONS. ALL RIGHTS RESERVED.</p>
         <div class="flex gap-4 text-xs text-on-tertiary-fixed-variant opacity-60">
           <a href="#">Privacy Policy</a>
           <a href="#">Terms of Service</a>
@@ -412,7 +412,7 @@
     const state = {
       selectedSizes: new Set(),
       selectedColors: new Set(),
-      maxPrice: 35000,
+      maxPrice: 3000,
       sortBy: 'default',
       currentPage: 1,
       filtered: []
@@ -713,10 +713,10 @@
     function clearAllFilters() {
       state.selectedSizes.clear();
       state.selectedColors.clear();
-      state.maxPrice = 35000;
+      state.maxPrice = 3000;
       state.sortBy = 'default';
-      priceSlider.value = 35000;
-      priceDisplay.textContent = '₹35,000';
+      priceSlider.value = 3000;
+      priceDisplay.textContent = '₹3,000';
       document.getElementById('sort-select').value = 'default';
       renderSizeFilters();
       renderColorFilters();

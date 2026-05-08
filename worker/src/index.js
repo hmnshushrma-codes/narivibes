@@ -126,11 +126,29 @@ export default {
 
 // POST /api/otp/send
 async function handleOtpSend(request, env, corsHeaders) {
+  // Rate limit: 3 sends per 10 minutes per IP
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rl = await checkRateLimit(ip, 'otp_send', 3, 600, env);
+  if (rl.limited) {
+    return Response.json(
+      { error: 'Too many OTP requests. Please wait a few minutes and try again.' },
+      { status: 429, headers: { ...corsHeaders, 'Retry-After': '600' } }
+    );
+  }
+
   const body  = await parseBody(request);
   const email = (body.email || '').trim().toLowerCase();
 
   if (!isValidEmail(email)) {
     return Response.json({ error: 'A valid email address is required.' }, { status: 400, headers: corsHeaders });
+  }
+
+  // Verify Turnstile token (skip if secret not configured)
+  if (env.TURNSTILE_SECRET_KEY && env.TURNSTILE_SECRET_KEY !== 'YOUR_TURNSTILE_SECRET_KEY') {
+    const valid = await verifyTurnstile(body.turnstileToken || '', ip, env.TURNSTILE_SECRET_KEY);
+    if (!valid) {
+      return Response.json({ error: 'Security check failed. Please refresh and try again.' }, { status: 403, headers: corsHeaders });
+    }
   }
 
   const otp = generateOTP();
@@ -147,6 +165,16 @@ async function handleOtpSend(request, env, corsHeaders) {
 
 // POST /api/otp/verify
 async function handleOtpVerify(request, env, corsHeaders) {
+  // Rate limit: 5 attempts per 5 minutes per IP
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rl = await checkRateLimit(ip, 'otp_verify', 5, 300, env);
+  if (rl.limited) {
+    return Response.json(
+      { error: 'Too many verification attempts. Please wait before trying again.' },
+      { status: 429, headers: { ...corsHeaders, 'Retry-After': '300' } }
+    );
+  }
+
   const body  = await parseBody(request);
   const email = (body.email || '').trim().toLowerCase();
   const otp   = (body.otp   || '').trim();
@@ -170,6 +198,16 @@ async function handleOtpVerify(request, env, corsHeaders) {
 
 // POST /api/payment/create
 async function handlePaymentCreate(request, env, corsHeaders) {
+  // Rate limit: 5 payment attempts per minute per IP
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rl = await checkRateLimit(ip, 'payment_create', 5, 60, env);
+  if (rl.limited) {
+    return Response.json(
+      { error: 'Too many payment requests. Please wait a moment.' },
+      { status: 429, headers: { ...corsHeaders, 'Retry-After': '60' } }
+    );
+  }
+
   const body   = await parseBody(request);
   const amount = parseInt(body.amount, 10);
 
@@ -300,6 +338,16 @@ async function handleProductGet(id, env, corsHeaders) {
 // POST /api/admin/request-otp
 // Body: { email, adminSecret }
 async function handleAdminRequestOtp(request, env, corsHeaders) {
+  // Rate limit: 5 attempts per 15 minutes per IP
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rl = await checkRateLimit(ip, 'admin_otp', 5, 900, env);
+  if (rl.limited) {
+    return Response.json(
+      { error: 'Too many login attempts. Please wait 15 minutes.' },
+      { status: 429, headers: { ...corsHeaders, 'Retry-After': '900' } }
+    );
+  }
+
   const body   = await parseBody(request);
   const email  = (body.email       || '').trim().toLowerCase();
   const secret = (body.adminSecret || '').trim();
@@ -621,4 +669,49 @@ function buildAllowedOrigins(configured) {
   ]);
   if (configured) configured.split(',').forEach(o => origins.add(o.trim()));
   return [...origins];
+}
+
+// KV-backed fixed-window rate limiter
+// Returns { limited: true } if limit exceeded, { limited: false } otherwise
+async function checkRateLimit(ip, endpoint, limit, windowSeconds, env) {
+  const key = `rl:${ip}:${endpoint}`;
+  const now = Date.now();
+
+  const raw = await env.OTP_STORE.get(key);
+  if (raw) {
+    const data = safeParseJSON(raw, null);
+    if (data && data.resetAt > now) {
+      if (data.count >= limit) return { limited: true };
+      await env.OTP_STORE.put(
+        key,
+        JSON.stringify({ count: data.count + 1, resetAt: data.resetAt }),
+        { expirationTtl: Math.max(1, Math.ceil((data.resetAt - now) / 1000)) }
+      );
+      return { limited: false };
+    }
+  }
+
+  const resetAt = now + windowSeconds * 1000;
+  await env.OTP_STORE.put(
+    key,
+    JSON.stringify({ count: 1, resetAt }),
+    { expirationTtl: windowSeconds }
+  );
+  return { limited: false };
+}
+
+// Verify a Cloudflare Turnstile token server-side
+async function verifyTurnstile(token, ip, secretKey) {
+  if (!token) return false;
+  try {
+    const form = new FormData();
+    form.append('secret', secretKey);
+    form.append('response', token);
+    form.append('remoteip', ip);
+    const res    = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body: form });
+    const result = await res.json();
+    return result.success === true;
+  } catch {
+    return false;
+  }
 }

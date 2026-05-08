@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <!-- Cloudflare Turnstile -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -176,6 +178,9 @@
             </div>
             <p id="email-error" class="text-error text-sm mt-2 hidden"></p>
           </div>
+
+          <!-- Turnstile bot protection -->
+          <div id="checkout-turnstile" class="mb-4"></div>
 
           <!-- OTP Input (hidden initially) -->
           <div id="otp-section" class="hidden">
@@ -499,6 +504,14 @@
     // -------------------------------------------------------------------------
     const API_BASE = 'https://narivibe-worker.hmnshu26.workers.dev'; // TODO: update
     const RAZORPAY_KEY = 'rzp_test_YOUR_KEY_ID'; // TODO: update
+    const TURNSTILE_SITE_KEY = 'YOUR_TURNSTILE_SITE_KEY'; // TODO: replace with your Cloudflare Turnstile site key
+
+    // -------------------------------------------------------------------------
+    // Turnstile callbacks (must be global)
+    // -------------------------------------------------------------------------
+    let turnstileToken = null;
+    window.onCheckoutTurnstileSuccess = function(token) { turnstileToken = token; };
+    window.onCheckoutTurnstileExpired  = function()      { turnstileToken = null; };
 
     // -------------------------------------------------------------------------
     // State
@@ -613,6 +626,24 @@
         el.addEventListener('input', saveCheckoutState);
         el.addEventListener('change', saveCheckoutState);
       });
+
+      // Render Turnstile widget once the API script is ready
+      function renderTurnstile() {
+        if (window.turnstile && TURNSTILE_SITE_KEY !== 'YOUR_TURNSTILE_SITE_KEY') {
+          window.turnstile.render('#checkout-turnstile', {
+            sitekey: TURNSTILE_SITE_KEY,
+            theme: 'light',
+            size: 'flexible',
+            callback: window.onCheckoutTurnstileSuccess,
+            'expired-callback': window.onCheckoutTurnstileExpired,
+          });
+        }
+      }
+      if (window.turnstile) {
+        renderTurnstile();
+      } else {
+        document.querySelector('script[src*="turnstile"]').addEventListener('load', renderTurnstile);
+      }
     });
 
     // -------------------------------------------------------------------------
@@ -745,10 +776,19 @@
         return;
       }
 
+      // Require Turnstile verification (only if site key is configured)
+      if (TURNSTILE_SITE_KEY !== 'YOUR_TURNSTILE_SITE_KEY' && !turnstileToken) {
+        showError('email-error', 'Please complete the security check above.');
+        return;
+      }
+
       setLoading('send-otp-btn', 'send-otp-label', 'send-otp-spinner', null, true);
 
       try {
         await sendOTP(email);
+        // Reset Turnstile after use so resend requires a new solve
+        if (window.turnstile) window.turnstile.reset('#checkout-turnstile');
+        turnstileToken = null;
         document.getElementById('email-input').disabled = true;
         document.getElementById('otp-section').classList.remove('hidden');
         document.getElementById('otp-email-display').textContent = email;
@@ -765,7 +805,7 @@
       const res = await fetch(API_BASE + '/api/otp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, turnstileToken: turnstileToken || '' })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to send OTP');

@@ -20,6 +20,7 @@ ENVIRONMENT          = "development"                  # "production" in prod dep
 #   wrangler secret put ADMIN_SECRET
 ALLOWED_ADMIN_EMAIL  = "admin@narivibe.com"           # TODO: replace with real admin email
 ADMIN_SECRET         = "YOUR_ADMIN_SECRET_KEY"        # TODO: set via `wrangler secret put`
+TURNSTILE_SECRET_KEY = "YOUR_TURNSTILE_SECRET_KEY"    # TODO: set via `wrangler secret put TURNSTILE_SECRET_KEY`
 
 # ---------------------------------------------------------------------------
 # Cloudflare D1 — SQLite database

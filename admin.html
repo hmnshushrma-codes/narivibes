@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin | L'ÉTÉ</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
+            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
+            "primary-fixed-dim": "#debfc2","on-secondary-container": "#3b6a6f",
+            "on-primary-container": "#765e61","inverse-primary": "#debfc2","tertiary": "#615e5b",
+            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "on-secondary": "#ffffff","surface-dim": "#dadada",
+            "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
+            "error-container": "#ffdad6","error": "#ba1a1a",
+            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
+            "primary-fixed": "#fbdbde","on-tertiary": "#ffffff","on-primary": "#ffffff",
+            "tertiary-container": "#e6e1dd","outline": "#807475",
+            "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
+            "on-error": "#ffffff","surface-container": "#eeeeee","inverse-surface": "#2f3131"
+          },
+          "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+          "fontFamily": {"body-md": ["Inter"],"h2": ["Playfair Display"],"body-lg": ["Inter"],"label-caps": ["Inter"],"h3": ["Playfair Display"],"h1": ["Playfair Display"]},
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "h2": ["36px", {"lineHeight": "1.2","fontWeight": "400"}],
+            "label-caps": ["12px", {"lineHeight": "1.4","letterSpacing": "0.1em","fontWeight": "600"}],
+            "h3": ["24px", {"lineHeight": "1.3","fontWeight": "400"}],
+            "h1": ["48px", {"lineHeight": "1.2","letterSpacing": "-0.01em","fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background: #f9f9f9; color: #1a1c1c; overflow-x: hidden; font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.5 } }
+    input[type=number]::-webkit-inner-spin-button { opacity: 1; }
+    input[type=number]::-webkit-outer-spin-button { opacity: 1; }
+    .spinner {
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    input:focus, select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #debfc2;
+      border-color: #70585b !important;
+    }
+    .otp-input {
+      letter-spacing: 0.5em;
+      text-align: center;
+      font-size: 1.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+    /* Table horizontal scroll on small screens */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    /* Password toggle button */
+    .pw-toggle { cursor: pointer; user-select: none; }
+    /* Sticky elements */
+    #topbar { position: sticky; top: 0; z-index: 40; }
+    #tabnav { position: sticky; top: 64px; z-index: 39; }
+  </style>
+</head>
+<body class="font-body-md text-on-surface">
+
+  <!-- ===================== TOAST ===================== -->
+  <div id="toast" style="opacity:0;transform:translateY(8px);" class="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm z-50 transition-all duration-300 pointer-events-none"></div>
+
+  <!-- ===================== LOGIN VIEW ===================== -->
+  <div id="login-view" class="min-h-screen flex items-start justify-center px-4 py-16 bg-surface">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-outline-variant p-10">
+
+      <!-- Brand -->
+      <div class="text-center mb-2">
+        <h1 class="font-h2 text-2xl tracking-widest text-primary">L'ÉTÉ</h1>
+        <p class="font-label-caps text-xs tracking-widest text-on-surface-variant mt-1">ADMIN PANEL</p>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-outline-variant my-8"></div>
+
+      <!-- Form -->
+      <form onsubmit="return false;" autocomplete="off" class="space-y-5">
+
+        <!-- Email -->
+        <div>
+          <label for="login-email" class="block font-label-caps text-xs tracking-widest text-on-surface-variant mb-1.5">EMAIL ADDRESS</label>
+          <input
+            type="email"
+            id="login-email"
+            name="admin-email"
+            autocomplete="username"
+            placeholder="admin@lete.com"
+            class="w-full border border-outline-variant rounded px-4 py-3 text-sm text-on-surface bg-white placeholder:text-on-surface-variant/50 transition-colors"
+          />
+        </div>
+
+        <!-- Secret Key -->
+        <div>
+          <label for="login-secret" class="block font-label-caps text-xs tracking-widest text-on-surface-variant mb-1.5">ADMIN SECRET KEY</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="login-secret"
+              name="admin-secret"
+              autocomplete="current-password"
+              placeholder="••••••••••••"
+              class="w-full border border-outline-variant rounded px-4 py-3 pr-12 text-sm text-on-surface bg-white placeholder:text-on-surface-variant/50 transition-colors"
+            />
+            <button
+              type="button"
+              onclick="toggleSecretVisibility()"
+              class="pw-toggle absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
+              aria-label="Toggle password visibility"
+            >
+              <span class="material-symbols-outlined text-xl" id="pw-eye-icon">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Request OTP Button -->
+        <button
+          type="button"
+          id="request-otp-btn"
+          onclick="requestOTP()"
+          class="w-full bg-primary text-white font-semibold text-sm tracking-wide py-3.5 rounded hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+        >
+          Request OTP
+        </button>
+
+        <!-- OTP Section (hidden initially) -->
+        <div id="otp-section" class="hidden space-y-4 pt-2">
+          <div class="border-t border-outline-variant"></div>
+
+          <p class="text-xs text-on-surface-variant text-center">
+            Code sent to <span id="otp-email-hint" class="font-semibold text-on-surface"></span>
+          </p>
+
+          <!-- OTP Input -->
+          <div>
+            <label for="login-otp" class="block font-label-caps text-xs tracking-widest text-on-surface-variant mb-1.5 text-center">ENTER 6-DIGIT CODE</label>
+            <input
+              type="text"
+              id="login-otp"
+              name="otp"
+              maxlength="6"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              placeholder="——————"
+              class="otp-input w-full border border-outline-variant rounded px-4 py-3 text-on-surface bg-white transition-colors"
+            />
+          </div>
+
+          <!-- Verify Button -->
+          <button
+            type="button"
+            id="verify-otp-btn"
+            onclick="verifyOTP()"
+            class="w-full bg-secondary text-white font-semibold text-sm tracking-wide py-3.5 rounded hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          >
+            Verify &amp; Enter Dashboard
+          </button>
+
+          <!-- Resend -->
+          <div class="text-center text-xs text-on-surface-variant">
+            <span id="resend-countdown" class="hidden">
+              Resend code in <span id="countdown-num" class="font-semibold text-primary">30</span>s
+            </span>
+            <button
+              type="button"
+              id="resend-btn"
+              onclick="requestOTP()"
+              class="hidden text-primary font-semibold hover:underline transition-all"
+            >
+              Resend OTP
+            </button>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="login-error" class="hidden text-error text-sm text-center py-1 px-3 bg-error-container rounded"></div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== DASHBOARD VIEW ===================== -->
+  <div id="dashboard-view" class="hidden min-h-screen flex flex-col">
+
+    <!-- Top Bar -->
+    <header id="topbar" class="bg-primary text-white h-16 flex items-center px-4 md:px-8 shadow-sm">
+      <div class="flex items-center gap-3 flex-1">
+        <span class="font-h2 text-xl tracking-widest text-white">L'ÉTÉ</span>
+        <span class="font-label-caps text-[10px] tracking-wider bg-white/20 text-white/90 rounded px-2 py-0.5">ADMIN</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="admin-email-display" class="text-white/80 text-sm hidden md:block truncate max-w-[200px]"></span>
+        <button
+          onclick="logout()"
+          class="flex items-center gap-1.5 text-white/70 hover:text-white text-sm font-semibold transition-colors"
+        >
+          <span class="material-symbols-outlined text-lg">logout</span>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav id="tabnav" class="bg-white border-b border-outline-variant shadow-sm">
+      <div class="max-w-[1400px] mx-auto px-4 md:px-8 flex gap-0">
+        <button
+          data-tab="orders"
+          onclick="switchTab('orders')"
+          class="tab-btn border-b-2 border-primary text-primary font-semibold text-sm px-6 py-4 transition-colors whitespace-nowrap"
+        >
+          <span class="material-symbols-outlined text-base mr-1.5" style="font-size:16px;vertical-align:-2px;">receipt_long</span>
+          Orders
+        </button>
+        <button
+          data-tab="products"
+          onclick="switchTab('products')"
+          class="tab-btn text-on-surface-variant font-semibold text-sm px-6 py-4 transition-colors whitespace-nowrap hover:text-on-surface"
+        >
+          <span class="material-symbols-outlined text-base mr-1.5" style="font-size:16px;vertical-align:-2px;">inventory_2</span>
+          Products
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 pt-6 px-4 md:px-8 pb-12 max-w-[1400px] mx-auto w-full">
+
+      <!-- ===== ORDERS TAB ===== -->
+      <div id="tab-orders">
+
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3">
+            <h2 class="font-h2 text-h3 text-on-surface">Orders</h2>
+            <span class="bg-primary-container text-on-primary-container text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span id="orders-count">—</span> total
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="font-label-caps text-xs text-on-surface-variant tracking-wider hidden sm:block">FILTER</label>
+            <select
+              id="orders-filter"
+              onchange="onOrdersFilterChange(this.value)"
+              class="border border-outline-variant rounded px-3 py-2 text-sm text-on-surface bg-white focus:outline-none"
+            >
+              <option value="">All Orders</option>
+              <option value="placed">Placed</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="bg-white rounded-xl border border-outline-variant shadow-sm table-scroll">
+          <table class="w-full min-w-[720px]">
+            <thead>
+              <tr class="border-b border-outline-variant bg-surface-container-low">
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">ORDER ID</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">CUSTOMER</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">ITEMS</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">TOTAL</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">STATUS</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">DATE</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">UPDATE</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div id="orders-pagination" class="flex items-center justify-between mt-4 px-1">
+          <button
+            id="orders-prev"
+            onclick="ordersChangePage(-1)"
+            class="flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors font-semibold"
+            disabled
+          >
+            <span class="material-symbols-outlined text-lg">chevron_left</span>
+            Previous
+          </button>
+          <span id="orders-page-indicator" class="text-sm text-on-surface-variant">Page <span id="orders-page-num">1</span> of <span id="orders-page-total">1</span></span>
+          <button
+            id="orders-next"
+            onclick="ordersChangePage(1)"
+            class="flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors font-semibold"
+          >
+            Next
+            <span class="material-symbols-outlined text-lg">chevron_right</span>
+          </button>
+        </div>
+
+      </div><!-- /tab-orders -->
+
+      <!-- ===== PRODUCTS TAB ===== -->
+      <div id="tab-products" class="hidden">
+
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3">
+            <h2 class="font-h2 text-h3 text-on-surface">Products &amp; Stock</h2>
+            <span class="bg-primary-container text-on-primary-container text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span id="products-count">—</span> items
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="font-label-caps text-xs text-on-surface-variant tracking-wider hidden sm:block">FILTER</label>
+            <select
+              id="products-filter"
+              onchange="onProductsFilterChange(this.value)"
+              class="border border-outline-variant rounded px-3 py-2 text-sm text-on-surface bg-white focus:outline-none"
+            >
+              <option value="">All Products</option>
+              <option value="active">Active</option>
+              <option value="hidden">Hidden</option>
+              <option value="discontinued">Discontinued</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="bg-white rounded-xl border border-outline-variant shadow-sm table-scroll">
+          <table class="w-full min-w-[760px]">
+            <thead>
+              <tr class="border-b border-outline-variant bg-surface-container-low">
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">PRODUCT</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">CATEGORY</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">PRICE</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">STOCK</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">VISIBILITY</th>
+                <th class="px-4 py-3 text-left font-label-caps text-xs tracking-widest text-on-surface-variant">STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /tab-products -->
+
+    </main>
+  </div><!-- /dashboard-view -->
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script>
+    const API_BASE = 'https://narivibe-worker.YOUR_SUBDOMAIN.workers.dev'; // TODO: replace with your worker URL
+    const SESSION_KEY = 'lete_admin_session';
+
+    // ---- State ----
+    let adminToken = null;
+    let adminEmail = null;
+    let currentTab = 'orders';
+    let ordersPage = 1;
+    let ordersFilter = '';
+    let ordersTotal = 0;
+    const ORDERS_PER_PAGE = 20;
+    let productsFilter = '';
+    let allProducts = [];
+    let countdownTimer = null;
+
+    // ---- Init ----
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = sessionStorage.getItem(SESSION_KEY);
+      if (saved) {
+        try {
+          const s = JSON.parse(saved);
+          adminToken = s.token;
+          adminEmail = s.email;
+          showDashboard();
+        } catch { showLogin(); }
+      } else {
+        showLogin();
+      }
+    });
+
+    // ---- Login / Logout ----
+    function showLogin() {
+      document.getElementById('login-view').classList.remove('hidden');
+      document.getElementById('dashboard-view').classList.add('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('login-view').classList.add('hidden');
+      document.getElementById('dashboard-view').classList.remove('hidden');
+      document.getElementById('admin-email-display').textContent = adminEmail || '';
+      loadOrders();
+    }
+
+    function toggleSecretVisibility() {
+      const input = document.getElementById('login-secret');
+      const icon = document.getElementById('pw-eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    async function requestOTP() {
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const secret = document.getElementById('login-secret').value.trim();
+      clearLoginError();
+      if (!email || !secret) { showLoginError('Please enter your email and secret key.'); return; }
+
+      setLoginLoading(true);
+      try {
+        const res = await fetch(API_BASE + '/api/admin/request-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, adminSecret: secret })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
+        document.getElementById('otp-section').classList.remove('hidden');
+        document.getElementById('otp-email-hint').textContent = email;
+        document.getElementById('login-otp').focus();
+        startCountdown();
+        // dev mode: auto-fill OTP if returned
+        if (data.otp) { document.getElementById('login-otp').value = data.otp; }
+      } catch (e) { showLoginError(e.message); }
+      finally { setLoginLoading(false); }
+    }
+
+    async function verifyOTP() {
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const otp = document.getElementById('login-otp').value.trim();
+      clearLoginError();
+      if (!/^\d{6}$/.test(otp)) { showLoginError('Enter the 6-digit code.'); return; }
+
+      setVerifyLoading(true);
+      try {
+        const res = await fetch(API_BASE + '/api/admin/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, otp })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Invalid OTP');
+        adminToken = data.token;
+        adminEmail = data.email;
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token: adminToken, email: adminEmail }));
+        showDashboard();
+      } catch (e) { showLoginError(e.message); }
+      finally { setVerifyLoading(false); }
+    }
+
+    async function logout() {
+      try {
+        await fetch(API_BASE + '/api/admin/logout', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + adminToken }
+        });
+      } catch {}
+      sessionStorage.removeItem(SESSION_KEY);
+      adminToken = null;
+      adminEmail = null;
+      showLogin();
+    }
+
+    // ---- Tab Switching ----
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-orders').classList.toggle('hidden', tab !== 'orders');
+      document.getElementById('tab-products').classList.toggle('hidden', tab !== 'products');
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isActive = btn.dataset.tab === tab;
+        // Reset classes
+        btn.classList.remove('border-b-2', 'border-primary', 'text-primary', 'text-on-surface-variant');
+        if (isActive) {
+          btn.classList.add('border-b-2', 'border-primary', 'text-primary');
+        } else {
+          btn.classList.add('text-on-surface-variant');
+        }
+      });
+      if (tab === 'orders') loadOrders();
+      else if (tab === 'products') loadProducts();
+    }
+
+    // ---- Orders ----
+    function onOrdersFilterChange(val) {
+      ordersFilter = val;
+      ordersPage = 1;
+      loadOrders();
+    }
+
+    function ordersChangePage(delta) {
+      const totalPages = Math.max(1, Math.ceil(ordersTotal / ORDERS_PER_PAGE));
+      ordersPage = Math.min(Math.max(1, ordersPage + delta), totalPages);
+      loadOrders();
+    }
+
+    async function loadOrders() {
+      const params = new URLSearchParams({ page: ordersPage, limit: ORDERS_PER_PAGE });
+      if (ordersFilter) params.set('status', ordersFilter);
+      const container = document.getElementById('orders-tbody');
+      container.innerHTML = renderSkeletonRows(4, 7);
+      try {
+        const res = await fetch(API_BASE + '/api/admin/orders?' + params, {
+          headers: { 'Authorization': 'Bearer ' + adminToken }
+        });
+        if (res.status === 401) { logout(); return; }
+        const data = await res.json();
+        renderOrders(data.orders || [], data.total || 0);
+      } catch (e) {
+        container.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-error text-sm px-4">${escHtml(e.message)}</td></tr>`;
+      }
+    }
+
+    function renderOrders(orders, total) {
+      const tbody = document.getElementById('orders-tbody');
+      ordersTotal = total;
+      document.getElementById('orders-count').textContent = total.toLocaleString('en-IN');
+
+      // Pagination controls
+      const totalPages = Math.max(1, Math.ceil(total / ORDERS_PER_PAGE));
+      document.getElementById('orders-page-num').textContent = ordersPage;
+      document.getElementById('orders-page-total').textContent = totalPages;
+      document.getElementById('orders-prev').disabled = ordersPage <= 1;
+      document.getElementById('orders-next').disabled = ordersPage >= totalPages;
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-12 text-on-surface-variant text-sm">No orders found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(order => `
+        <tr class="border-b border-outline-variant hover:bg-surface-container-low cursor-pointer transition-colors" onclick="toggleOrderDetail('${escHtml(order.id)}')">
+          <td class="px-4 py-3 font-mono text-xs text-primary font-semibold whitespace-nowrap">${escHtml(order.id)}</td>
+          <td class="px-4 py-3 text-sm text-on-surface truncate max-w-[180px]">${escHtml(order.customer_email || '—')}</td>
+          <td class="px-4 py-3 text-sm text-on-surface-variant">${Array.isArray(order.items) ? order.items.length : 0} item(s)</td>
+          <td class="px-4 py-3 text-sm font-semibold text-on-surface whitespace-nowrap">₹${Math.round((order.total || 0) / 100).toLocaleString('en-IN')}</td>
+          <td class="px-4 py-3">
+            <span class="${statusBadgeClass(order.order_status)} text-xs font-semibold px-2.5 py-1 rounded-full">${escHtml(order.order_status || '—')}</span>
+          </td>
+          <td class="px-4 py-3 text-xs text-on-surface-variant whitespace-nowrap">${formatDate(order.created_at)}</td>
+          <td class="px-4 py-3" onclick="event.stopPropagation()">
+            <select
+              onchange="updateOrderStatus('${escHtml(order.id)}', this.value)"
+              class="text-xs border border-outline-variant rounded px-2 py-1.5 bg-white text-on-surface focus:outline-none"
+            >
+              ${['placed','processing','shipped','delivered','cancelled'].map(s =>
+                `<option value="${s}" ${s === order.order_status ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
+              ).join('')}
+            </select>
+          </td>
+        </tr>
+        <tr id="detail-${escHtml(order.id)}" class="hidden bg-surface-container-low">
+          <td colspan="7" class="px-6 py-5 text-sm border-b border-outline-variant">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <p class="font-semibold text-on-surface mb-1 text-sm">
+                  ${escHtml(order.customer_name || '—')}
+                  <span class="text-on-surface-variant font-normal">·</span>
+                  ${escHtml(order.customer_phone || '—')}
+                </p>
+                <p class="text-on-surface-variant text-xs leading-relaxed">
+                  ${order.shipping_address
+                    ? escHtml([order.shipping_address.line1, order.shipping_address.line2, order.shipping_address.city, order.shipping_address.state, order.shipping_address.pincode].filter(Boolean).join(', '))
+                    : '—'}
+                </p>
+              </div>
+              <div class="space-y-2">
+                <p class="font-label-caps text-xs tracking-widest text-on-surface-variant mb-2">ITEMS</p>
+                ${(Array.isArray(order.items) ? order.items : []).map(item => `
+                  <div class="flex justify-between items-center text-xs gap-4">
+                    <span class="text-on-surface">${escHtml(item.name || '—')}
+                      <span class="text-on-surface-variant">· ${escHtml(item.color || '')}${item.color && item.size ? ' / ' : ''}${escHtml(item.size || '')} × ${item.qty}</span>
+                    </span>
+                    <span class="font-semibold text-on-surface whitespace-nowrap">₹${(((item.price || 0) / 100) * item.qty).toLocaleString('en-IN')}</span>
+                  </div>
+                `).join('') || '<span class="text-on-surface-variant text-xs">No item details</span>'}
+              </div>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleOrderDetail(id) {
+      const row = document.getElementById('detail-' + id);
+      if (row) row.classList.toggle('hidden');
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        const res = await fetch(API_BASE + '/api/admin/orders/' + orderId, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+          body: JSON.stringify({ order_status: newStatus })
+        });
+        if (!res.ok) throw new Error('Failed to update order');
+        showToast('Order status updated');
+      } catch (e) { showToast(e.message, true); }
+    }
+
+    // ---- Products ----
+    function onProductsFilterChange(val) {
+      productsFilter = val;
+      renderProducts(allProducts);
+    }
+
+    async function loadProducts() {
+      const container = document.getElementById('products-tbody');
+      container.innerHTML = renderSkeletonRows(4, 6);
+      try {
+        const res = await fetch(API_BASE + '/api/admin/products', {
+          headers: { 'Authorization': 'Bearer ' + adminToken }
+        });
+        if (res.status === 401) { logout(); return; }
+        const data = await res.json();
+        allProducts = data.products || [];
+        renderProducts(allProducts);
+      } catch (e) {
+        container.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-error text-sm px-4">${escHtml(e.message)}</td></tr>`;
+      }
+    }
+
+    function renderProducts(products) {
+      const tbody = document.getElementById('products-tbody');
+      const filtered = productsFilter ? products.filter(p => p.status === productsFilter) : products;
+      document.getElementById('products-count').textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-on-surface-variant text-sm">No products found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => `
+        <tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors" id="product-row-${escHtml(p.id)}">
+
+          <!-- Product info -->
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-3">
+              <img
+                src="${escHtml((p.images || [])[0] || '')}"
+                alt="${escHtml(p.name || '')}"
+                class="w-12 h-14 object-cover rounded bg-surface-container flex-shrink-0"
+                onerror="this.style.visibility='hidden'"
+              />
+              <div>
+                <p class="font-semibold text-sm text-on-surface leading-tight">${escHtml(p.name || '—')}</p>
+                <p class="text-xs text-on-surface-variant mt-0.5">${escHtml(p.material || '')}</p>
+              </div>
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td class="px-4 py-3">
+            <span class="text-xs font-semibold tracking-wide uppercase bg-surface-container text-on-surface-variant px-2 py-1 rounded">${escHtml(p.category || '—')}</span>
+          </td>
+
+          <!-- Price -->
+          <td class="px-4 py-3 text-sm font-semibold whitespace-nowrap">₹${Math.round((p.price || 0) / 100).toLocaleString('en-IN')}</td>
+
+          <!-- Stock -->
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                value="${p.stock || 0}"
+                id="stock-${escHtml(p.id)}"
+                onchange="onStockChange('${escHtml(p.id)}')"
+                class="w-20 border border-outline-variant rounded px-2 py-1.5 text-sm text-center text-on-surface bg-white transition-colors"
+              />
+              <button
+                id="save-stock-${escHtml(p.id)}"
+                onclick="saveStock('${escHtml(p.id)}')"
+                class="hidden text-xs bg-secondary text-white px-2.5 py-1.5 rounded hover:opacity-90 active:scale-95 transition-all whitespace-nowrap"
+              >Save</button>
+            </div>
+          </td>
+
+          <!-- Visibility (status buttons) -->
+          <td class="px-4 py-3">
+            <div class="flex gap-1.5 flex-wrap">
+              ${['active','hidden','discontinued'].map(s => `
+                <button
+                  onclick="updateProductStatus('${escHtml(p.id)}','${s}')"
+                  class="text-xs px-2.5 py-1 rounded-full border transition-all ${productStatusBtnClass(s, p.status)}"
+                >${s.charAt(0).toUpperCase() + s.slice(1)}</button>
+              `).join('')}
+            </div>
+          </td>
+
+          <!-- Current status badge -->
+          <td class="px-4 py-3">
+            <span id="status-badge-${escHtml(p.id)}" class="${statusBadgeClass(p.status || 'active')} text-xs font-semibold px-2.5 py-1 rounded-full">
+              ${escHtml(((p.status || 'active').charAt(0).toUpperCase() + (p.status || 'active').slice(1)))}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function onStockChange(id) {
+      const btn = document.getElementById('save-stock-' + id);
+      if (btn) btn.classList.remove('hidden');
+    }
+
+    async function saveStock(id) {
+      const input = document.getElementById('stock-' + id);
+      const stock = parseInt(input.value, 10);
+      if (isNaN(stock) || stock < 0) { showToast('Invalid stock value', true); return; }
+      try {
+        const res = await fetch(API_BASE + '/api/admin/products/' + id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+          body: JSON.stringify({ stock })
+        });
+        if (!res.ok) throw new Error('Failed to update stock');
+        const btn = document.getElementById('save-stock-' + id);
+        if (btn) btn.classList.add('hidden');
+        showToast('Stock updated');
+        const idx = allProducts.findIndex(p => p.id === id);
+        if (idx >= 0) allProducts[idx].stock = stock;
+      } catch (e) { showToast(e.message, true); }
+    }
+
+    async function updateProductStatus(id, newStatus) {
+      // Optimistic update
+      const oldStatus = (allProducts.find(p => p.id === id) || {}).status || 'active';
+      applyProductStatusUI(id, newStatus);
+      try {
+        const res = await fetch(API_BASE + '/api/admin/products/' + id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (!res.ok) throw new Error('Failed to update status');
+        const idx = allProducts.findIndex(p => p.id === id);
+        if (idx >= 0) allProducts[idx].status = newStatus;
+        showToast('Product ' + newStatus);
+      } catch (e) {
+        // Revert on failure
+        applyProductStatusUI(id, oldStatus);
+        showToast(e.message, true);
+      }
+    }
+
+    function applyProductStatusUI(id, status) {
+      // Update badge
+      const badge = document.getElementById('status-badge-' + id);
+      if (badge) {
+        badge.className = statusBadgeClass(status) + ' text-xs font-semibold px-2.5 py-1 rounded-full';
+        badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+      }
+      // Update button highlights
+      const row = document.getElementById('product-row-' + id);
+      if (row) {
+        row.querySelectorAll('button[onclick^="updateProductStatus"]').forEach(btn => {
+          const match = btn.getAttribute('onclick').match(/'([^']+)'$/);
+          if (match) {
+            const s = match[1];
+            btn.className = `text-xs px-2.5 py-1 rounded-full border transition-all ${productStatusBtnClass(s, status)}`;
+          }
+        });
+      }
+    }
+
+    // ---- Helpers ----
+    function statusBadgeClass(status) {
+      const map = {
+        'placed':        'bg-blue-50 text-blue-700 border border-blue-200',
+        'processing':    'bg-yellow-50 text-yellow-700 border border-yellow-200',
+        'shipped':       'bg-purple-50 text-purple-700 border border-purple-200',
+        'delivered':     'bg-green-50 text-green-700 border border-green-200',
+        'cancelled':     'bg-red-50 text-red-700 border border-red-200',
+        'active':        'bg-green-50 text-green-700 border border-green-200',
+        'hidden':        'bg-yellow-50 text-yellow-700 border border-yellow-200',
+        'discontinued':  'bg-red-50 text-red-700 border border-red-200',
+      };
+      return map[status] || 'bg-surface-container text-on-surface-variant border border-outline-variant';
+    }
+
+    function productStatusBtnClass(s, current) {
+      const isActive = s === (current || 'active');
+      const map = {
+        active:       'bg-green-100 text-green-800 border-green-300',
+        hidden:       'bg-yellow-100 text-yellow-800 border-yellow-300',
+        discontinued: 'bg-red-100 text-red-800 border-red-300'
+      };
+      if (isActive) {
+        const ringMap = { active: 'ring-green-300', hidden: 'ring-yellow-300', discontinued: 'ring-red-300' };
+        return (map[s] || '') + ' ring-1 ring-offset-1 ' + (ringMap[s] || '');
+      }
+      return 'bg-white text-on-surface-variant border-outline-variant hover:bg-surface-container';
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return '—';
+      return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function renderSkeletonRows(rows, cols) {
+      return Array(rows).fill(0).map(() => `
+        <tr class="border-b border-outline-variant animate-pulse">
+          ${Array(cols).fill(0).map(() => `<td class="px-4 py-4"><div class="h-4 bg-surface-container rounded w-3/4"></div></td>`).join('')}
+        </tr>
+      `).join('');
+    }
+
+    let toastTimeout;
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = (isError ? '✕ ' : '✓ ') + msg;
+      t.className = `fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold z-50 transition-all duration-300 ${isError ? 'bg-error text-white' : 'bg-secondary text-white'}`;
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+      t.style.pointerEvents = 'none';
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(8px)';
+      }, 2500);
+    }
+
+    function showLoginError(msg) {
+      const e = document.getElementById('login-error');
+      e.textContent = msg;
+      e.classList.remove('hidden');
+    }
+    function clearLoginError() {
+      document.getElementById('login-error').classList.add('hidden');
+    }
+
+    function startCountdown() {
+      let s = 30;
+      const resendBtn = document.getElementById('resend-btn');
+      const countdownEl = document.getElementById('resend-countdown');
+      const countdownNum = document.getElementById('countdown-num');
+      resendBtn.classList.add('hidden');
+      countdownEl.classList.remove('hidden');
+      countdownNum.textContent = s;
+      clearInterval(countdownTimer);
+      countdownTimer = setInterval(() => {
+        s--;
+        countdownNum.textContent = s;
+        if (s <= 0) {
+          clearInterval(countdownTimer);
+          countdownEl.classList.add('hidden');
+          resendBtn.classList.remove('hidden');
+        }
+      }, 1000);
+    }
+
+    function setLoginLoading(v) {
+      const btn = document.getElementById('request-otp-btn');
+      btn.disabled = v;
+      btn.innerHTML = v
+        ? '<span class="spinner"></span><span>Sending…</span>'
+        : 'Request OTP';
+    }
+
+    function setVerifyLoading(v) {
+      const btn = document.getElementById('verify-otp-btn');
+      btn.disabled = v;
+      btn.innerHTML = v
+        ? '<span class="spinner"></span><span>Verifying…</span>'
+        : 'Verify &amp; Enter Dashboard';
+    }
+
+    // Minimal HTML escape to prevent XSS in template literals
+    function escHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>

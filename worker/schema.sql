@@ -19,8 +19,12 @@ CREATE TABLE IF NOT EXISTS products (
   stock       INTEGER DEFAULT 0,
   featured    INTEGER DEFAULT 0,            -- 0 = false, 1 = true
   badge       TEXT,                         -- e.g. "New Arrival", "Bestseller"
+  status      TEXT    DEFAULT 'active',     -- active | hidden | discontinued
   created_at  TEXT    DEFAULT (datetime('now'))
 );
+
+-- Migration for existing deployments (run once if products table already exists):
+-- ALTER TABLE products ADD COLUMN status TEXT DEFAULT 'active';
 
 -- Orders table
 CREATE TABLE IF NOT EXISTS orders (
@@ -45,3 +49,4 @@ CREATE INDEX IF NOT EXISTS idx_orders_email     ON orders(customer_email);
 CREATE INDEX IF NOT EXISTS idx_orders_status    ON orders(order_status);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
+CREATE INDEX IF NOT EXISTS idx_products_status   ON products(status);

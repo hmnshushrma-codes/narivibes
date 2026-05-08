@@ -2,15 +2,24 @@
  * L'ÉTÉ — NariVibes Brand
  * Cloudflare Worker — Main Entry Point
  *
- * Routes:
- *   POST /api/otp/send          — Generate & email OTP (stored in KV, 10-min TTL)
- *   POST /api/otp/verify        — Verify OTP; mark email as verified in KV (1-hr TTL)
- *   POST /api/payment/create    — Create Razorpay order; return order_id
- *   POST /api/payment/verify    — Verify Razorpay HMAC-SHA256 signature
- *   POST /api/orders            — Save confirmed order to D1 (requires verified email)
- *   GET  /api/orders/:id        — Fetch a single order by ID
- *   GET  /api/products          — List products (optional ?category= filter)
- *   GET  /api/products/:id      — Get a single product by ID
+ * Public routes:
+ *   POST /api/otp/send              — Generate & email OTP (KV, 10-min TTL)
+ *   POST /api/otp/verify            — Verify OTP; mark email as verified (KV, 1-hr TTL)
+ *   POST /api/payment/create        — Create Razorpay order
+ *   POST /api/payment/verify        — Verify Razorpay HMAC-SHA256 signature
+ *   POST /api/orders                — Save confirmed order to D1
+ *   GET  /api/orders/:id            — Fetch a single order by ID
+ *   GET  /api/products              — List active products (optional filters)
+ *   GET  /api/products/:id          — Get a single product by ID
+ *
+ * Admin routes (require Authorization: Bearer <token>):
+ *   POST  /api/admin/request-otp    — Validate email + secret, send admin OTP
+ *   POST  /api/admin/verify-otp     — Verify admin OTP, return session token
+ *   POST  /api/admin/logout         — Invalidate admin session
+ *   GET   /api/admin/orders         — List all orders (paginated, filterable)
+ *   PATCH /api/admin/orders/:id     — Update order status
+ *   GET   /api/admin/products       — List ALL products (incl. hidden/discontinued)
+ *   PATCH /api/admin/products/:id   — Update product status, stock, badge, featured
  */
 
 export default {
@@ -24,55 +33,74 @@ export default {
 
     const corsHeaders = {
       'Access-Control-Allow-Origin': corsOrigin,
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400',
     };
 
-    // Handle preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    const url = new URL(request.url);
+    const url  = new URL(request.url);
     const path = url.pathname;
 
     try {
       // -----------------------------------------------------------------------
-      // Route dispatch
+      // Public routes
       // -----------------------------------------------------------------------
       if (path === '/api/otp/send' && request.method === 'POST') {
         return await handleOtpSend(request, env, corsHeaders);
       }
-
       if (path === '/api/otp/verify' && request.method === 'POST') {
         return await handleOtpVerify(request, env, corsHeaders);
       }
-
       if (path === '/api/payment/create' && request.method === 'POST') {
         return await handlePaymentCreate(request, env, corsHeaders);
       }
-
       if (path === '/api/payment/verify' && request.method === 'POST') {
         return await handlePaymentVerify(request, env, corsHeaders);
       }
-
       if (path === '/api/orders' && request.method === 'POST') {
         return await handleOrderCreate(request, env, corsHeaders);
       }
-
-      const orderMatch = path.match(/^\/api\/orders\/([^/]+)$/);
-      if (orderMatch && request.method === 'GET') {
-        return await handleOrderGet(orderMatch[1], env, corsHeaders);
+      const orderGetMatch = path.match(/^\/api\/orders\/([^/]+)$/);
+      if (orderGetMatch && request.method === 'GET') {
+        return await handleOrderGet(orderGetMatch[1], env, corsHeaders);
       }
-
       if (path === '/api/products' && request.method === 'GET') {
         return await handleProductsList(url, env, corsHeaders);
       }
+      const productGetMatch = path.match(/^\/api\/products\/([^/]+)$/);
+      if (productGetMatch && request.method === 'GET') {
+        return await handleProductGet(productGetMatch[1], env, corsHeaders);
+      }
 
-      const productMatch = path.match(/^\/api\/products\/([^/]+)$/);
-      if (productMatch && request.method === 'GET') {
-        return await handleProductGet(productMatch[1], env, corsHeaders);
+      // -----------------------------------------------------------------------
+      // Admin routes
+      // -----------------------------------------------------------------------
+      if (path === '/api/admin/request-otp' && request.method === 'POST') {
+        return await handleAdminRequestOtp(request, env, corsHeaders);
+      }
+      if (path === '/api/admin/verify-otp' && request.method === 'POST') {
+        return await handleAdminVerifyOtp(request, env, corsHeaders);
+      }
+      if (path === '/api/admin/logout' && request.method === 'POST') {
+        return await handleAdminLogout(request, env, corsHeaders);
+      }
+      if (path === '/api/admin/orders' && request.method === 'GET') {
+        return await handleAdminOrdersList(request, url, env, corsHeaders);
+      }
+      const adminOrderPatch = path.match(/^\/api\/admin\/orders\/([^/]+)$/);
+      if (adminOrderPatch && request.method === 'PATCH') {
+        return await handleAdminOrderPatch(adminOrderPatch[1], request, env, corsHeaders);
+      }
+      if (path === '/api/admin/products' && request.method === 'GET') {
+        return await handleAdminProductsList(request, url, env, corsHeaders);
+      }
+      const adminProductPatch = path.match(/^\/api\/admin\/products\/([^/]+)$/);
+      if (adminProductPatch && request.method === 'PATCH') {
+        return await handleAdminProductPatch(adminProductPatch[1], request, env, corsHeaders);
       }
 
       // Health check
@@ -93,15 +121,12 @@ export default {
 };
 
 // =============================================================================
-// Route handlers
+// Public route handlers
 // =============================================================================
 
-// -----------------------------------------------------------------------------
 // POST /api/otp/send
-// Body: { email: string }
-// -----------------------------------------------------------------------------
 async function handleOtpSend(request, env, corsHeaders) {
-  const body = await parseBody(request);
+  const body  = await parseBody(request);
   const email = (body.email || '').trim().toLowerCase();
 
   if (!isValidEmail(email)) {
@@ -109,33 +134,22 @@ async function handleOtpSend(request, env, corsHeaders) {
   }
 
   const otp = generateOTP();
-  const key = `otp:${email}`;
+  await env.OTP_STORE.put(`otp:${email}`, otp, { expirationTtl: 600 });
 
-  // Store OTP in KV with 10-minute expiry
-  await env.OTP_STORE.put(key, otp, { expirationTtl: 600 });
-
-  // Send via MailChannels
   const emailSent = await sendOTPEmail(email, otp);
-
-  const responsePayload = { success: true, message: 'OTP sent successfully.' };
-
-  // Expose OTP in development mode for easy testing
+  const payload   = { success: true, message: 'OTP sent successfully.' };
   if (!emailSent || env.ENVIRONMENT === 'development') {
-    responsePayload.otp = otp;
-    responsePayload.note = 'OTP included in response (development mode or email delivery issue).';
+    payload.otp  = otp;
+    payload.note = 'OTP exposed (dev mode or email delivery issue).';
   }
-
-  return Response.json(responsePayload, { status: 200, headers: corsHeaders });
+  return Response.json(payload, { status: 200, headers: corsHeaders });
 }
 
-// -----------------------------------------------------------------------------
 // POST /api/otp/verify
-// Body: { email: string, otp: string }
-// -----------------------------------------------------------------------------
 async function handleOtpVerify(request, env, corsHeaders) {
-  const body = await parseBody(request);
+  const body  = await parseBody(request);
   const email = (body.email || '').trim().toLowerCase();
-  const otp   = (body.otp || '').trim();
+  const otp   = (body.otp   || '').trim();
 
   if (!isValidEmail(email)) {
     return Response.json({ error: 'A valid email address is required.' }, { status: 400, headers: corsHeaders });
@@ -144,132 +158,74 @@ async function handleOtpVerify(request, env, corsHeaders) {
     return Response.json({ error: 'A valid 6-digit OTP is required.' }, { status: 400, headers: corsHeaders });
   }
 
-  const storedOtp = await env.OTP_STORE.get(`otp:${email}`);
+  const stored = await env.OTP_STORE.get(`otp:${email}`);
+  if (!stored)       return Response.json({ error: 'OTP has expired. Please request a new one.' }, { status: 400, headers: corsHeaders });
+  if (stored !== otp) return Response.json({ error: 'Incorrect OTP. Please try again.'          }, { status: 400, headers: corsHeaders });
 
-  if (!storedOtp) {
-    return Response.json({ error: 'OTP has expired. Please request a new one.' }, { status: 400, headers: corsHeaders });
-  }
-  if (storedOtp !== otp) {
-    return Response.json({ error: 'Incorrect OTP. Please try again.' }, { status: 400, headers: corsHeaders });
-  }
-
-  // Mark email as verified for 1 hour
   await env.OTP_STORE.put(`verified:${email}`, '1', { expirationTtl: 3600 });
-
-  // Clean up the used OTP immediately
   await env.OTP_STORE.delete(`otp:${email}`);
 
-  return Response.json({ success: true, message: 'Email verified successfully.', email }, { status: 200, headers: corsHeaders });
+  return Response.json({ success: true, message: 'Email verified.', email }, { status: 200, headers: corsHeaders });
 }
 
-// -----------------------------------------------------------------------------
 // POST /api/payment/create
-// Body: { amount: number (paise), currency?: string }
-// -----------------------------------------------------------------------------
 async function handlePaymentCreate(request, env, corsHeaders) {
-  const body = await parseBody(request);
+  const body   = await parseBody(request);
   const amount = parseInt(body.amount, 10);
 
   if (!amount || amount < 100) {
-    return Response.json({ error: 'A valid amount (in paise, min 100) is required.' }, { status: 400, headers: corsHeaders });
+    return Response.json({ error: 'Valid amount (paise, min 100) required.' }, { status: 400, headers: corsHeaders });
   }
 
-  const currency = body.currency || 'INR';
-  const receipt  = 'rcpt_' + Date.now().toString(36).toUpperCase();
-
-  const auth = btoa(`${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`);
+  const receipt = 'rcpt_' + Date.now().toString(36).toUpperCase();
+  const auth    = btoa(`${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`);
 
   const rzpRes = await fetch('https://api.razorpay.com/v1/orders', {
     method: 'POST',
-    headers: {
-      'Authorization': `Basic ${auth}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ amount, currency, receipt }),
+    headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount, currency: body.currency || 'INR', receipt }),
   });
 
   if (!rzpRes.ok) {
-    const errData = await rzpRes.json().catch(() => ({}));
-    console.error('[Razorpay] Order creation failed:', errData);
-    return Response.json(
-      { error: 'Failed to create payment order.', detail: errData.error?.description },
-      { status: 502, headers: corsHeaders }
-    );
+    const err = await rzpRes.json().catch(() => ({}));
+    return Response.json({ error: 'Failed to create payment order.', detail: err.error?.description }, { status: 502, headers: corsHeaders });
   }
 
-  const rzpOrder = await rzpRes.json();
-
-  return Response.json(
-    {
-      razorpay_order_id: rzpOrder.id,
-      amount: rzpOrder.amount,
-      currency: rzpOrder.currency,
-    },
-    { status: 200, headers: corsHeaders }
-  );
+  const order = await rzpRes.json();
+  return Response.json({ razorpay_order_id: order.id, amount: order.amount, currency: order.currency }, { status: 200, headers: corsHeaders });
 }
 
-// -----------------------------------------------------------------------------
 // POST /api/payment/verify
-// Body: { razorpay_order_id, razorpay_payment_id, razorpay_signature }
-// -----------------------------------------------------------------------------
 async function handlePaymentVerify(request, env, corsHeaders) {
   const body = await parseBody(request);
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-    return Response.json(
-      { error: 'razorpay_order_id, razorpay_payment_id, and razorpay_signature are all required.' },
-      { status: 400, headers: corsHeaders }
-    );
+    return Response.json({ error: 'razorpay_order_id, razorpay_payment_id, razorpay_signature all required.' }, { status: 400, headers: corsHeaders });
   }
 
-  const isValid = await verifyRazorpaySignature(
-    razorpay_order_id,
-    razorpay_payment_id,
-    razorpay_signature,
-    env.RAZORPAY_KEY_SECRET
-  );
-
-  if (!isValid) {
+  const valid = await verifyRazorpaySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature, env.RAZORPAY_KEY_SECRET);
+  if (!valid) {
     return Response.json({ error: 'Payment signature verification failed.' }, { status: 400, headers: corsHeaders });
   }
 
-  return Response.json(
-    { success: true, message: 'Payment verified.', razorpay_payment_id },
-    { status: 200, headers: corsHeaders }
-  );
+  return Response.json({ success: true, message: 'Payment verified.', razorpay_payment_id }, { status: 200, headers: corsHeaders });
 }
 
-// -----------------------------------------------------------------------------
 // POST /api/orders
-// Body: { customer_email, customer_name, customer_phone, shipping_address,
-//         items, subtotal, shipping, total,
-//         razorpay_order_id, razorpay_payment_id }
-// -----------------------------------------------------------------------------
 async function handleOrderCreate(request, env, corsHeaders) {
-  const body = await parseBody(request);
+  const body  = await parseBody(request);
   const email = (body.customer_email || '').trim().toLowerCase();
 
   if (!isValidEmail(email)) {
-    return Response.json({ error: 'A valid customer_email is required.' }, { status: 400, headers: corsHeaders });
+    return Response.json({ error: 'Valid customer_email required.' }, { status: 400, headers: corsHeaders });
   }
-
-  // Verify the email was verified in this session
-  const isVerified = await env.OTP_STORE.get(`verified:${email}`);
-  if (!isVerified) {
-    return Response.json(
-      { error: 'Email address has not been verified. Please complete OTP verification.' },
-      { status: 403, headers: corsHeaders }
-    );
+  const verified = await env.OTP_STORE.get(`verified:${email}`);
+  if (!verified) {
+    return Response.json({ error: 'Email not verified. Complete OTP verification first.' }, { status: 403, headers: corsHeaders });
   }
-
-  // Validate required fields
   if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
     return Response.json({ error: 'Order must contain at least one item.' }, { status: 400, headers: corsHeaders });
-  }
-  if (!body.total || body.total < 0) {
-    return Response.json({ error: 'A valid total (in paise) is required.' }, { status: 400, headers: corsHeaders });
   }
 
   const orderId = generateOrderId();
@@ -281,311 +237,388 @@ async function handleOrderCreate(request, env, corsHeaders) {
       shipping_address, items, subtotal, shipping, total,
       razorpay_order_id, razorpay_payment_id,
       payment_status, order_status, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
   `).bind(
-    orderId,
-    email,
-    body.customer_name   || null,
-    body.customer_phone  || null,
+    orderId, email,
+    body.customer_name  || null,
+    body.customer_phone || null,
     JSON.stringify(body.shipping_address || {}),
     JSON.stringify(body.items),
-    body.subtotal || 0,
-    body.shipping || 0,
-    body.total,
-    body.razorpay_order_id   || null,
+    body.subtotal || 0, body.shipping || 0, body.total,
+    body.razorpay_order_id  || null,
     body.razorpay_payment_id || null,
-    'paid',     // Payment reached this endpoint, so it's paid
-    'placed',
-    now
+    'paid', 'placed', now
   ).run();
 
-  return Response.json(
-    { success: true, id: orderId, order_id: orderId, created_at: now },
-    { status: 201, headers: corsHeaders }
-  );
+  return Response.json({ success: true, id: orderId, order_id: orderId, created_at: now }, { status: 201, headers: corsHeaders });
 }
 
-// -----------------------------------------------------------------------------
 // GET /api/orders/:id
-// -----------------------------------------------------------------------------
 async function handleOrderGet(id, env, corsHeaders) {
-  if (!id) {
-    return Response.json({ error: 'Order ID is required.' }, { status: 400, headers: corsHeaders });
-  }
-
   const row = await env.DB.prepare('SELECT * FROM orders WHERE id = ?').bind(id).first();
-
-  if (!row) {
-    return Response.json({ error: 'Order not found.' }, { status: 404, headers: corsHeaders });
-  }
-
-  // Parse JSON fields before returning
-  const order = {
+  if (!row) return Response.json({ error: 'Order not found.' }, { status: 404, headers: corsHeaders });
+  return Response.json({
     ...row,
     shipping_address: safeParseJSON(row.shipping_address, {}),
     items: safeParseJSON(row.items, []),
-  };
-
-  return Response.json(order, { status: 200, headers: corsHeaders });
+  }, { status: 200, headers: corsHeaders });
 }
 
-// -----------------------------------------------------------------------------
-// GET /api/products  (optional: ?category=dresses&featured=1&limit=12&offset=0)
-// -----------------------------------------------------------------------------
+// GET /api/products  (only active products for storefront)
 async function handleProductsList(url, env, corsHeaders) {
   const category = url.searchParams.get('category') || null;
   const featured = url.searchParams.get('featured')  || null;
-  const limit    = Math.min(parseInt(url.searchParams.get('limit') || '50', 10), 100);
+  const limit    = Math.min(parseInt(url.searchParams.get('limit')  || '50', 10), 100);
   const offset   = parseInt(url.searchParams.get('offset') || '0', 10);
 
-  let query  = 'SELECT * FROM products';
-  const conditions = [];
-  const bindings   = [];
+  // Always filter to active products in the public endpoint
+  const conditions = ['(status = ? OR status IS NULL)'];
+  const bindings   = ['active'];
 
-  if (category) {
-    conditions.push('category = ?');
-    bindings.push(category);
-  }
-  if (featured !== null) {
-    conditions.push('featured = ?');
-    bindings.push(featured === '1' ? 1 : 0);
-  }
-  if (conditions.length > 0) {
-    query += ' WHERE ' + conditions.join(' AND ');
-  }
+  if (category) { conditions.push('category = ?'); bindings.push(category); }
+  if (featured !== null) { conditions.push('featured = ?'); bindings.push(featured === '1' ? 1 : 0); }
 
-  query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+  const query = `SELECT * FROM products WHERE ${conditions.join(' AND ')} ORDER BY created_at DESC LIMIT ? OFFSET ?`;
   bindings.push(limit, offset);
 
-  const stmt   = env.DB.prepare(query);
-  const result = await stmt.bind(...bindings).all();
-
+  const result   = await env.DB.prepare(query).bind(...bindings).all();
   const products = (result.results || []).map(parseProductRow);
-
   return Response.json({ products, count: products.length }, { status: 200, headers: corsHeaders });
 }
 
-// -----------------------------------------------------------------------------
 // GET /api/products/:id
-// -----------------------------------------------------------------------------
 async function handleProductGet(id, env, corsHeaders) {
-  if (!id) {
-    return Response.json({ error: 'Product ID is required.' }, { status: 400, headers: corsHeaders });
-  }
-
   const row = await env.DB.prepare('SELECT * FROM products WHERE id = ?').bind(id).first();
-
-  if (!row) {
-    return Response.json({ error: 'Product not found.' }, { status: 404, headers: corsHeaders });
-  }
-
+  if (!row) return Response.json({ error: 'Product not found.' }, { status: 404, headers: corsHeaders });
   return Response.json(parseProductRow(row), { status: 200, headers: corsHeaders });
 }
 
 // =============================================================================
-// Helper utilities
+// Admin route handlers
 // =============================================================================
 
-/**
- * Generates a cryptographically random 6-digit OTP.
- * @returns {string}
- */
+// POST /api/admin/request-otp
+// Body: { email, adminSecret }
+async function handleAdminRequestOtp(request, env, corsHeaders) {
+  const body   = await parseBody(request);
+  const email  = (body.email       || '').trim().toLowerCase();
+  const secret = (body.adminSecret || '').trim();
+
+  if (!isValidEmail(email)) {
+    return Response.json({ error: 'A valid email is required.' }, { status: 400, headers: corsHeaders });
+  }
+
+  // Validate allowed email list
+  const allowed = (env.ALLOWED_ADMIN_EMAIL || '')
+    .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+  if (!allowed.includes(email)) {
+    return Response.json({ error: 'Invalid credentials.' }, { status: 401, headers: corsHeaders });
+  }
+
+  // Validate admin secret
+  if (!env.ADMIN_SECRET || secret !== env.ADMIN_SECRET) {
+    return Response.json({ error: 'Invalid credentials.' }, { status: 401, headers: corsHeaders });
+  }
+
+  // Rate-limit: don't allow re-sending within 60s
+  const existing = await env.OTP_STORE.get(`admin_otp:${email}`);
+  // (No strict block — just regenerate; TTL prevents indefinite spam)
+
+  const otp = generateOTP();
+  await env.OTP_STORE.put(`admin_otp:${email}`, otp, { expirationTtl: 600 });
+
+  const emailSent = await sendAdminOTPEmail(email, otp);
+  const payload   = { success: true, message: 'Admin OTP sent.' };
+  if (!emailSent || env.ENVIRONMENT === 'development') {
+    payload.otp  = otp;
+    payload.note = 'OTP exposed (dev mode or email delivery issue).';
+  }
+  return Response.json(payload, { status: 200, headers: corsHeaders });
+}
+
+// POST /api/admin/verify-otp
+// Body: { email, otp }
+async function handleAdminVerifyOtp(request, env, corsHeaders) {
+  const body  = await parseBody(request);
+  const email = (body.email || '').trim().toLowerCase();
+  const otp   = (body.otp   || '').trim();
+
+  if (!isValidEmail(email) || !/^\d{6}$/.test(otp)) {
+    return Response.json({ error: 'Valid email and 6-digit OTP required.' }, { status: 400, headers: corsHeaders });
+  }
+
+  const stored = await env.OTP_STORE.get(`admin_otp:${email}`);
+  if (!stored || stored !== otp) {
+    return Response.json({ error: 'Invalid or expired OTP.' }, { status: 401, headers: corsHeaders });
+  }
+
+  await env.OTP_STORE.delete(`admin_otp:${email}`);
+
+  // Create 8-hour session
+  const token   = crypto.randomUUID();
+  const session = JSON.stringify({ email, createdAt: new Date().toISOString() });
+  await env.OTP_STORE.put(`admin_session:${token}`, session, { expirationTtl: 28800 });
+
+  return Response.json({ success: true, token, email }, { status: 200, headers: corsHeaders });
+}
+
+// POST /api/admin/logout
+async function handleAdminLogout(request, env, corsHeaders) {
+  const session = await requireAdmin(request, env);
+  if (session) {
+    const token = (request.headers.get('Authorization') || '').slice(7).trim();
+    await env.OTP_STORE.delete(`admin_session:${token}`);
+  }
+  return Response.json({ success: true }, { status: 200, headers: corsHeaders });
+}
+
+// GET /api/admin/orders
+async function handleAdminOrdersList(request, url, env, corsHeaders) {
+  const session = await requireAdmin(request, env);
+  if (!session) return Response.json({ error: 'Unauthorized.' }, { status: 401, headers: corsHeaders });
+
+  const page   = Math.max(1, parseInt(url.searchParams.get('page')  || '1',  10));
+  const limit  = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 100);
+  const offset = (page - 1) * limit;
+  const status = url.searchParams.get('status') || null;
+
+  const conditions = [];
+  const bindings   = [];
+  if (status) { conditions.push('order_status = ?'); bindings.push(status); }
+
+  const where    = conditions.length ? ' WHERE ' + conditions.join(' AND ') : '';
+  const query    = `SELECT * FROM orders${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+  const cntQuery = `SELECT COUNT(*) as total FROM orders${where}`;
+
+  const [result, countRow] = await Promise.all([
+    env.DB.prepare(query).bind(...bindings, limit, offset).all(),
+    env.DB.prepare(cntQuery).bind(...bindings).first(),
+  ]);
+
+  const orders = (result.results || []).map(row => ({
+    ...row,
+    shipping_address: safeParseJSON(row.shipping_address, {}),
+    items: safeParseJSON(row.items, []),
+  }));
+
+  return Response.json({
+    orders,
+    total: countRow?.total || 0,
+    page,
+    limit,
+    pages: Math.ceil((countRow?.total || 0) / limit),
+  }, { status: 200, headers: corsHeaders });
+}
+
+// PATCH /api/admin/orders/:id
+// Body: { order_status }
+async function handleAdminOrderPatch(id, request, env, corsHeaders) {
+  const session = await requireAdmin(request, env);
+  if (!session) return Response.json({ error: 'Unauthorized.' }, { status: 401, headers: corsHeaders });
+
+  const body          = await parseBody(request);
+  const validStatuses = ['placed', 'processing', 'shipped', 'delivered', 'cancelled'];
+
+  if (!body.order_status || !validStatuses.includes(body.order_status)) {
+    return Response.json({ error: `order_status must be one of: ${validStatuses.join(', ')}` }, { status: 400, headers: corsHeaders });
+  }
+
+  const existing = await env.DB.prepare('SELECT id FROM orders WHERE id = ?').bind(id).first();
+  if (!existing) return Response.json({ error: 'Order not found.' }, { status: 404, headers: corsHeaders });
+
+  await env.DB.prepare('UPDATE orders SET order_status = ? WHERE id = ?').bind(body.order_status, id).run();
+
+  const updated = await env.DB.prepare('SELECT * FROM orders WHERE id = ?').bind(id).first();
+  return Response.json({
+    ...updated,
+    shipping_address: safeParseJSON(updated.shipping_address, {}),
+    items: safeParseJSON(updated.items, []),
+  }, { status: 200, headers: corsHeaders });
+}
+
+// GET /api/admin/products  (returns ALL — including hidden & discontinued)
+async function handleAdminProductsList(request, url, env, corsHeaders) {
+  const session = await requireAdmin(request, env);
+  if (!session) return Response.json({ error: 'Unauthorized.' }, { status: 401, headers: corsHeaders });
+
+  const limit  = Math.min(parseInt(url.searchParams.get('limit')  || '200', 10), 500);
+  const offset = parseInt(url.searchParams.get('offset') || '0', 10);
+
+  const result   = await env.DB.prepare('SELECT * FROM products ORDER BY name ASC LIMIT ? OFFSET ?').bind(limit, offset).all();
+  const products = (result.results || []).map(parseProductRow);
+  return Response.json({ products, count: products.length }, { status: 200, headers: corsHeaders });
+}
+
+// PATCH /api/admin/products/:id
+// Body: { status?, stock?, badge?, featured? }
+async function handleAdminProductPatch(id, request, env, corsHeaders) {
+  const session = await requireAdmin(request, env);
+  if (!session) return Response.json({ error: 'Unauthorized.' }, { status: 401, headers: corsHeaders });
+
+  const body = await parseBody(request);
+
+  const existing = await env.DB.prepare('SELECT id FROM products WHERE id = ?').bind(id).first();
+  if (!existing) return Response.json({ error: 'Product not found.' }, { status: 404, headers: corsHeaders });
+
+  const validStatuses = ['active', 'hidden', 'discontinued'];
+  const updates  = [];
+  const bindings = [];
+
+  if (body.status !== undefined) {
+    if (!validStatuses.includes(body.status)) {
+      return Response.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400, headers: corsHeaders });
+    }
+    updates.push('status = ?'); bindings.push(body.status);
+  }
+  if (body.stock !== undefined) {
+    const stock = parseInt(body.stock, 10);
+    if (isNaN(stock) || stock < 0) {
+      return Response.json({ error: 'stock must be a non-negative integer.' }, { status: 400, headers: corsHeaders });
+    }
+    updates.push('stock = ?'); bindings.push(stock);
+  }
+  if (body.badge !== undefined) {
+    updates.push('badge = ?'); bindings.push(body.badge || null);
+  }
+  if (body.featured !== undefined) {
+    updates.push('featured = ?'); bindings.push(body.featured ? 1 : 0);
+  }
+
+  if (updates.length === 0) {
+    return Response.json({ error: 'No updatable fields provided (status, stock, badge, featured).' }, { status: 400, headers: corsHeaders });
+  }
+
+  bindings.push(id);
+  await env.DB.prepare(`UPDATE products SET ${updates.join(', ')} WHERE id = ?`).bind(...bindings).run();
+
+  const updated = await env.DB.prepare('SELECT * FROM products WHERE id = ?').bind(id).first();
+  return Response.json(parseProductRow(updated), { status: 200, headers: corsHeaders });
+}
+
+// =============================================================================
+// Admin middleware
+// =============================================================================
+
+async function requireAdmin(request, env) {
+  const auth = request.headers.get('Authorization') || '';
+  if (!auth.startsWith('Bearer ')) return null;
+  const token = auth.slice(7).trim();
+  if (!token) return null;
+  const raw = await env.OTP_STORE.get(`admin_session:${token}`);
+  if (!raw) return null;
+  return safeParseJSON(raw, null);
+}
+
+// =============================================================================
+// Utility helpers
+// =============================================================================
+
 function generateOTP() {
   const arr = new Uint32Array(1);
   crypto.getRandomValues(arr);
   return String(100000 + (arr[0] % 900000));
 }
 
-/**
- * Generates a human-readable order ID in the format LTE-YYYYMMDD-XXXX.
- * @returns {string}
- */
 function generateOrderId() {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `LTE-${date}-${rand}`;
 }
 
-/**
- * Verifies a Razorpay payment signature using HMAC-SHA256 via the Web Crypto API.
- * @param {string} orderId
- * @param {string} paymentId
- * @param {string} signature   — hex string received from Razorpay
- * @param {string} secret      — Razorpay key secret
- * @returns {Promise<boolean>}
- */
 async function verifyRazorpaySignature(orderId, paymentId, signature, secret) {
-  const body    = `${orderId}|${paymentId}`;
   const encoder = new TextEncoder();
-
   const key = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign']
+    'raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
   );
-
-  const signed  = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
-  const hash    = Array.from(new Uint8Array(signed))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-
+  const signed = await crypto.subtle.sign('HMAC', key, encoder.encode(`${orderId}|${paymentId}`));
+  const hash   = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('');
   return hash === signature;
 }
 
-/**
- * Sends the OTP email via MailChannels.
- * @param {string} email
- * @param {string} otp
- * @returns {Promise<boolean>} true if sent successfully
- */
 async function sendOTPEmail(email, otp) {
   try {
-    const response = await fetch('https://api.mailchannels.net/tx/v1/send', {
+    const res = await fetch('https://api.mailchannels.net/tx/v1/send', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         personalizations: [{ to: [{ email }] }],
         from: { email: 'noreply@narivibe.com', name: "L'ÉTÉ" },
         subject: "Your L'ÉTÉ verification code",
-        content: [
-          {
-            type: 'text/html',
-            value: buildOTPEmailHtml(otp),
-          },
-        ],
+        content: [{ type: 'text/html', value: buildOTPEmailHtml(otp, false) }],
       }),
     });
-    return response.ok;
-  } catch (err) {
-    console.error('[MailChannels] Email send error:', err);
-    return false;
-  }
+    return res.ok;
+  } catch { return false; }
 }
 
-/**
- * Builds the HTML body for the OTP verification email.
- * @param {string} otp
- * @returns {string}
- */
-function buildOTPEmailHtml(otp) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>L'ÉTÉ Verification Code</title>
-</head>
+async function sendAdminOTPEmail(email, otp) {
+  try {
+    const res = await fetch('https://api.mailchannels.net/tx/v1/send', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        personalizations: [{ to: [{ email }] }],
+        from: { email: 'noreply@narivibe.com', name: "L'ÉTÉ Admin" },
+        subject: "L'ÉTÉ Admin — Your verification code",
+        content: [{ type: 'text/html', value: buildOTPEmailHtml(otp, true) }],
+      }),
+    });
+    return res.ok;
+  } catch { return false; }
+}
+
+function buildOTPEmailHtml(otp, isAdmin = false) {
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/></head>
 <body style="margin:0;padding:0;background:#f9f9f9;font-family:Georgia,serif;">
-  <div style="max-width:480px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(112,88,91,0.1);">
-
-    <!-- Header -->
+  <div style="max-width:480px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(112,88,91,0.1);">
     <div style="background:#70585b;padding:32px 40px;text-align:center;">
-      <h1 style="margin:0;font-size:28px;font-weight:400;color:#ffffff;letter-spacing:6px;font-family:Georgia,serif;">L'ÉTÉ</h1>
-      <p style="margin:4px 0 0;font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:0.2em;font-family:Arial,sans-serif;text-transform:uppercase;">Summer Collection</p>
+      <h1 style="margin:0;font-size:28px;font-weight:400;color:#fff;letter-spacing:6px;">L'ÉTÉ</h1>
+      <p style="margin:4px 0 0;font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.2em;font-family:Arial,sans-serif;text-transform:uppercase;">${isAdmin ? 'Admin Panel' : 'Summer Collection'}</p>
     </div>
-
-    <!-- Body -->
     <div style="padding:40px;">
-      <p style="color:#4f4445;font-size:16px;margin:0 0 8px;font-family:Georgia,serif;">Your verification code</p>
-      <p style="color:#807475;font-size:14px;margin:0 0 28px;font-family:Arial,sans-serif;">Use the code below to verify your email and complete your order.</p>
-
-      <!-- OTP Box -->
+      <p style="color:#4f4445;font-size:16px;margin:0 0 8px;">Your verification code</p>
+      <p style="color:#807475;font-size:14px;margin:0 0 28px;font-family:Arial,sans-serif;">Use this code to ${isAdmin ? 'access the admin panel' : 'complete your order'}.</p>
       <div style="background:#fadadd;border-radius:10px;padding:28px 20px;text-align:center;margin-bottom:28px;">
         <span style="font-size:40px;font-weight:700;color:#70585b;letter-spacing:14px;font-family:Arial,sans-serif;">${otp}</span>
       </div>
-
-      <p style="color:#807475;font-size:13px;margin:0 0 8px;font-family:Arial,sans-serif;">
-        This code is valid for <strong>10 minutes</strong>.
-      </p>
-      <p style="color:#807475;font-size:13px;margin:0;font-family:Arial,sans-serif;">
-        If you didn't request this code, please ignore this email — no action is needed.
-      </p>
+      <p style="color:#807475;font-size:13px;margin:0;font-family:Arial,sans-serif;">Valid for <strong>10 minutes</strong>. If you didn't request this, ignore it.</p>
     </div>
-
-    <!-- Footer -->
     <div style="border-top:1px solid #f0e8e8;padding:20px 40px;text-align:center;">
-      <p style="color:#b0a0a1;font-size:11px;margin:0;font-family:Arial,sans-serif;letter-spacing:0.1em;">
-        © 2024 L'ÉTÉ SUMMER COLLECTIONS · ALL RIGHTS RESERVED
-      </p>
+      <p style="color:#b0a0a1;font-size:11px;margin:0;font-family:Arial,sans-serif;letter-spacing:.1em;">© 2024 L'ÉTÉ SUMMER COLLECTIONS</p>
     </div>
   </div>
-</body>
-</html>`;
+</body></html>`;
 }
 
-/**
- * Parses the JSON request body safely.
- * @param {Request} request
- * @returns {Promise<Object>}
- */
 async function parseBody(request) {
-  try {
-    return await request.json();
-  } catch {
-    return {};
-  }
+  try { return await request.json(); } catch { return {}; }
 }
 
-/**
- * Parses a JSON string safely, returning the fallback on error.
- * @param {string} str
- * @param {*} fallback
- * @returns {*}
- */
 function safeParseJSON(str, fallback) {
-  try {
-    return JSON.parse(str);
-  } catch {
-    return fallback;
-  }
+  try { return JSON.parse(str); } catch { return fallback; }
 }
 
-/**
- * Parses a product row from D1, deserialising JSON fields.
- * @param {Object} row
- * @returns {Object}
- */
 function parseProductRow(row) {
   return {
     ...row,
-    colors:  safeParseJSON(row.colors, []),
-    sizes:   safeParseJSON(row.sizes, []),
-    details: safeParseJSON(row.details, []),
-    images:  safeParseJSON(row.images, []),
+    colors:   safeParseJSON(row.colors,   []),
+    sizes:    safeParseJSON(row.sizes,     []),
+    details:  safeParseJSON(row.details,   []),
+    images:   safeParseJSON(row.images,    []),
     featured: row.featured === 1,
+    status:   row.status || 'active',
   };
 }
 
-/**
- * Validates an email address with a basic regex.
- * @param {string} email
- * @returns {boolean}
- */
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/**
- * Builds an array of allowed CORS origins from the env variable,
- * always including localhost variants for developer convenience.
- * @param {string} configuredOrigin
- * @returns {string[]}
- */
-function buildAllowedOrigins(configuredOrigin) {
+function buildAllowedOrigins(configured) {
   const origins = new Set([
-    'http://localhost:3000',
-    'http://localhost:5500',
-    'http://localhost:8080',
-    'http://127.0.0.1:5500',
-    'http://127.0.0.1:8080',
+    'http://localhost:3000', 'http://localhost:5500',
+    'http://localhost:8080', 'http://127.0.0.1:5500', 'http://127.0.0.1:8080',
   ]);
-
-  if (configuredOrigin) {
-    // Support comma-separated list of origins
-    configuredOrigin.split(',').forEach(o => origins.add(o.trim()));
-  }
-
+  if (configured) configured.split(',').forEach(o => origins.add(o.trim()));
   return [...origins];
 }

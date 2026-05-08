@@ -18,7 +18,7 @@ ENVIRONMENT          = "development"                  # "production" in prod dep
 # ADMIN_SECRET: secret key required alongside email to request OTP
 # Set sensitive values via wrangler secrets:
 #   wrangler secret put ADMIN_SECRET
-ALLOWED_ADMIN_EMAIL  = "admin@narivibe.com"           # TODO: replace with real admin email
+ALLOWED_ADMIN_EMAIL  = "hmnshu26@gmail.com"
 ADMIN_SECRET         = "YOUR_ADMIN_SECRET_KEY"        # TODO: set via `wrangler secret put`
 # TURNSTILE_SECRET_KEY — set via: wrangler secret put TURNSTILE_SECRET_KEY
 

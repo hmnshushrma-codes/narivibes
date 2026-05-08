@@ -154,7 +154,7 @@ async function handleOtpSend(request, env, corsHeaders) {
   const otp = generateOTP();
   await env.OTP_STORE.put(`otp:${email}`, otp, { expirationTtl: 600 });
 
-  const emailSent = await sendOTPEmail(email, otp);
+  const emailSent = await sendOTPEmail(email, otp, env);
   const payload   = { success: true, message: 'OTP sent successfully.' };
   if (!emailSent || env.ENVIRONMENT === 'development') {
     payload.otp  = otp;
@@ -375,7 +375,7 @@ async function handleAdminRequestOtp(request, env, corsHeaders) {
   const otp = generateOTP();
   await env.OTP_STORE.put(`admin_otp:${email}`, otp, { expirationTtl: 600 });
 
-  const emailSent = await sendAdminOTPEmail(email, otp);
+  const emailSent = await sendAdminOTPEmail(email, otp, env);
   const payload   = { success: true, message: 'Admin OTP sent.' };
   if (!emailSent || env.ENVIRONMENT === 'development') {
     payload.otp  = otp;
@@ -583,32 +583,38 @@ async function verifyRazorpaySignature(orderId, paymentId, signature, secret) {
   return hash === signature;
 }
 
-async function sendOTPEmail(email, otp) {
+async function sendOTPEmail(email, otp, env) {
   try {
-    const res = await fetch('https://api.mailchannels.net/tx/v1/send', {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        personalizations: [{ to: [{ email }] }],
-        from: { email: 'noreply@narivibe.com', name: "L'ÉTÉ" },
-        subject: "Your L'ÉTÉ verification code",
-        content: [{ type: 'text/html', value: buildOTPEmailHtml(otp, false) }],
+        from: 'NariVibes <noreply@narivibes.oyenino.com>',
+        to: [email],
+        subject: 'Your NariVibes verification code',
+        html: buildOTPEmailHtml(otp, false),
       }),
     });
     return res.ok;
   } catch { return false; }
 }
 
-async function sendAdminOTPEmail(email, otp) {
+async function sendAdminOTPEmail(email, otp, env) {
   try {
-    const res = await fetch('https://api.mailchannels.net/tx/v1/send', {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        personalizations: [{ to: [{ email }] }],
-        from: { email: 'noreply@narivibe.com', name: "L'ÉTÉ Admin" },
-        subject: "L'ÉTÉ Admin — Your verification code",
-        content: [{ type: 'text/html', value: buildOTPEmailHtml(otp, true) }],
+        from: 'NariVibes Admin <noreply@narivibes.oyenino.com>',
+        to: [email],
+        subject: 'NariVibes Admin — Your verification code',
+        html: buildOTPEmailHtml(otp, true),
       }),
     });
     return res.ok;

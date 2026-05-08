@@ -11,7 +11,7 @@ compatibility_date = "2024-09-01"
 RAZORPAY_KEY_ID      = "rzp_test_SSpbbZiVrSZLDs"
 # RAZORPAY_KEY_SECRET — set via: wrangler secret put RAZORPAY_KEY_SECRET
 ALLOWED_ORIGIN       = "https://narivibes.oyenino.com,https://narivibes.pages.dev"
-ENVIRONMENT          = "development"                  # "production" in prod deployment
+ENVIRONMENT          = "production"
 
 # Admin panel credentials
 # ALLOWED_ADMIN_EMAIL: comma-separated list of emails allowed to access admin

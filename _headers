@@ -1,0 +1,17 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/admin.html
+  X-Robots-Tag: noindex, nofollow
+
+/checkout.html
+  X-Robots-Tag: noindex
+
+/cart.html
+  X-Robots-Tag: noindex
+
+/order-success.html
+  X-Robots-Tag: noindex

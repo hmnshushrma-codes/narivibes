@@ -19,7 +19,7 @@ ENVIRONMENT          = "development"                  # "production" in prod dep
 # Set sensitive values via wrangler secrets:
 #   wrangler secret put ADMIN_SECRET
 ALLOWED_ADMIN_EMAIL  = "hmnshu26@gmail.com"
-ADMIN_SECRET         = "YOUR_ADMIN_SECRET_KEY"        # TODO: set via `wrangler secret put`
+# ADMIN_SECRET — set via: wrangler secret put ADMIN_SECRET
 # TURNSTILE_SECRET_KEY — set via: wrangler secret put TURNSTILE_SECRET_KEY
 
 # ---------------------------------------------------------------------------

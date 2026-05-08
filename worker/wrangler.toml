@@ -3,28 +3,24 @@ main            = "src/index.js"
 compatibility_date = "2024-09-01"
 
 # ---------------------------------------------------------------------------
-# Environment variables (non-secret, safe to commit)
-# Replace sensitive values with wrangler secrets in production:
-#   wrangler secret put RAZORPAY_KEY_SECRET
+# Non-sensitive environment variables
 # ---------------------------------------------------------------------------
 [vars]
-RAZORPAY_KEY_ID      = "rzp_test_SSpbbZiVrSZLDs"
-# RAZORPAY_KEY_SECRET — set via: wrangler secret put RAZORPAY_KEY_SECRET
-ALLOWED_ORIGIN       = "https://narivibes.oyenino.com,https://narivibes.pages.dev"
-ENVIRONMENT          = "production"
+ALLOWED_ORIGIN = "https://narivibes.oyenino.com,https://narivibes.pages.dev"
+ENVIRONMENT    = "production"
 
-# Admin panel credentials
-# ALLOWED_ADMIN_EMAIL: comma-separated list of emails allowed to access admin
-# ADMIN_SECRET: secret key required alongside email to request OTP
-# Set sensitive values via wrangler secrets:
-#   wrangler secret put ADMIN_SECRET
-ALLOWED_ADMIN_EMAIL  = "hmnshu26@gmail.com"
-# ADMIN_SECRET — set via: wrangler secret put ADMIN_SECRET
-# TURNSTILE_SECRET_KEY — set via: wrangler secret put TURNSTILE_SECRET_KEY
+# ---------------------------------------------------------------------------
+# Secrets — set via setup-secrets.sh (never commit secret values)
+#   RAZORPAY_KEY_ID
+#   RAZORPAY_KEY_SECRET
+#   TURNSTILE_SECRET_KEY
+#   RESEND_API_KEY
+#   ADMIN_SECRET
+#   ALLOWED_ADMIN_EMAIL
+# ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
 # Cloudflare D1 — SQLite database
-# Run: wrangler d1 create narivibe-db  →  copy the database_id below
 # ---------------------------------------------------------------------------
 [[d1_databases]]
 binding       = "DB"
@@ -33,16 +29,7 @@ database_id   = "e4a09f5f-f041-40c9-96d4-bfa2a1e64d8d"
 
 # ---------------------------------------------------------------------------
 # Cloudflare KV — OTP + session storage
-# Run: wrangler kv:namespace create OTP_STORE  →  copy the id below
 # ---------------------------------------------------------------------------
 [[kv_namespaces]]
 binding = "OTP_STORE"
 id      = "567754178ce446c8af72dc9184bf1f28"
-
-# ---------------------------------------------------------------------------
-# Production environment overrides
-# ---------------------------------------------------------------------------
-[env.production]
-[env.production.vars]
-ENVIRONMENT    = "production"
-ALLOWED_ORIGIN = "https://narivibes.oyenino.com,https://narivibes.pages.dev"

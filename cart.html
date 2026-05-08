@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- SEO -->
+  <title>Shopping Bag | L'ÉTÉ</title>
+  <meta name="robots" content="noindex"/>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
+            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "on-secondary-fixed": "#001f23","on-primary-fixed": "#281719",
+            "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
+            "primary-fixed-dim": "#debfc2","surface-tint": "#70585b",
+            "on-secondary-container": "#3b6a6f","on-primary-container": "#765e61",
+            "inverse-primary": "#debfc2","tertiary": "#615e5b","surface-variant": "#e2e2e2",
+            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "on-secondary": "#ffffff","surface-dim": "#dadada","on-tertiary-fixed": "#1d1b19",
+            "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
+            "on-error-container": "#93000a","error-container": "#ffdad6","error": "#ba1a1a",
+            "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
+            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
+            "inverse-on-surface": "#f0f1f1","primary-fixed": "#fbdbde","on-tertiary": "#ffffff",
+            "on-primary": "#ffffff","tertiary-container": "#e6e1dd","outline": "#807475",
+            "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
+            "on-secondary-fixed-variant": "#1d4d53","secondary-fixed-dim": "#9fcfd5",
+            "on-error": "#ffffff","surface-container": "#eeeeee","inverse-surface": "#2f3131"
+          },
+          "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+          "spacing": {"gutter": "24px","unit": "8px","section-gap": "120px","margin-desktop": "64px","container-max": "1280px","margin-mobile": "16px"},
+          "fontFamily": {"body-md": ["Inter"],"h2": ["Playfair Display"],"body-lg": ["Inter"],"label-caps": ["Inter"],"h3": ["Playfair Display"],"h1": ["Playfair Display"]},
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "h2": ["36px", {"lineHeight": "1.2","fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "label-caps": ["12px", {"lineHeight": "1.4","letterSpacing": "0.1em","fontWeight": "600"}],
+            "h3": ["24px", {"lineHeight": "1.3","fontWeight": "400"}],
+            "h1": ["48px", {"lineHeight": "1.2","letterSpacing": "-0.01em","fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #f9f9f9;
+      color: #1a1c1c;
+      overflow-x: hidden;
+    }
+    /* Qty button hover ring */
+    .qty-btn:hover { background-color: #fadadd; }
+    /* Smooth cart item fade */
+    .cart-item-enter {
+      animation: itemIn 0.3s ease forwards;
+    }
+    @keyframes itemIn {
+      from { opacity: 0; transform: translateX(-12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    /* Remove transition */
+    .cart-item-leave {
+      animation: itemOut 0.25s ease forwards;
+    }
+    @keyframes itemOut {
+      from { opacity: 1; max-height: 200px; }
+      to   { opacity: 0; max-height: 0;   padding: 0; overflow: hidden; }
+    }
+    /* Toast */
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+    .toast-enter { animation: slideUp 0.35s ease forwards; }
+    .toast-leave { animation: fadeOut 0.4s ease forwards; }
+  </style>
+</head>
+<body class="font-[Inter] text-on-surface">
+
+  <!-- ======================================================
+       NAVIGATION
+  ====================================================== -->
+  <nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
+    <div class="flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+      <div class="flex items-center gap-6">
+        <button class="cursor-pointer active:scale-95 transition-transform text-primary" id="mobile-menu-btn">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="hidden md:flex gap-8">
+          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="collections.html">Collections</a>
+          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="#">Editorial</a>
+        </div>
+      </div>
+      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-primary">L'ÉTÉ</a>
+      <div class="flex items-center gap-6">
+        <button class="hidden md:block cursor-pointer text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">search</span></button>
+        <a href="cart.html" class="cursor-pointer text-primary relative">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-count-badge absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+        </a>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="hidden md:hidden bg-surface/95 backdrop-blur-md border-t border-outline-variant px-4 py-4" id="mobile-menu">
+      <a class="block py-2 font-[Inter] text-xs font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="collections.html">Collections</a>
+      <a class="block py-2 font-[Inter] text-xs font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="#">Editorial</a>
+    </div>
+  </nav>
+
+  <!-- ======================================================
+       MAIN CONTENT
+  ====================================================== -->
+  <main class="pt-20 max-w-[1280px] mx-auto px-4 md:px-16 py-12">
+
+    <!-- Page Header -->
+    <div class="mb-10">
+      <h1 class="font-[Playfair_Display] text-[36px] md:text-[48px] font-normal text-on-surface leading-tight">Shopping Bag</h1>
+      <p class="font-[Inter] text-[16px] text-on-surface-variant italic mt-2">Review your selection for the season ahead.</p>
+    </div>
+
+    <!-- ====================================================
+         TWO-COLUMN LAYOUT: Cart Items + Order Summary
+    ==================================================== -->
+    <div class="grid grid-cols-1 md:grid-cols-[1fr,380px] gap-12 items-start">
+
+      <!-- LEFT: Cart Items -->
+      <div>
+
+        <!-- Cart Items List -->
+        <div id="cart-items-list">
+          <!-- Items injected by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-24 text-center">
+          <span class="material-symbols-outlined text-[64px] text-outline-variant mb-6">shopping_bag</span>
+          <h2 class="font-[Playfair_Display] text-[28px] text-on-surface font-normal mb-3">Your bag is empty</h2>
+          <p class="font-[Inter] text-[16px] text-on-surface-variant mb-8 max-w-sm">Looks like you haven't added anything yet. Discover our summer collection.</p>
+          <a href="collections.html" class="inline-block bg-primary-container text-on-primary-fixed-variant font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase px-8 py-4 rounded-lg hover:bg-primary-fixed-dim transition-colors">
+            Browse Collections
+          </a>
+        </div>
+
+        <!-- Promo / Free Shipping Banner -->
+        <div id="shipping-banner" class="mt-6 flex items-center gap-3 bg-secondary-container/40 rounded-lg px-5 py-3.5 text-on-secondary-container text-[13px] font-[Inter]">
+          <span class="material-symbols-outlined text-[18px] text-secondary" style="font-variation-settings:'FILL' 1;">local_shipping</span>
+          <span id="shipping-banner-msg"></span>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Order Summary -->
+      <div class="sticky top-24">
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_4px_24px_rgba(112,88,91,0.07)]">
+          <h2 class="font-[Playfair_Display] text-[24px] font-normal text-on-surface mb-6">Order Summary</h2>
+
+          <!-- Subtotal -->
+          <div class="flex justify-between items-center py-3 border-b border-outline-variant">
+            <span class="font-[Inter] text-[14px] text-on-surface-variant">Subtotal</span>
+            <span id="summary-subtotal" class="font-[Inter] text-[15px] text-on-surface font-semibold">₹0</span>
+          </div>
+
+          <!-- Shipping -->
+          <div class="flex justify-between items-center py-3 border-b border-outline-variant">
+            <span class="font-[Inter] text-[14px] text-on-surface-variant">Shipping</span>
+            <span id="summary-shipping" class="font-[Inter] text-[15px] font-semibold text-secondary">FREE</span>
+          </div>
+
+          <!-- Tax -->
+          <div class="flex justify-between items-center py-3 border-b border-outline-variant">
+            <span class="font-[Inter] text-[14px] text-on-surface-variant">Tax</span>
+            <span class="font-[Inter] text-[15px] text-on-surface-variant">₹0.00</span>
+          </div>
+
+          <!-- Total -->
+          <div class="flex justify-between items-center pt-5 pb-2">
+            <span class="font-[Inter] text-[15px] font-bold text-on-surface tracking-wide uppercase">Total</span>
+            <span id="summary-total" class="font-[Playfair_Display] text-[22px] text-on-surface font-normal">₹0</span>
+          </div>
+
+          <!-- Checkout Button -->
+          <a
+            href="checkout.html"
+            id="checkout-btn"
+            class="mt-6 block w-full text-center py-4 px-6 bg-[#574144] text-white font-[Inter] text-[12px] font-semibold tracking-[0.12em] uppercase rounded-lg hover:bg-[#3e2d30] transition-colors active:scale-[0.98] duration-150 shadow-md"
+          >
+            Proceed to Checkout
+          </a>
+
+          <!-- Secure checkout note -->
+          <p class="mt-3 text-center font-[Inter] text-[11px] text-on-surface-variant flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[14px] text-secondary" style="font-variation-settings:'FILL' 1;">lock</span>
+            Secure Checkout Guaranteed
+          </p>
+
+          <!-- Testimonial Quote Card -->
+          <div class="mt-6 bg-primary-container/40 rounded-xl p-5">
+            <p class="font-[Playfair_Display] text-[15px] italic text-on-primary-fixed-variant leading-relaxed">
+              "Each piece is a poem written in fabric — summer captured, forever worn."
+            </p>
+            <p class="mt-3 font-[Inter] text-[11px] font-semibold tracking-[0.1em] uppercase text-on-primary-container">— L'ÉTÉ Atelier</p>
+          </div>
+
+          <!-- Payment methods -->
+          <div class="mt-5 flex items-center justify-center gap-3 opacity-50">
+            <span class="font-[Inter] text-[10px] uppercase tracking-widest text-on-surface-variant">Accepted:</span>
+            <span class="font-[Inter] text-[11px] font-semibold text-on-surface-variant">Visa · MC · UPI · COD</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ====================================================
+         COMPLETE THE LOOK — Accessory Products
+    ==================================================== -->
+    <section class="mt-24 border-t border-outline-variant pt-16">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <div>
+          <span class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-secondary block mb-2">Complete the Look</span>
+          <h2 class="font-[Playfair_Display] text-[32px] font-normal text-on-surface">The Summer Essentials</h2>
+        </div>
+        <a href="collections.html" class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-primary border-b border-primary pb-0.5 hover:border-on-primary-fixed-variant hover:text-on-primary-fixed-variant transition-colors whitespace-nowrap">
+          View All Accessories
+        </a>
+      </div>
+      <div id="accessories-grid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Accessory cards injected by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+  ====================================================== -->
+  <footer class="w-full py-16 bg-surface-container-lowest mt-16">
+    <div class="flex flex-col md:flex-row justify-between items-start px-4 md:px-16 gap-6 w-full max-w-[1280px] mx-auto">
+      <div>
+        <span class="font-[Playfair_Display] text-2xl text-primary block mb-3">L'ÉTÉ</span>
+        <p class="text-sm text-on-tertiary-fixed-variant max-w-xs">Crafting the essence of summer into timeless pieces for the modern wanderer.</p>
+      </div>
+      <div class="flex flex-wrap gap-12 mt-8 md:mt-0">
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold tracking-widest uppercase text-primary">Collections</span>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary" href="#">Sustainability</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary" href="#">Shipping</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary" href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16 mt-12 pt-8 border-t border-surface-container-high">
+      <p class="text-xs text-on-tertiary-fixed-variant opacity-60">© 2024 L'ÉTÉ SUMMER COLLECTIONS. ALL RIGHTS RESERVED.</p>
+    </div>
+  </footer>
+
+  <!-- ======================================================
+       TOAST NOTIFICATION
+  ====================================================== -->
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] pointer-events-none opacity-0">
+    <div class="flex items-center gap-3 bg-inverse-surface text-inverse-on-surface px-6 py-4 rounded-full shadow-xl font-[Inter] text-[14px]">
+      <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+      <span id="toast-msg">Item removed</span>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+
+  <script>
+    // ============================================================
+    // INIT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+      renderCart();
+      renderAccessories();
+      initMobileMenu();
+    });
+
+    // ============================================================
+    // RENDER CART
+    // ============================================================
+    function renderCart() {
+      const items      = Cart.getItems();
+      const listEl     = document.getElementById('cart-items-list');
+      const emptyEl    = document.getElementById('empty-state');
+      const bannerEl   = document.getElementById('shipping-banner');
+      const checkoutBtn= document.getElementById('checkout-btn');
+
+      if (items.length === 0) {
+        listEl.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        bannerEl.classList.add('hidden');
+        if (checkoutBtn) {
+          checkoutBtn.classList.add('pointer-events-none', 'opacity-40');
+        }
+        updateSummary();
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      bannerEl.classList.remove('hidden');
+      if (checkoutBtn) {
+        checkoutBtn.classList.remove('pointer-events-none', 'opacity-40');
+      }
+
+      listEl.innerHTML = items.map(function (item) {
+        return renderCartItem(item);
+      }).join('');
+
+      // Attach event listeners to qty/remove buttons
+      listEl.querySelectorAll('[data-action]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          const action = el.getAttribute('data-action');
+          const id     = el.getAttribute('data-id');
+          if (action === 'increase') {
+            Cart.updateQty(id, 1);
+          } else if (action === 'decrease') {
+            Cart.updateQty(id, -1);
+          } else if (action === 'remove') {
+            animateRemove(id);
+            return;
+          }
+          renderCart();
+        });
+      });
+
+      updateSummary();
+      updateShippingBanner();
+    }
+
+    function renderCartItem(item) {
+      return '<div class="cart-item-enter flex gap-4 md:gap-6 py-6 border-b border-outline-variant" data-item-id="' + escapeHtml(item.cartItemId) + '">'
+        + '<a href="product.html?id=' + escapeHtml(item.productId) + '" class="flex-shrink-0">'
+        + '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '" '
+        + 'class="w-24 h-28 md:w-32 md:h-36 object-cover rounded-lg bg-surface-container-low hover:opacity-90 transition-opacity"/>'
+        + '</a>'
+        + '<div class="flex-1 flex flex-col gap-2 justify-between py-1">'
+        + '<div>'
+        + '<a href="product.html?id=' + escapeHtml(item.productId) + '" class="font-[Playfair_Display] text-[20px] font-normal text-on-surface hover:text-primary transition-colors leading-snug">' + escapeHtml(item.name) + '</a>'
+        + '<p class="font-[Inter] text-[11px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant mt-1">'
+        + escapeHtml(item.color) + ' / ' + escapeHtml(item.size)
+        + '</p>'
+        + '</div>'
+        + '<div class="flex items-center gap-4 flex-wrap">'
+        // Qty Controls
+        + '<div class="flex items-center gap-2 border border-outline-variant rounded-lg overflow-hidden">'
+        + '<button data-action="decrease" data-id="' + escapeHtml(item.cartItemId) + '" aria-label="Decrease quantity" '
+        + 'class="qty-btn w-9 h-9 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors font-semibold text-[18px]">−</button>'
+        + '<span class="w-8 text-center font-[Inter] text-[15px] font-semibold text-on-surface select-none">' + item.qty + '</span>'
+        + '<button data-action="increase" data-id="' + escapeHtml(item.cartItemId) + '" aria-label="Increase quantity" '
+        + 'class="qty-btn w-9 h-9 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors font-semibold text-[18px]">+</button>'
+        + '</div>'
+        // Remove link
+        + '<button data-action="remove" data-id="' + escapeHtml(item.cartItemId) + '" '
+        + 'class="flex items-center gap-1 font-[Inter] text-[12px] text-outline hover:text-error transition-colors">'
+        + '<span class="material-symbols-outlined text-[16px]">delete</span>'
+        + 'Remove'
+        + '</button>'
+        + '</div>'
+        + '</div>'
+        // Price
+        + '<div class="flex-shrink-0 flex flex-col items-end justify-between py-1">'
+        + '<span class="font-[Inter] text-[16px] font-normal text-on-surface">'
+        + Cart.formatPrice(item.price * item.qty)
+        + '</span>'
+        + (item.qty > 1
+          ? '<span class="font-[Inter] text-[12px] text-on-surface-variant">' + Cart.formatPrice(item.price) + ' ea</span>'
+          : '<span></span>')
+        + '</div>'
+        + '</div>';
+    }
+
+    // Animate item removal before re-render
+    function animateRemove(cartItemId) {
+      const itemEl = document.querySelector('[data-item-id="' + cartItemId + '"]');
+      if (itemEl) {
+        itemEl.classList.add('cart-item-leave');
+        setTimeout(function () {
+          Cart.removeItem(cartItemId);
+          renderCart();
+          showToast('Item removed from bag');
+        }, 240);
+      } else {
+        Cart.removeItem(cartItemId);
+        renderCart();
+      }
+    }
+
+    // ============================================================
+    // ORDER SUMMARY
+    // ============================================================
+    function updateSummary() {
+      const subtotalDisplay  = Cart.getSubtotalDisplay();
+      const shippingDisplay  = Cart.getShippingDisplay();
+      const totalDisplay     = Cart.getTotalDisplay();
+
+      document.getElementById('summary-subtotal').textContent = subtotalDisplay;
+      const shippingEl = document.getElementById('summary-shipping');
+      shippingEl.textContent = shippingDisplay;
+      if (shippingDisplay === 'FREE') {
+        shippingEl.classList.add('text-secondary');
+        shippingEl.classList.remove('text-on-surface');
+      } else {
+        shippingEl.classList.remove('text-secondary');
+        shippingEl.classList.add('text-on-surface');
+      }
+      document.getElementById('summary-total').textContent = totalDisplay;
+    }
+
+    function updateShippingBanner() {
+      const subtotal = Cart.getSubtotal();
+      const bannerMsg = document.getElementById('shipping-banner-msg');
+      if (!bannerMsg) return;
+      if (subtotal >= 5000) {
+        bannerMsg.innerHTML = '<strong>You qualify for free shipping!</strong> Enjoy complimentary delivery on this order.';
+      } else {
+        const remaining = Cart.formatPrice(5000 - subtotal);
+        bannerMsg.innerHTML = 'Add <strong>' + remaining + '</strong> more to qualify for <strong>free shipping</strong>.';
+      }
+    }
+
+    // ============================================================
+    // ACCESSORIES GRID
+    // ============================================================
+    function renderAccessories() {
+      const accessories = PRODUCTS.filter(function (p) {
+        return p.category === 'accessories';
+      }).slice(0, 4);
+
+      const grid = document.getElementById('accessories-grid');
+      if (!grid) return;
+
+      grid.innerHTML = accessories.map(function (p) {
+        return '<a href="product.html?id=' + escapeHtml(p.id) + '" class="group flex flex-col gap-0 cursor-pointer">'
+          + '<div class="relative overflow-hidden rounded-lg bg-surface-container-low">'
+          + (p.badge ? '<span class="absolute top-2 left-2 z-10 font-[Inter] text-[10px] font-semibold tracking-[0.1em] uppercase bg-primary text-white px-2 py-0.5 rounded-full">' + escapeHtml(p.badge) + '</span>' : '')
+          + '<img src="' + escapeHtml(p.images[0]) + '" alt="' + escapeHtml(p.name) + '" '
+          + 'class="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-500"/>'
+          + '</div>'
+          + '<div class="pt-3 pb-1 flex flex-col gap-0.5">'
+          + '<h3 class="font-[Playfair_Display] text-[16px] md:text-[18px] text-on-surface font-normal leading-snug">' + escapeHtml(p.name) + '</h3>'
+          + '<span class="font-[Inter] text-[13px] text-on-surface-variant">' + escapeHtml(p.priceDisplay) + '</span>'
+          + '</div>'
+          + '</a>';
+      }).join('');
+    }
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    function initMobileMenu() {
+      const menuBtn    = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function () {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+    }
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    let toastTimer = null;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const msg   = document.getElementById('toast-msg');
+      msg.textContent = message;
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toast.classList.remove('toast-leave');
+      toast.classList.add('toast-enter');
+      toast.style.opacity = '1';
+      toast.style.pointerEvents = 'auto';
+
+      toastTimer = setTimeout(function () {
+        toast.classList.remove('toast-enter');
+        toast.classList.add('toast-leave');
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          toast.style.pointerEvents = 'none';
+          toast.classList.remove('toast-leave');
+        }, 400);
+      }, 2800);
+    }
+
+    // ============================================================
+    // UTILS
+    // ============================================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>

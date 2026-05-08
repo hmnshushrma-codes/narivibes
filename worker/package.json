@@ -1,0 +1,18 @@
+{
+  "name": "narivibe-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker backend for L'ÉTÉ — NariVibes Brand",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production",
+    "db:migrate": "wrangler d1 execute narivibe-db --file=./schema.sql",
+    "db:migrate:remote": "wrangler d1 execute narivibe-db --remote --file=./schema.sql",
+    "kv:create": "wrangler kv:namespace create OTP_STORE",
+    "d1:create": "wrangler d1 create narivibe-db"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

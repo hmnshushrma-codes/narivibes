@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- SEO: dynamically set via JS -->
+  <title>Product | L'ÉTÉ Summer Collection</title>
+  <meta name="description" content="Discover the finest summer pieces from L'ÉTÉ Summer Collection."/>
+
+  <!-- Product Schema JSON-LD (populated by JS) -->
+  <script type="application/ld+json" id="product-schema">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "",
+    "description": "",
+    "offers": {
+      "@type": "Offer",
+      "price": "",
+      "priceCurrency": "INR"
+    }
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
+            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "on-secondary-fixed": "#001f23","on-primary-fixed": "#281719",
+            "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
+            "primary-fixed-dim": "#debfc2","surface-tint": "#70585b",
+            "on-secondary-container": "#3b6a6f","on-primary-container": "#765e61",
+            "inverse-primary": "#debfc2","tertiary": "#615e5b","surface-variant": "#e2e2e2",
+            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "on-secondary": "#ffffff","surface-dim": "#dadada","on-tertiary-fixed": "#1d1b19",
+            "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
+            "on-error-container": "#93000a","error-container": "#ffdad6","error": "#ba1a1a",
+            "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
+            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
+            "inverse-on-surface": "#f0f1f1","primary-fixed": "#fbdbde","on-tertiary": "#ffffff",
+            "on-primary": "#ffffff","tertiary-container": "#e6e1dd","outline": "#807475",
+            "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
+            "on-secondary-fixed-variant": "#1d4d53","secondary-fixed-dim": "#9fcfd5",
+            "on-error": "#ffffff","surface-container": "#eeeeee","inverse-surface": "#2f3131"
+          },
+          "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+          "spacing": {"gutter": "24px","unit": "8px","section-gap": "120px","margin-desktop": "64px","container-max": "1280px","margin-mobile": "16px"},
+          "fontFamily": {"body-md": ["Inter"],"h2": ["Playfair Display"],"body-lg": ["Inter"],"label-caps": ["Inter"],"h3": ["Playfair Display"],"h1": ["Playfair Display"]},
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "h2": ["36px", {"lineHeight": "1.2","fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "label-caps": ["12px", {"lineHeight": "1.4","letterSpacing": "0.1em","fontWeight": "600"}],
+            "h3": ["24px", {"lineHeight": "1.3","fontWeight": "400"}],
+            "h1": ["48px", {"lineHeight": "1.2","letterSpacing": "-0.01em","fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #f9f9f9;
+      color: #1a1c1c;
+      overflow-x: hidden;
+    }
+    /* Toast animation */
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+    .toast-enter  { animation: slideUp  0.35s ease forwards; }
+    .toast-leave  { animation: fadeOut  0.4s  ease forwards; }
+
+    /* Thumbnail active state */
+    .thumb-active { ring: 2px; ring-color: #70585b; ring-offset: 2px; }
+
+    /* Accordion arrow rotation */
+    .accordion-open .acc-arrow { transform: rotate(180deg); }
+
+    /* Size pill selected */
+    .size-selected {
+      background-color: #fadadd;
+      color: #574144;
+      border-color: #70585b;
+    }
+
+    /* Zoom cursor on main image */
+    .zoom-in { cursor: zoom-in; }
+
+    /* Smooth image fade */
+    .img-fade { transition: opacity 0.25s ease; }
+  </style>
+</head>
+<body class="font-[Inter] text-on-surface">
+
+  <!-- ======================================================
+       NAVIGATION
+  ====================================================== -->
+  <nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
+    <div class="flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+      <div class="flex items-center gap-6">
+        <button class="cursor-pointer active:scale-95 transition-transform text-primary" id="mobile-menu-btn">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="hidden md:flex gap-8">
+          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="collections.html">Collections</a>
+          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="#">Editorial</a>
+        </div>
+      </div>
+      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-primary">L'ÉTÉ</a>
+      <div class="flex items-center gap-6">
+        <button class="hidden md:block cursor-pointer text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">search</span></button>
+        <a href="cart.html" class="cursor-pointer text-primary relative">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-count-badge absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+        </a>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="hidden md:hidden bg-surface/95 backdrop-blur-md border-t border-outline-variant px-4 py-4" id="mobile-menu">
+      <a class="block py-2 font-[Inter] text-xs font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="collections.html">Collections</a>
+      <a class="block py-2 font-[Inter] text-xs font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="#">Editorial</a>
+    </div>
+  </nav>
+
+  <!-- ======================================================
+       MAIN CONTENT
+  ====================================================== -->
+  <main class="pt-20 max-w-[1280px] mx-auto px-4 md:px-16 py-8">
+
+    <!-- Breadcrumb -->
+    <nav class="mb-8" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-[11px] font-[Inter] font-semibold tracking-[0.1em] uppercase text-on-surface-variant">
+        <li><a href="index.html" class="hover:text-primary transition-colors">Home</a></li>
+        <li class="text-outline-variant">›</li>
+        <li id="breadcrumb-category" class="hover:text-primary transition-colors cursor-pointer">
+          <a href="collections.html">Collections</a>
+        </li>
+        <li class="text-outline-variant">›</li>
+        <li id="breadcrumb-name" class="text-primary truncate max-w-[200px]">Product</li>
+      </ol>
+    </nav>
+
+    <!-- Product Grid: Image + Info -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24">
+
+      <!-- LEFT: Image Gallery -->
+      <div class="flex flex-col gap-4">
+        <!-- Main Image -->
+        <div class="relative overflow-hidden bg-surface-container-low rounded-lg">
+          <img
+            id="main-image"
+            src=""
+            alt="Product image"
+            class="w-full aspect-[3/4] object-cover zoom-in img-fade rounded-lg"
+          />
+          <!-- Badge overlay -->
+          <span id="product-badge" class="hidden absolute top-4 left-4 font-[Inter] text-[11px] font-semibold tracking-[0.12em] uppercase bg-primary text-white px-3 py-1 rounded-full"></span>
+        </div>
+
+        <!-- Thumbnail Strip -->
+        <div id="thumbnail-strip" class="flex gap-3 flex-wrap">
+          <!-- Thumbnails injected by JS -->
+        </div>
+      </div>
+
+      <!-- RIGHT: Product Info -->
+      <div class="flex flex-col gap-6">
+
+        <!-- Collection Label -->
+        <span id="collection-label" class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-secondary"></span>
+
+        <!-- Product Name -->
+        <h1 id="product-name" class="font-[Playfair_Display] text-[36px] md:text-[48px] leading-tight text-on-surface font-normal"></h1>
+
+        <!-- Price -->
+        <p id="product-price" class="font-[Playfair_Display] text-[24px] text-on-surface-variant font-normal"></p>
+
+        <!-- Divider -->
+        <hr class="border-outline-variant"/>
+
+        <!-- Color Selector -->
+        <div>
+          <p class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant mb-3">
+            Color: <span id="selected-color-label" class="text-on-surface"></span>
+          </p>
+          <div id="color-swatches" class="flex gap-3 flex-wrap">
+            <!-- Swatches injected by JS -->
+          </div>
+        </div>
+
+        <!-- Size Selector -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <p class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant">Size</p>
+            <button class="font-[Inter] text-[12px] underline text-secondary hover:text-primary transition-colors">Size Guide</button>
+          </div>
+          <div id="size-pills" class="flex gap-2 flex-wrap">
+            <!-- Size pills injected by JS -->
+          </div>
+        </div>
+
+        <!-- Add to Bag -->
+        <button
+          id="add-to-bag-btn"
+          class="w-full py-4 px-6 bg-primary-container text-on-primary-fixed-variant font-[Inter] text-[12px] font-semibold tracking-[0.12em] uppercase rounded-lg hover:bg-primary-fixed-dim transition-colors active:scale-[0.98] duration-150"
+        >
+          Add to Bag
+        </button>
+
+        <!-- Add to Wishlist -->
+        <button
+          id="wishlist-btn"
+          class="w-full py-4 px-6 border border-on-surface text-on-surface font-[Inter] text-[12px] font-semibold tracking-[0.12em] uppercase rounded-lg hover:bg-surface-container-low transition-colors active:scale-[0.98] duration-150 flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined text-[18px]">favorite_border</span>
+          Add to Wishlist
+        </button>
+
+        <!-- Details & Care Accordion -->
+        <div class="border border-outline-variant rounded-lg overflow-hidden">
+          <button
+            class="accordion-btn w-full flex justify-between items-center px-5 py-4 text-left hover:bg-surface-container-low transition-colors"
+            data-target="acc-details"
+          >
+            <span class="font-[Inter] text-[13px] font-semibold tracking-[0.08em] uppercase text-on-surface">Details &amp; Care</span>
+            <span class="material-symbols-outlined acc-arrow text-on-surface-variant transition-transform duration-300 text-[20px]">expand_more</span>
+          </button>
+          <div id="acc-details" class="hidden px-5 pb-5">
+            <ul id="product-details-list" class="space-y-2">
+              <!-- Items injected by JS -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Shipping & Returns Accordion -->
+        <div class="border border-outline-variant rounded-lg overflow-hidden">
+          <button
+            class="accordion-btn w-full flex justify-between items-center px-5 py-4 text-left hover:bg-surface-container-low transition-colors"
+            data-target="acc-shipping"
+          >
+            <span class="font-[Inter] text-[13px] font-semibold tracking-[0.08em] uppercase text-on-surface">Shipping &amp; Returns</span>
+            <span class="material-symbols-outlined acc-arrow text-on-surface-variant transition-transform duration-300 text-[20px]">expand_more</span>
+          </button>
+          <div id="acc-shipping" class="hidden px-5 pb-5">
+            <div class="space-y-3 text-[14px] text-on-surface-variant leading-relaxed">
+              <p class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] text-secondary mt-0.5">local_shipping</span> <span><strong class="text-on-surface">Free shipping</strong> on all orders above ₹5,000. Standard delivery in 3–5 business days.</span></p>
+              <p class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] text-secondary mt-0.5">replay</span> <span><strong class="text-on-surface">14-day returns</strong> on unworn items in original packaging. Easy returns portal available.</span></p>
+              <p class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] text-secondary mt-0.5">lock</span> <span>Secure checkout with SSL encryption on all transactions.</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Material note -->
+        <p id="product-material-note" class="text-[13px] text-on-tertiary-fixed-variant italic"></p>
+      </div>
+    </div>
+
+    <!-- ====================================================
+         COMPLETE YOUR ENSEMBLE — Related Products
+    ==================================================== -->
+    <section class="border-t border-outline-variant pt-16 pb-8">
+      <div class="mb-10">
+        <span class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-secondary block mb-2">Complete Your Ensemble</span>
+        <h2 class="font-[Playfair_Display] text-[36px] text-on-surface font-normal">The Summer Look</h2>
+      </div>
+      <div id="related-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <!-- Related product cards injected by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+  ====================================================== -->
+  <footer class="w-full py-16 bg-surface-container-lowest">
+    <div class="flex flex-col md:flex-row justify-between items-start px-4 md:px-16 gap-6 w-full max-w-[1280px] mx-auto">
+      <div>
+        <span class="font-[Playfair_Display] text-2xl text-primary block mb-3">L'ÉTÉ</span>
+        <p class="text-sm text-on-tertiary-fixed-variant max-w-xs">Crafting the essence of summer into timeless pieces for the modern wanderer.</p>
+      </div>
+      <div class="flex flex-wrap gap-12 mt-8 md:mt-0">
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold tracking-widest uppercase text-primary">Collections</span>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary" href="#">Sustainability</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary" href="#">Shipping</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary" href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16 mt-12 pt-8 border-t border-surface-container-high">
+      <p class="text-xs text-on-tertiary-fixed-variant opacity-60">© 2024 L'ÉTÉ SUMMER COLLECTIONS. ALL RIGHTS RESERVED.</p>
+    </div>
+  </footer>
+
+  <!-- ======================================================
+       TOAST NOTIFICATION
+  ====================================================== -->
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] pointer-events-none opacity-0">
+    <div class="flex items-center gap-3 bg-inverse-surface text-inverse-on-surface px-6 py-4 rounded-full shadow-xl font-[Inter] text-[14px]">
+      <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+      <span id="toast-msg">Added to bag</span>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       NOT FOUND STATE
+  ====================================================== -->
+  <div id="not-found" class="hidden fixed inset-0 flex items-center justify-center bg-surface z-40 pt-20">
+    <div class="text-center px-4">
+      <span class="material-symbols-outlined text-6xl text-outline-variant mb-6 block">search_off</span>
+      <h2 class="font-[Playfair_Display] text-[32px] text-on-surface mb-4">Product Not Found</h2>
+      <p class="text-on-surface-variant mb-8">We couldn't find the product you're looking for.</p>
+      <a href="collections.html" class="inline-block bg-primary-container text-on-primary-fixed-variant font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase px-8 py-4 rounded-lg hover:bg-primary-fixed-dim transition-colors">View All Collections</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+
+  <script>
+    // ============================================================
+    // STATE
+    // ============================================================
+    let currentProduct   = null;
+    let selectedColor    = null;
+    let selectedSize     = null;
+    let currentMainImage = null;
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+      const params    = new URLSearchParams(window.location.search);
+      const productId = params.get('id') || (PRODUCTS[0] && PRODUCTS[0].id);
+
+      currentProduct = getProductById(productId);
+
+      if (!currentProduct) {
+        document.getElementById('not-found').classList.remove('hidden');
+        return;
+      }
+
+      renderProduct(currentProduct);
+      renderRelatedProducts(currentProduct.id);
+      initAccordions();
+      initMobileMenu();
+    });
+
+    // ============================================================
+    // RENDER PRODUCT
+    // ============================================================
+    function renderProduct(product) {
+      // SEO
+      document.title = product.name + " | L'ÉTÉ Summer Collection";
+      document.querySelector('meta[name="description"]').setAttribute('content', product.description);
+
+      // Schema JSON-LD
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "description": product.description,
+        "image": product.images[0] || '',
+        "offers": {
+          "@type": "Offer",
+          "price": String(product.price),
+          "priceCurrency": "INR",
+          "availability": product.stock > 0
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock"
+        }
+      };
+      document.getElementById('product-schema').textContent = JSON.stringify(schema, null, 2);
+
+      // Breadcrumb
+      const catMap = { dresses:'Dresses', tops:'Tops', trousers:'Trousers', accessories:'Accessories', footwear:'Footwear' };
+      document.getElementById('breadcrumb-category').querySelector('a').textContent = catMap[product.category] || 'Collections';
+      document.getElementById('breadcrumb-name').textContent = product.name;
+
+      // Collection label
+      document.getElementById('collection-label').textContent = product.collection + ' Collection';
+
+      // Name & price
+      document.getElementById('product-name').textContent   = product.name;
+      document.getElementById('product-price').textContent  = product.priceDisplay;
+
+      // Badge
+      if (product.badge) {
+        const badge = document.getElementById('product-badge');
+        badge.textContent = product.badge;
+        badge.classList.remove('hidden');
+      }
+
+      // Material note
+      document.getElementById('product-material-note').textContent = 'Material: ' + product.material;
+
+      // Gallery
+      renderGallery(product.images);
+
+      // Colors
+      selectedColor = product.colors[0].name;
+      renderColorSwatches(product.colors);
+
+      // Sizes
+      selectedSize = product.sizes[0];
+      renderSizePills(product.sizes);
+
+      // Details list
+      const detailsList = document.getElementById('product-details-list');
+      detailsList.innerHTML = product.details.map(function (d) {
+        return '<li class="flex items-start gap-2 text-[14px] text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-secondary mt-0.5 flex-shrink-0">fiber_manual_record</span>' + escapeHtml(d) + '</li>';
+      }).join('');
+
+      // Add to Bag
+      document.getElementById('add-to-bag-btn').addEventListener('click', handleAddToBag);
+      // Wishlist
+      document.getElementById('wishlist-btn').addEventListener('click', handleWishlist);
+    }
+
+    // ============================================================
+    // GALLERY
+    // ============================================================
+    function renderGallery(images) {
+      const mainImg = document.getElementById('main-image');
+      mainImg.src   = images[0] || '';
+      mainImg.alt   = currentProduct.name;
+      currentMainImage = 0;
+
+      const strip = document.getElementById('thumbnail-strip');
+      strip.innerHTML = '';
+
+      images.forEach(function (src, idx) {
+        const thumb = document.createElement('button');
+        thumb.className = 'w-20 h-24 md:w-24 md:h-28 overflow-hidden rounded-md border-2 transition-all duration-200 flex-shrink-0 '
+          + (idx === 0 ? 'border-primary' : 'border-transparent hover:border-outline-variant');
+        thumb.setAttribute('aria-label', 'View image ' + (idx + 1));
+        thumb.innerHTML = '<img src="' + src + '" alt="' + escapeHtml(currentProduct.name) + ' view ' + (idx + 1) + '" class="w-full h-full object-cover"/>';
+        thumb.addEventListener('click', function () { selectImage(idx, images); });
+        strip.appendChild(thumb);
+      });
+    }
+
+    function selectImage(idx, images) {
+      const mainImg = document.getElementById('main-image');
+      mainImg.classList.remove('img-fade');
+      void mainImg.offsetWidth; // reflow
+      mainImg.classList.add('img-fade');
+      mainImg.src = images[idx];
+      currentMainImage = idx;
+
+      // Update thumbnail borders
+      const thumbs = document.getElementById('thumbnail-strip').children;
+      Array.from(thumbs).forEach(function (t, i) {
+        t.className = t.className.replace(/border-primary|border-transparent|hover:border-outline-variant/g, '').trim();
+        if (i === idx) {
+          t.classList.add('border-primary');
+        } else {
+          t.classList.add('border-transparent', 'hover:border-outline-variant');
+        }
+      });
+    }
+
+    // ============================================================
+    // COLOR SWATCHES
+    // ============================================================
+    function renderColorSwatches(colors) {
+      document.getElementById('selected-color-label').textContent = colors[0].name;
+      const container = document.getElementById('color-swatches');
+      container.innerHTML = '';
+
+      colors.forEach(function (color, idx) {
+        const btn = document.createElement('button');
+        btn.className = 'w-8 h-8 rounded-full transition-all duration-200 flex-shrink-0 '
+          + (idx === 0
+            ? 'ring-2 ring-primary ring-offset-2'
+            : 'ring-1 ring-outline-variant hover:ring-2 hover:ring-primary hover:ring-offset-2');
+        btn.style.backgroundColor = color.hex;
+        btn.setAttribute('aria-label', 'Select color: ' + color.name);
+        btn.setAttribute('title', color.name);
+        btn.addEventListener('click', function () { selectColor(color, btn, container); });
+        container.appendChild(btn);
+      });
+    }
+
+    function selectColor(color, btn, container) {
+      selectedColor = color.name;
+      document.getElementById('selected-color-label').textContent = color.name;
+      Array.from(container.children).forEach(function (b) {
+        b.className = b.className.replace(/ring-2 ring-primary ring-offset-2|ring-1 ring-outline-variant hover:ring-2 hover:ring-primary hover:ring-offset-2/g, '').trim();
+        b.classList.add('ring-1', 'ring-outline-variant', 'hover:ring-2', 'hover:ring-primary', 'hover:ring-offset-2');
+      });
+      btn.className = btn.className.replace(/ring-1 ring-outline-variant hover:ring-2 hover:ring-primary hover:ring-offset-2/g, '').trim();
+      btn.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+    }
+
+    // ============================================================
+    // SIZE PILLS
+    // ============================================================
+    function renderSizePills(sizes) {
+      const container = document.getElementById('size-pills');
+      container.innerHTML = '';
+
+      sizes.forEach(function (size, idx) {
+        const btn = document.createElement('button');
+        btn.textContent = size;
+        btn.className = 'px-4 py-2 text-[13px] font-[Inter] font-semibold border rounded-md transition-all duration-200 '
+          + (idx === 0
+            ? 'size-selected border-primary'
+            : 'border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary');
+        btn.setAttribute('aria-label', 'Select size ' + size);
+        btn.addEventListener('click', function () { selectSize(size, btn, container); });
+        container.appendChild(btn);
+      });
+    }
+
+    function selectSize(size, btn, container) {
+      selectedSize = size;
+      Array.from(container.children).forEach(function (b) {
+        b.classList.remove('size-selected', 'border-primary');
+        b.classList.add('border-outline-variant', 'text-on-surface-variant');
+      });
+      btn.classList.remove('border-outline-variant', 'text-on-surface-variant', 'hover:border-primary', 'hover:text-primary');
+      btn.classList.add('size-selected', 'border-primary');
+    }
+
+    // ============================================================
+    // ADD TO BAG
+    // ============================================================
+    function handleAddToBag() {
+      if (!selectedColor || !selectedSize) {
+        showToast('Please select a color and size', true);
+        return;
+      }
+      Cart.addItem(currentProduct, selectedColor, selectedSize);
+
+      // Button feedback
+      const btn = document.getElementById('add-to-bag-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Added!';
+      btn.disabled = true;
+      setTimeout(function () {
+        btn.textContent = orig;
+        btn.disabled = false;
+      }, 1800);
+
+      showToast('Added to bag — ' + currentProduct.name);
+    }
+
+    // ============================================================
+    // WISHLIST
+    // ============================================================
+    function handleWishlist() {
+      const btn = document.getElementById('wishlist-btn');
+      const isWished = btn.dataset.wished === 'true';
+      if (isWished) {
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">favorite_border</span> Add to Wishlist';
+        btn.dataset.wished = 'false';
+        showToast('Removed from wishlist');
+      } else {
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px]" style="font-variation-settings:\'FILL\' 1;color:#ba1a1a">favorite</span> Saved to Wishlist';
+        btn.dataset.wished = 'true';
+        showToast('Saved to wishlist');
+      }
+    }
+
+    // ============================================================
+    // RELATED PRODUCTS
+    // ============================================================
+    function renderRelatedProducts(productId) {
+      const related = getRelatedProducts(productId, 3);
+      const grid    = document.getElementById('related-products-grid');
+      grid.innerHTML = related.map(function (p) {
+        return renderProductCard(p);
+      }).join('');
+    }
+
+    function renderProductCard(p) {
+      return '<a href="product.html?id=' + p.id + '" class="group flex flex-col gap-0 cursor-pointer">'
+        + '<div class="relative overflow-hidden rounded-lg bg-surface-container-low">'
+        + (p.badge ? '<span class="absolute top-3 left-3 z-10 font-[Inter] text-[10px] font-semibold tracking-[0.12em] uppercase bg-primary text-white px-2 py-0.5 rounded-full">' + escapeHtml(p.badge) + '</span>' : '')
+        + '<img src="' + p.images[0] + '" alt="' + escapeHtml(p.name) + '" class="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-500"/>'
+        + '</div>'
+        + '<div class="pt-4 pb-2 flex flex-col gap-1">'
+        + '<span class="font-[Inter] text-[11px] font-semibold tracking-[0.1em] uppercase text-secondary">' + escapeHtml(p.collection) + '</span>'
+        + '<h3 class="font-[Playfair_Display] text-[20px] text-on-surface font-normal leading-snug">' + escapeHtml(p.name) + '</h3>'
+        + '<span class="font-[Inter] text-[14px] text-on-surface-variant">' + escapeHtml(p.priceDisplay) + '</span>'
+        + '</div>'
+        + '</a>';
+    }
+
+    // ============================================================
+    // ACCORDION
+    // ============================================================
+    function initAccordions() {
+      document.querySelectorAll('.accordion-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const targetId = btn.getAttribute('data-target');
+          const panel    = document.getElementById(targetId);
+          const isOpen   = !panel.classList.contains('hidden');
+          const wrapper  = btn.closest('.border');
+
+          if (isOpen) {
+            panel.classList.add('hidden');
+            wrapper.classList.remove('accordion-open');
+          } else {
+            panel.classList.remove('hidden');
+            wrapper.classList.add('accordion-open');
+          }
+        });
+      });
+    }
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    function initMobileMenu() {
+      const menuBtn  = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function () {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+    }
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    let toastTimer = null;
+    function showToast(message, isError) {
+      const toast = document.getElementById('toast');
+      const msg   = document.getElementById('toast-msg');
+      msg.textContent = message;
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toast.classList.remove('toast-leave');
+      toast.classList.add('toast-enter');
+      toast.style.opacity = '1';
+      toast.style.pointerEvents = 'auto';
+
+      toastTimer = setTimeout(function () {
+        toast.classList.remove('toast-enter');
+        toast.classList.add('toast-leave');
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          toast.style.pointerEvents = 'none';
+          toast.classList.remove('toast-leave');
+        }, 400);
+      }, 2800);
+    }
+
+    // ============================================================
+    // UTILS
+    // ============================================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>

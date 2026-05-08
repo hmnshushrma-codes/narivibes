@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+  <!-- SEO -->
+  <title>Sustainability &amp; Thrift | L'ÉTÉ</title>
+  <meta name="description" content="L'ÉTÉ's commitment to sustainable fashion — ethically sourced natural fibres, zero-waste practices, and our Thrift Programme that gives pre-loved pieces a second life."/>
+  <meta name="robots" content="index, follow"/>
+
+  <!-- Scripts & Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
+            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "on-secondary-fixed": "#001f23","on-primary-fixed": "#281719",
+            "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
+            "primary-fixed-dim": "#debfc2","surface-tint": "#70585b",
+            "on-secondary-container": "#3b6a6f","on-primary-container": "#765e61",
+            "inverse-primary": "#debfc2","tertiary": "#615e5b","surface-variant": "#e2e2e2",
+            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "on-secondary": "#ffffff","surface-dim": "#dadada","on-tertiary-fixed": "#1d1b19",
+            "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
+            "on-error-container": "#93000a","error-container": "#ffdad6","error": "#ba1a1a",
+            "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
+            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
+            "inverse-on-surface": "#f0f1f1","primary-fixed": "#fbdbde","on-tertiary": "#ffffff",
+            "on-primary": "#ffffff","tertiary-container": "#e6e1dd","outline": "#807475",
+            "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
+            "on-secondary-fixed-variant": "#1d4d53","secondary-fixed-dim": "#9fcfd5",
+            "on-error": "#ffffff","surface-container": "#eeeeee","inverse-surface": "#2f3131"
+          },
+          "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+          "spacing": {"gutter": "24px","unit": "8px","section-gap": "120px","margin-desktop": "64px","container-max": "1280px","margin-mobile": "16px"},
+          "fontFamily": {"body-md": ["Inter"],"h2": ["Playfair Display"],"body-lg": ["Inter"],"label-caps": ["Inter"],"h3": ["Playfair Display"],"h1": ["Playfair Display"]},
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "h2": ["36px", {"lineHeight": "1.2","fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "label-caps": ["12px", {"lineHeight": "1.4","letterSpacing": "0.1em","fontWeight": "600"}],
+            "h3": ["24px", {"lineHeight": "1.3","fontWeight": "400"}],
+            "h1": ["48px", {"lineHeight": "1.2","letterSpacing": "-0.01em","fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { background-color: #f9f9f9; color: #1a1c1c; overflow-x: hidden; }
+  </style>
+</head>
+<body class="font-[Inter]">
+
+  <!-- ===== NAV ===== -->
+  <nav class="fixed top-0 w-full z-50 bg-[#f9f9f9]/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
+    <div class="flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+      <div class="flex items-center gap-6">
+        <button class="cursor-pointer text-[#70585b]" id="mobile-menu-btn">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="hidden md:flex gap-8">
+          <a class="text-xs font-semibold tracking-[0.1em] uppercase text-[#4f4445] hover:text-[#70585b] transition-colors font-[Inter]" href="collections.html">Collections</a>
+          <a class="text-xs font-semibold tracking-[0.1em] uppercase hover:text-[#70585b] transition-colors font-[Inter] text-[#70585b] border-b border-[#70585b]" href="sustainability.html">Sustainability</a>
+          <a class="text-xs font-semibold tracking-[0.1em] uppercase hover:text-[#70585b] transition-colors font-[Inter] text-[#4f4445]" href="about.html">About</a>
+        </div>
+      </div>
+      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-[#70585b]">L'ÉTÉ</a>
+      <div class="flex items-center gap-6">
+        <button class="hidden md:block text-[#4f4445] hover:text-[#70585b]"><span class="material-symbols-outlined">search</span></button>
+        <a href="cart.html" class="text-[#70585b] relative">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-count-badge absolute -top-2 -right-2 bg-[#70585b] text-white text-xs w-5 h-5 rounded-full items-center justify-center hidden">0</span>
+        </a>
+      </div>
+    </div>
+    <div class="hidden md:hidden bg-[#f9f9f9]/95 backdrop-blur-md border-t border-[#d2c3c4] px-4 py-4" id="mobile-menu">
+      <a class="block py-2 text-xs font-semibold tracking-widest uppercase text-[#4f4445]" href="collections.html">Collections</a>
+      <a class="block py-2 text-xs font-semibold tracking-widest uppercase text-[#70585b]" href="sustainability.html">Sustainability</a>
+      <a class="block py-2 text-xs font-semibold tracking-widest uppercase text-[#4f4445]" href="about.html">About</a>
+    </div>
+  </nav>
+  <script>
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+  </script>
+
+  <main>
+
+    <!-- ===== SECTION 1: HERO ===== -->
+    <section class="bg-[#fadadd]/30 pt-32 pb-24">
+      <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16 text-center">
+        <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-4">Our Ethos</p>
+        <h1 class="font-[Playfair_Display] text-4xl md:text-5xl lg:text-[48px] leading-tight tracking-[-0.01em] text-[#1a1c1c] mb-6 max-w-3xl mx-auto">
+          Fashion That Gives Back<br class="hidden md:block"/> to the Earth
+        </h1>
+        <p class="text-[18px] leading-relaxed text-[#4f4445] max-w-2xl mx-auto mb-12 font-[Inter]">
+          We believe that true luxury is never at the expense of the planet. Every thread we choose, every partnership we forge, and every decision we make is guided by an unwavering commitment to nature, ethics, and the artisans who breathe life into our garments.
+        </p>
+        <!-- Stat Badges -->
+        <div class="flex flex-wrap justify-center gap-4 md:gap-8">
+          <div class="inline-flex items-center gap-2 bg-white border border-[#d2c3c4] rounded-full px-6 py-3 shadow-sm">
+            <span class="material-symbols-outlined text-[#37656b] text-[20px]">eco</span>
+            <span class="text-xs font-semibold tracking-[0.08em] uppercase text-[#1a1c1c] font-[Inter]">100% Natural Fibres</span>
+          </div>
+          <div class="inline-flex items-center gap-2 bg-white border border-[#d2c3c4] rounded-full px-6 py-3 shadow-sm">
+            <span class="material-symbols-outlined text-[#37656b] text-[20px]">palette</span>
+            <span class="text-xs font-semibold tracking-[0.08em] uppercase text-[#1a1c1c] font-[Inter]">Zero Synthetic Dyes</span>
+          </div>
+          <div class="inline-flex items-center gap-2 bg-white border border-[#d2c3c4] rounded-full px-6 py-3 shadow-sm">
+            <span class="material-symbols-outlined text-[#37656b] text-[20px]">local_shipping</span>
+            <span class="text-xs font-semibold tracking-[0.08em] uppercase text-[#1a1c1c] font-[Inter]">Carbon Offset Shipping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2: OUR COMMITMENTS ===== -->
+    <section class="py-24 bg-[#f9f9f9]">
+      <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
+        <div class="text-center mb-16">
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-3">Commitments</p>
+          <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c]">What We Stand For</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <!-- Card 1 -->
+          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(112,88,91,0.07)] flex flex-col gap-5">
+            <div class="w-14 h-14 rounded-full bg-[#fadadd] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[#70585b] text-2xl">eco</span>
+            </div>
+            <h3 class="font-[Playfair_Display] text-[24px] leading-snug text-[#1a1c1c]">Ethically Sourced Materials</h3>
+            <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+              All linen is sourced from certified farms in France and Belgium — grown without synthetic pesticides, respecting the soil that sustains it. Our silk comes exclusively from OEKO-TEX certified mills in India, where no harmful chemicals enter the process at any stage. We trace every metre of fabric back to its origin, and we share that story with you.
+            </p>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(112,88,91,0.07)] flex flex-col gap-5">
+            <div class="w-14 h-14 rounded-full bg-[#fadadd] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[#70585b] text-2xl">handshake</span>
+            </div>
+            <h3 class="font-[Playfair_Display] text-[24px] leading-snug text-[#1a1c1c]">Artisan Partnerships</h3>
+            <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+              We work directly with small workshops in Jaipur and Tamil Nadu, bypassing intermediaries to pay above fair-trade wages to every craftsperson. We document every step of our supply chain and publish it openly, because transparency is not optional — it is foundational. Our artisan partners are collaborators, not vendors.
+            </p>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(112,88,91,0.07)] flex flex-col gap-5">
+            <div class="w-14 h-14 rounded-full bg-[#fadadd] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[#70585b] text-2xl">inventory_2</span>
+            </div>
+            <h3 class="font-[Playfair_Display] text-[24px] leading-snug text-[#1a1c1c]">Minimal Packaging</h3>
+            <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+              Every order ships in recycled kraft paper, secured with cotton ribbon and accompanied by a handwritten note. We eliminated plastic from all packaging in 2022, and our tissue paper is sourced from FSC-certified forests. The unboxing experience is designed to feel like a gift — to you, and to the planet.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: THE THRIFT PROGRAMME ===== -->
+    <section id="thrift" class="py-24 bg-[#fbdbde]/20">
+      <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+          <!-- Text Column -->
+          <div class="order-2 lg:order-1">
+            <div class="inline-flex items-center gap-2 mb-6">
+              <span class="bg-[#37656b] text-white text-[11px] font-semibold tracking-[0.1em] uppercase px-3 py-1 rounded-full font-[Inter]">New</span>
+            </div>
+            <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c] mb-3">
+              The L'ÉTÉ Thrift Programme
+            </h2>
+            <p class="text-[18px] leading-snug text-[#37656b] font-[Inter] mb-8 font-medium">
+              Give your pre-loved pieces a second life — and earn credit for your next chapter.
+            </p>
+
+            <div class="space-y-5 mb-10">
+              <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+                We believe luxury shouldn't be disposable. The L'ÉTÉ Thrift Programme lets you send back pieces you've outgrown, and in return, you receive store credit to invest in your next wardrobe addition. Every returned piece is inspected, cleaned, and either resold at a reduced price or repurposed into something new.
+              </p>
+              <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+                Thrifted pieces carry the stories of the women who wore them — and that's what makes them extraordinary.
+              </p>
+            </div>
+
+            <!-- How It Works -->
+            <div class="mb-10">
+              <p class="text-xs font-semibold tracking-[0.12em] uppercase text-[#70585b] font-[Inter] mb-6">How It Works</p>
+              <ol class="space-y-6">
+                <li class="flex gap-5 items-start">
+                  <div class="flex-shrink-0 w-9 h-9 rounded-full bg-[#70585b] text-white flex items-center justify-center font-[Playfair_Display] text-[16px] font-semibold">1</div>
+                  <div>
+                    <p class="font-[Playfair_Display] text-[18px] text-[#1a1c1c] mb-1">Submit your piece</p>
+                    <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter]">Fill in our online form with photos and condition notes. We'll review within 48 hours.</p>
+                  </div>
+                </li>
+                <li class="flex gap-5 items-start">
+                  <div class="flex-shrink-0 w-9 h-9 rounded-full bg-[#70585b] text-white flex items-center justify-center font-[Playfair_Display] text-[16px] font-semibold">2</div>
+                  <div>
+                    <p class="font-[Playfair_Display] text-[18px] text-[#1a1c1c] mb-1">We review &amp; collect</p>
+                    <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter]">We arrange a free pickup if your piece qualifies. No trips to the post office needed.</p>
+                  </div>
+                </li>
+                <li class="flex gap-5 items-start">
+                  <div class="flex-shrink-0 w-9 h-9 rounded-full bg-[#70585b] text-white flex items-center justify-center font-[Playfair_Display] text-[16px] font-semibold">3</div>
+                  <div>
+                    <p class="font-[Playfair_Display] text-[18px] text-[#1a1c1c] mb-1">Earn store credit</p>
+                    <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter]">Receive 20–40% of the original price as store credit, applied instantly to your account.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <a href="#" class="inline-flex items-center gap-2 border border-[#70585b] text-[#70585b] rounded-full px-8 py-4 text-[14px] font-semibold tracking-[0.05em] font-[Inter] hover:bg-[#70585b] hover:text-white transition-all duration-200">
+              Start Thrifting
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+          </div>
+
+          <!-- Visual Column -->
+          <div class="order-1 lg:order-2">
+            <div class="bg-[#fadadd] rounded-xl h-96 lg:h-[520px] flex flex-col items-center justify-center gap-4 relative overflow-hidden">
+              <div class="absolute inset-0 opacity-10" style="background: radial-gradient(ellipse at 30% 30%, #70585b 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, #37656b 0%, transparent 60%);"></div>
+              <span class="material-symbols-outlined text-[#70585b] text-[56px] opacity-30">favorite</span>
+              <p class="font-[Playfair_Display] italic text-[#70585b] text-2xl text-center relative z-10">Pre-loved · Re-loved</p>
+              <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#70585b]/60 font-[Inter] relative z-10">The Thrift Programme</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4: MATERIALS ===== -->
+    <section class="py-24 bg-[#f9f9f9]">
+      <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
+        <div class="text-center mb-16">
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-3">Materials</p>
+          <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c]">Every Thread Tells a Story</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <!-- Linen -->
+          <article class="border border-[#d2c3c4] rounded-xl p-8 bg-white hover:shadow-[0_4px_24px_rgba(112,88,91,0.10)] transition-shadow duration-300">
+            <div class="w-12 h-12 rounded-full bg-[#fbdbde]/60 flex items-center justify-center mb-5">
+              <span class="material-symbols-outlined text-[#70585b] text-xl">grass</span>
+            </div>
+            <h3 class="font-[Playfair_Display] text-xl text-[#1a1c1c] mb-1">French Linen</h3>
+            <p class="font-[Inter] italic text-xs tracking-[0.08em] uppercase text-[#37656b] mb-4">Linum usitatissimum</p>
+            <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter]">
+              Breathable, biodegradable, and grown without irrigation in the flax fields of Normandy and Brittany. Our linen is unbleached at source, retaining its natural texture. It gets softer with every wash, aging into something more beautiful than it began.
+            </p>
+          </article>
+
+          <!-- Silk -->
+          <article class="border border-[#d2c3c4] rounded-xl p-8 bg-white hover:shadow-[0_4px_24px_rgba(112,88,91,0.10)] transition-shadow duration-300">
+            <div class="w-12 h-12 rounded-full bg-[#bbebf1]/40 flex items-center justify-center mb-5">
+              <span class="material-symbols-outlined text-[#37656b] text-xl">water_drop</span>
+            </div>
+            <h3 class="font-[Playfair_Display] text-xl text-[#1a1c1c] mb-1">Sandwashed Silk</h3>
+            <p class="font-[Inter] italic text-xs tracking-[0.08em] uppercase text-[#37656b] mb-4">Bombyx mori · OEKO-TEX Certified</p>
+            <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter]">
+              OEKO-TEX certified from start to finish, our sandwashed silk is ethically produced by families in Karnataka with decades of sericulture expertise. Naturally temperature-regulating, it keeps you cool in the heat and warm when the evening turns. Luxurious without apology.
+            </p>
+          </article>
+
+          <!-- Cotton -->
+          <article class="border border-[#d2c3c4] rounded-xl p-8 bg-white hover:shadow-[0_4px_24px_rgba(112,88,91,0.10)] transition-shadow duration-300">
+            <div class="w-12 h-12 rounded-full bg-[#e6e1dd] flex items-center justify-center mb-5">
+              <span class="material-symbols-outlined text-[#615e5b] text-xl">spa</span>
+            </div>
+            <h3 class="font-[Playfair_Display] text-xl text-[#1a1c1c] mb-1">Organic Cotton</h3>
+            <p class="font-[Inter] italic text-xs tracking-[0.08em] uppercase text-[#37656b] mb-4">Gossypium hirsutum · GOTS Certified</p>
+            <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter]">
+              GOTS certified and free of synthetic pesticides. Harvested by smallholder farmers across Vidarbha and Gujarat — farmers we know by name, farms we visit in person. Our organic cotton is a commitment to the land and the people who tend it with such care.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5: IMPACT NUMBERS ===== -->
+    <section class="bg-[#70585b] py-20">
+      <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
+        <div class="text-center mb-16">
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#fadadd] font-[Inter] mb-3">Our Impact</p>
+          <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-white">Numbers That Matter</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+
+          <div class="text-center px-4">
+            <p class="font-[Playfair_Display] text-[48px] leading-none text-white mb-3">12,000<span class="text-[#fadadd]">+</span></p>
+            <p class="text-xs font-semibold tracking-[0.12em] uppercase text-[#fadadd]/80 font-[Inter]">Pieces Thrifted</p>
+          </div>
+
+          <div class="text-center px-4">
+            <p class="font-[Playfair_Display] text-[48px] leading-none text-white mb-3">80<span class="text-[#fadadd]">%</span></p>
+            <p class="text-xs font-semibold tracking-[0.12em] uppercase text-[#fadadd]/80 font-[Inter]">Packaging Recycled</p>
+          </div>
+
+          <div class="text-center px-4">
+            <p class="font-[Playfair_Display] text-[48px] leading-none text-white mb-3">6</p>
+            <p class="text-xs font-semibold tracking-[0.12em] uppercase text-[#fadadd]/80 font-[Inter]">Artisan Workshops</p>
+          </div>
+
+          <div class="text-center px-4">
+            <p class="font-[Playfair_Display] text-[48px] leading-none text-white mb-3">0</p>
+            <p class="text-xs font-semibold tracking-[0.12em] uppercase text-[#fadadd]/80 font-[Inter]">Synthetic Dyes Used</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 6: PLEDGE / NEWSLETTER CTA ===== -->
+    <section class="py-20 bg-[#f3f3f3]">
+      <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16 text-center">
+        <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-4">Our Pledge</p>
+        <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c] mb-4 max-w-2xl mx-auto">
+          Join us in building a wardrobe that lasts — not just a season.
+        </h2>
+        <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter] max-w-xl mx-auto mb-10">
+          Subscribe to our sustainability newsletter for behind-the-scenes stories from our artisan partners, updates on our Thrift Programme, and guidance on caring for your pieces.
+        </p>
+        <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onsubmit="handleNewsletterSubmit(event)">
+          <input
+            type="email"
+            placeholder="your@email.com"
+            required
+            class="flex-1 px-5 py-4 rounded-full border border-[#d2c3c4] bg-white text-[#1a1c1c] text-[15px] font-[Inter] focus:outline-none focus:border-[#70585b] focus:ring-1 focus:ring-[#70585b] placeholder-[#807475]"
+          />
+          <button
+            type="submit"
+            class="px-8 py-4 bg-[#70585b] text-white rounded-full text-[14px] font-semibold tracking-[0.05em] font-[Inter] hover:bg-[#574144] transition-colors duration-200 whitespace-nowrap"
+          >
+            Subscribe
+          </button>
+        </form>
+        <p class="text-xs text-[#807475] font-[Inter] mt-4 opacity-70">No spam, ever. Unsubscribe anytime.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="w-full py-16 bg-white">
+    <div class="flex flex-col md:flex-row justify-between items-start px-4 md:px-16 gap-6 w-full max-w-[1280px] mx-auto">
+      <div>
+        <span class="font-[Playfair_Display] text-2xl text-[#70585b] block mb-3">L'ÉTÉ</span>
+        <p class="text-sm text-[#494644] max-w-xs">Crafting the essence of summer into timeless pieces for the modern wanderer.</p>
+      </div>
+      <div class="flex flex-wrap gap-12 mt-8 md:mt-0">
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold tracking-widest uppercase text-[#70585b] font-[Inter]">Shop</span>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="collections.html">Collections</a>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="collections.html">New Arrivals</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold tracking-widest uppercase text-[#70585b] font-[Inter]">Ethos</span>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="sustainability.html">Sustainability</a>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="sustainability.html#thrift">Thrift Programme</a>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="about.html">About Us</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold tracking-widest uppercase text-[#70585b] font-[Inter]">Care</span>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="#">Shipping</a>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="#">Returns</a>
+          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="#">FAQ</a>
+        </div>
+      </div>
+    </div>
+    <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16 mt-12 pt-8 border-t border-[#e8e8e8]">
+      <p class="text-xs text-[#494644] opacity-60">© 2024 L'ÉTÉ SUMMER COLLECTIONS. ALL RIGHTS RESERVED.</p>
+    </div>
+  </footer>
+
+  <script>
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const input = e.target.querySelector('input[type="email"]');
+      btn.textContent = 'Subscribed!';
+      btn.classList.add('bg-[#37656b]');
+      input.value = '';
+      setTimeout(() => {
+        btn.textContent = 'Subscribe';
+        btn.classList.remove('bg-[#37656b]');
+      }, 3000);
+    }
+  </script>
+  <script src="js/cart.js"></script>
+</body>
+</html>

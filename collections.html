@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+  <!-- SEO Meta Tags -->
+  <title>Summer Collection | L'ÉTÉ Luxury Fashion</title>
+  <meta name="description" content="Explore L'ÉTÉ's Summer Collection — ethereal linens and silks designed for the effortless pursuit of summer ease. Filter by size, color, and price."/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://narivibe.com/collections.html"/>
+  <meta property="og:title" content="Summer Collection | L'ÉTÉ Luxury Fashion"/>
+  <meta property="og:description" content="Explore L'ÉTÉ's Summer Collection — ethereal linens and silks designed for the effortless pursuit of summer ease."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://narivibe.com/collections.html"/>
+
+  <!-- Stylesheets & Scripts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e8e8e8",
+            "on-primary-fixed-variant": "#574144",
+            "surface": "#f9f9f9",
+            "primary-container": "#fadadd",
+            "surface-bright": "#f9f9f9",
+            "on-secondary-fixed": "#001f23",
+            "on-primary-fixed": "#281719",
+            "outline-variant": "#d2c3c4",
+            "on-tertiary-fixed-variant": "#494644",
+            "primary-fixed-dim": "#debfc2",
+            "surface-tint": "#70585b",
+            "on-secondary-container": "#3b6a6f",
+            "on-primary-container": "#765e61",
+            "inverse-primary": "#debfc2",
+            "tertiary": "#615e5b",
+            "surface-variant": "#e2e2e2",
+            "secondary-container": "#b8e8ee",
+            "on-background": "#1a1c1c",
+            "background": "#f9f9f9",
+            "secondary": "#37656b",
+            "primary": "#70585b",
+            "on-surface": "#1a1c1c",
+            "on-secondary": "#ffffff",
+            "surface-dim": "#dadada",
+            "on-tertiary-fixed": "#1d1b19",
+            "surface-container-highest": "#e2e2e2",
+            "on-surface-variant": "#4f4445",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "error": "#ba1a1a",
+            "tertiary-fixed-dim": "#cbc5c2",
+            "tertiary-fixed": "#e7e1de",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed": "#bbebf1",
+            "inverse-on-surface": "#f0f1f1",
+            "primary-fixed": "#fbdbde",
+            "on-tertiary": "#ffffff",
+            "on-primary": "#ffffff",
+            "tertiary-container": "#e6e1dd",
+            "outline": "#807475",
+            "surface-container-low": "#f3f3f3",
+            "on-tertiary-container": "#676361",
+            "on-secondary-fixed-variant": "#1d4d53",
+            "secondary-fixed-dim": "#9fcfd5",
+            "on-error": "#ffffff",
+            "surface-container": "#eeeeee",
+            "inverse-surface": "#2f3131"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "24px",
+            "unit": "8px",
+            "section-gap": "120px",
+            "margin-desktop": "64px",
+            "container-max": "1280px",
+            "margin-mobile": "16px"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "h2": ["Playfair Display"],
+            "body-lg": ["Inter"],
+            "label-caps": ["Inter"],
+            "h3": ["Playfair Display"],
+            "h1": ["Playfair Display"]
+          },
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "h2": ["36px", {"lineHeight": "1.2", "fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "label-caps": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "600"}],
+            "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "400"}],
+            "h1": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #f9f9f9;
+      color: #1a1c1c;
+      overflow-x: hidden;
+    }
+
+    /* Price range slider custom styles */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 2px;
+      background: #d2c3c4;
+      outline: none;
+      border-radius: 2px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #70585b;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(112,88,91,0.3);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #70585b;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(112,88,91,0.3);
+    }
+
+    /* Quick Add button transition */
+    .product-card .quick-add-btn {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .product-card:hover .quick-add-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Product image zoom */
+    .product-card .product-img {
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-img {
+      transform: scale(1.04);
+    }
+
+    /* Sidebar overlay */
+    #sidebar-overlay {
+      display: none;
+    }
+    #sidebar-overlay.active {
+      display: block;
+    }
+
+    /* Mobile sidebar */
+    #filter-sidebar {
+      transition: transform 0.3s ease;
+    }
+
+    /* Toast notification */
+    #cart-toast {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+  </style>
+</head>
+<body class="font-body-md text-on-surface">
+
+  <!-- Nav Component -->
+  <nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
+    <div class="flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+      <div class="flex items-center gap-6">
+        <button class="cursor-pointer active:scale-95 transition-transform text-primary" id="mobile-menu-btn">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="hidden md:flex gap-8">
+          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-primary border-b border-primary pb-0.5" href="collections.html">Collections</a>
+          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="#">Sustainability</a>
+          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="#">About</a>
+        </div>
+      </div>
+      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-primary">L'ÉTÉ</a>
+      <div class="flex items-center gap-6">
+        <button class="hidden md:block cursor-pointer active:scale-95 transition-transform text-on-surface-variant hover:text-primary">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+        <a href="cart.html" class="cursor-pointer active:scale-95 transition-transform text-primary relative">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-count-badge absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+        </a>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="hidden md:hidden bg-surface/95 backdrop-blur-md border-t border-outline-variant px-4 py-4" id="mobile-menu">
+      <a class="block py-2 font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-primary" href="collections.html">Collections</a>
+      <a class="block py-2 font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="#">Sustainability</a>
+      <a class="block py-2 font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="#">About</a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="pt-32 pb-10 px-4 md:px-16 max-w-[1280px] mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div>
+        <p class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-secondary mb-3">Summer 2024</p>
+        <h1 class="font-[Playfair_Display] text-[40px] md:text-[56px] text-primary leading-tight" style="letter-spacing: -0.01em;">Summer Collection</h1>
+        <p class="mt-3 text-[18px] text-on-surface-variant max-w-xl leading-relaxed">
+          Ethereal linens, sandwashed silks and natural fibers — designed for the effortless pursuit of summer ease.
+        </p>
+      </div>
+      <!-- Mobile filter toggle -->
+      <button id="mobile-filter-btn" class="md:hidden flex items-center gap-2 px-5 py-2.5 border border-outline-variant rounded-full text-on-surface-variant font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase hover:border-primary hover:text-primary transition-colors self-start">
+        <span class="material-symbols-outlined text-[18px]">tune</span>
+        Filters
+      </button>
+    </div>
+    <!-- Thin divider -->
+    <div class="mt-8 border-t border-outline-variant"></div>
+  </div>
+
+  <!-- Main Content: Sidebar + Grid -->
+  <div class="px-4 md:px-16 max-w-[1280px] mx-auto pb-24 flex gap-10 relative">
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/30 z-40 md:hidden" onclick="closeMobileSidebar()"></div>
+
+    <!-- Filter Sidebar -->
+    <aside id="filter-sidebar"
+      class="fixed md:static top-0 left-0 h-full md:h-auto w-72 md:w-64 bg-surface md:bg-transparent z-50 md:z-auto
+             overflow-y-auto md:overflow-y-visible
+             -translate-x-full md:translate-x-0
+             p-6 md:p-0 flex-shrink-0">
+
+      <!-- Mobile sidebar header -->
+      <div class="flex items-center justify-between mb-6 md:hidden">
+        <span class="font-[Playfair_Display] text-xl text-primary">Filters</span>
+        <button onclick="closeMobileSidebar()" class="text-on-surface-variant hover:text-primary transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- SIZE filter -->
+      <div class="mb-6 pb-6 border-b border-outline-variant">
+        <p class="font-[Inter] text-[11px] font-semibold tracking-[0.12em] uppercase text-on-surface-variant mb-4">Size</p>
+        <div class="flex flex-wrap gap-2" id="size-filters">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- COLOR filter -->
+      <div class="mb-6 pb-6 border-b border-outline-variant">
+        <p class="font-[Inter] text-[11px] font-semibold tracking-[0.12em] uppercase text-on-surface-variant mb-4">Color</p>
+        <div class="flex flex-col gap-3" id="color-filters">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- PRICE RANGE filter -->
+      <div class="mb-6 pb-6 border-b border-outline-variant">
+        <p class="font-[Inter] text-[11px] font-semibold tracking-[0.12em] uppercase text-on-surface-variant mb-4">Price Range</p>
+        <input type="range" id="price-slider" min="5000" max="35000" step="500" value="35000" class="w-full mb-3"/>
+        <div class="flex justify-between font-[Inter] text-[12px] text-on-surface-variant">
+          <span>₹5,000</span>
+          <span id="price-max-display">₹35,000</span>
+        </div>
+      </div>
+
+      <!-- Clear Filters -->
+      <button id="clear-filters-btn"
+        class="w-full py-2.5 border border-outline-variant rounded-full font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+        Clear Filters
+      </button>
+    </aside>
+
+    <!-- Product Grid -->
+    <div class="flex-1 min-w-0">
+
+      <!-- Results count + sort bar -->
+      <div class="flex items-center justify-between mb-6">
+        <p class="font-[Inter] text-[13px] text-on-surface-variant">
+          Showing <span id="results-count" class="font-semibold text-on-surface">0</span> pieces
+        </p>
+        <div class="hidden md:flex items-center gap-2">
+          <span class="font-[Inter] text-[12px] text-on-surface-variant">Sort:</span>
+          <select id="sort-select" class="bg-transparent border-none font-[Inter] text-[12px] font-semibold text-on-surface cursor-pointer focus:ring-0 pr-6">
+            <option value="default">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
+        <span class="material-symbols-outlined text-5xl text-outline mb-4">search_off</span>
+        <p class="font-[Playfair_Display] text-2xl text-primary mb-2">No pieces found</p>
+        <p class="text-on-surface-variant text-sm mb-6">Try adjusting your filters to explore more of our collection.</p>
+        <button id="empty-clear-btn" class="px-8 py-3 bg-primary text-white font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase rounded-full hover:bg-on-primary-fixed-variant transition-colors">
+          Clear All Filters
+        </button>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination-bar" class="mt-14 flex items-center justify-center gap-6">
+        <button id="prev-page-btn"
+          class="flex items-center gap-1 px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-[Inter] text-[12px] font-semibold tracking-[0.08em] uppercase hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          disabled>
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          Prev
+        </button>
+        <span id="page-indicator" class="font-[Playfair_Display] text-lg text-on-surface-variant tracking-wide">1 / 1</span>
+        <button id="next-page-btn"
+          class="flex items-center gap-1 px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-[Inter] text-[12px] font-semibold tracking-[0.08em] uppercase hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+          Next
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Cart Toast Notification -->
+  <div id="cart-toast"
+    class="fixed bottom-6 right-6 z-[100] flex items-center gap-3 bg-on-surface text-inverse-on-surface px-5 py-3.5 rounded-2xl shadow-2xl opacity-0 pointer-events-none"
+    style="transform: translateY(16px);">
+    <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">check_circle</span>
+    <span id="cart-toast-msg" class="font-[Inter] text-[13px] font-semibold">Added to bag</span>
+    <a href="cart.html" class="ml-2 font-[Inter] text-[12px] tracking-[0.08em] uppercase underline underline-offset-2 opacity-70 hover:opacity-100">View Bag</a>
+  </div>
+
+  <!-- Footer Component -->
+  <footer class="w-full py-16 bg-surface-container-lowest">
+    <div class="flex flex-col md:flex-row justify-between items-start px-4 md:px-16 gap-6 w-full max-w-[1280px] mx-auto">
+      <div class="flex flex-col gap-4">
+        <span class="font-[Playfair_Display] text-2xl text-primary">L'ÉTÉ</span>
+        <p class="text-sm text-on-tertiary-fixed-variant max-w-xs">Crafting the essence of summer into timeless pieces for the modern wanderer.</p>
+      </div>
+      <div class="flex flex-wrap gap-12 mt-8 md:mt-0">
+        <div class="flex flex-col gap-3">
+          <span class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-primary">Shop</span>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="collections.html">Collections</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">New Arrivals</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Summer Edit</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <span class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-primary">Ethos</span>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Sustainability</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Artisans</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Tracing</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <span class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-primary">Care</span>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Shipping</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Returns</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">FAQ</a>
+        </div>
+        <div class="flex flex-col gap-3">
+          <span class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-primary">Connect</span>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Instagram</a>
+          <a class="text-sm text-on-tertiary-fixed-variant hover:text-primary transition-colors" href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16 mt-12 pt-8 border-t border-surface-container-high">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-xs text-on-tertiary-fixed-variant opacity-60">© 2024 L'ÉTÉ SUMMER COLLECTIONS. ALL RIGHTS RESERVED.</p>
+        <div class="flex gap-4 text-xs text-on-tertiary-fixed-variant opacity-60">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    // ---------------------------------------------------------------------------
+    // State
+    // ---------------------------------------------------------------------------
+    const ITEMS_PER_PAGE = 9;
+
+    const state = {
+      selectedSizes: new Set(),
+      selectedColors: new Set(),
+      maxPrice: 35000,
+      sortBy: 'default',
+      currentPage: 1,
+      filtered: []
+    };
+
+    // ---------------------------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------------------------
+    function formatRupees(n) {
+      return '₹' + n.toLocaleString('en-IN');
+    }
+
+    function totalPages() {
+      return Math.max(1, Math.ceil(state.filtered.length / ITEMS_PER_PAGE));
+    }
+
+    function pageSlice() {
+      const start = (state.currentPage - 1) * ITEMS_PER_PAGE;
+      return state.filtered.slice(start, start + ITEMS_PER_PAGE);
+    }
+
+    // ---------------------------------------------------------------------------
+    // Collect all unique sizes & colors from PRODUCTS
+    // ---------------------------------------------------------------------------
+    function getAllSizes() {
+      const order = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One Size',
+                     '35', '36', '37', '38', '39', '40', '41'];
+      const set = new Set();
+      PRODUCTS.forEach(p => p.sizes.forEach(s => set.add(s)));
+      return order.filter(s => set.has(s));
+    }
+
+    function getAllColors() {
+      const map = {};
+      PRODUCTS.forEach(p => p.colors.forEach(c => {
+        if (!map[c.name]) map[c.name] = c.hex;
+      }));
+      return Object.entries(map).map(([name, hex]) => ({ name, hex }));
+    }
+
+    // ---------------------------------------------------------------------------
+    // Filter & Sort
+    // ---------------------------------------------------------------------------
+    function applyFilters() {
+      let results = PRODUCTS.slice();
+
+      // Size filter
+      if (state.selectedSizes.size > 0) {
+        results = results.filter(p =>
+          p.sizes.some(s => state.selectedSizes.has(s))
+        );
+      }
+
+      // Color filter
+      if (state.selectedColors.size > 0) {
+        results = results.filter(p =>
+          p.colors.some(c => state.selectedColors.has(c.name))
+        );
+      }
+
+      // Price filter
+      results = results.filter(p => p.price <= state.maxPrice);
+
+      // Sort
+      if (state.sortBy === 'price-asc') {
+        results.sort((a, b) => a.price - b.price);
+      } else if (state.sortBy === 'price-desc') {
+        results.sort((a, b) => b.price - a.price);
+      } else if (state.sortBy === 'name-asc') {
+        results.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        // Featured first, then by id order
+        results.sort((a, b) => {
+          if (a.featured && !b.featured) return -1;
+          if (!a.featured && b.featured) return 1;
+          return 0;
+        });
+      }
+
+      state.filtered = results;
+      state.currentPage = 1;
+      renderGrid();
+    }
+
+    // ---------------------------------------------------------------------------
+    // Render filter controls
+    // ---------------------------------------------------------------------------
+    function renderSizeFilters() {
+      const container = document.getElementById('size-filters');
+      const sizes = getAllSizes();
+      container.innerHTML = sizes.map(size => `
+        <button
+          data-size="${size}"
+          class="size-pill px-3.5 py-1.5 rounded-full border font-[Inter] text-[11px] font-semibold tracking-[0.08em] uppercase transition-all duration-150
+                 ${state.selectedSizes.has(size)
+                    ? 'bg-primary text-white border-primary'
+                    : 'border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary'}">
+          ${size}
+        </button>
+      `).join('');
+
+      container.querySelectorAll('.size-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const s = btn.dataset.size;
+          if (state.selectedSizes.has(s)) {
+            state.selectedSizes.delete(s);
+          } else {
+            state.selectedSizes.add(s);
+          }
+          renderSizeFilters();
+          applyFilters();
+        });
+      });
+    }
+
+    function renderColorFilters() {
+      const container = document.getElementById('color-filters');
+      const colors = getAllColors();
+      container.innerHTML = colors.map(c => `
+        <button
+          data-color="${c.name}"
+          class="color-pill flex items-center gap-2.5 group transition-all duration-150">
+          <span class="w-5 h-5 rounded-full border-2 flex-shrink-0 transition-all"
+            style="background-color: ${c.hex}; border-color: ${state.selectedColors.has(c.name) ? '#70585b' : '#d2c3c4'}; box-shadow: ${state.selectedColors.has(c.name) ? '0 0 0 2px #fadadd' : 'none'};">
+          </span>
+          <span class="font-[Inter] text-[12px] transition-colors
+            ${state.selectedColors.has(c.name) ? 'text-primary font-semibold' : 'text-on-surface-variant group-hover:text-primary'}">
+            ${c.name}
+          </span>
+          ${state.selectedColors.has(c.name) ? '<span class="material-symbols-outlined text-[14px] text-primary ml-auto">check</span>' : ''}
+        </button>
+      `).join('');
+
+      container.querySelectorAll('.color-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.dataset.color;
+          if (state.selectedColors.has(name)) {
+            state.selectedColors.delete(name);
+          } else {
+            state.selectedColors.add(name);
+          }
+          renderColorFilters();
+          applyFilters();
+        });
+      });
+    }
+
+    // ---------------------------------------------------------------------------
+    // Render product grid
+    // ---------------------------------------------------------------------------
+    function renderGrid() {
+      const grid = document.getElementById('product-grid');
+      const empty = document.getElementById('empty-state');
+      const paginationBar = document.getElementById('pagination-bar');
+      const countEl = document.getElementById('results-count');
+
+      countEl.textContent = state.filtered.length;
+
+      const page = pageSlice();
+
+      if (page.length === 0) {
+        grid.innerHTML = '';
+        grid.classList.add('hidden');
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        paginationBar.classList.add('hidden');
+      } else {
+        grid.classList.remove('hidden');
+        empty.classList.add('hidden');
+        empty.classList.remove('flex');
+        paginationBar.classList.remove('hidden');
+
+        grid.innerHTML = page.map(product => {
+          const img = Array.isArray(product.images) ? product.images[0] : (product.image || '');
+          const badgeHtml = product.badge
+            ? `<span class="absolute top-3 left-3 px-2.5 py-1 bg-primary-container text-on-primary-fixed-variant font-[Inter] text-[10px] font-semibold tracking-[0.1em] uppercase rounded-full z-10">
+                ${product.badge}
+               </span>`
+            : '';
+          const priceDisplay = product.priceDisplay || formatRupees(product.price);
+
+          return `
+            <div class="product-card group relative flex flex-col cursor-pointer" data-id="${product.id}">
+              <!-- Image container -->
+              <a href="product.html?id=${product.id}" class="block relative overflow-hidden aspect-square bg-surface-container-low rounded-sm mb-4">
+                ${badgeHtml}
+                <img
+                  src="${img}"
+                  alt="${product.name}"
+                  class="product-img w-full h-full object-cover"
+                  loading="lazy"/>
+                <!-- Quick Add overlay -->
+                <div class="absolute inset-x-0 bottom-0 p-3">
+                  <button
+                    class="quick-add-btn w-full py-2.5 bg-surface/90 backdrop-blur-sm text-on-surface font-[Inter] text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full shadow-md hover:bg-primary hover:text-white transition-colors"
+                    data-id="${product.id}">
+                    Quick Add
+                  </button>
+                </div>
+              </a>
+              <!-- Card info -->
+              <div class="flex flex-col gap-1 px-0.5">
+                <a href="product.html?id=${product.id}" class="font-[Playfair_Display] text-[17px] text-on-surface hover:text-primary transition-colors leading-snug">
+                  ${product.name}
+                </a>
+                <p class="font-[Inter] text-[12px] text-on-surface-variant">${product.material}</p>
+                <div class="flex items-center justify-between mt-1">
+                  <span class="font-[Inter] text-[14px] font-semibold text-on-surface">${priceDisplay}</span>
+                  <!-- Color dots -->
+                  <div class="flex gap-1">
+                    ${product.colors.slice(0, 4).map(c =>
+                      `<span title="${c.name}" class="w-3 h-3 rounded-full border border-outline-variant/60" style="background-color:${c.hex};"></span>`
+                    ).join('')}
+                    ${product.colors.length > 4 ? `<span class="font-[Inter] text-[10px] text-on-surface-variant ml-0.5">+${product.colors.length - 4}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Attach Quick Add listeners
+        grid.querySelectorAll('.quick-add-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            const product = PRODUCTS.find(p => p.id === id);
+            if (!product) return;
+            const color = product.colors[0].name;
+            const size = product.sizes[0];
+            Cart.addItem(product, color, size, 1);
+            showToast(product.name);
+          });
+        });
+      }
+
+      // Update pagination
+      updatePagination();
+    }
+
+    // ---------------------------------------------------------------------------
+    // Pagination
+    // ---------------------------------------------------------------------------
+    function updatePagination() {
+      const tp = totalPages();
+      const cp = state.currentPage;
+
+      document.getElementById('page-indicator').textContent =
+        String(cp).padStart(1, '0') + ' / ' + String(tp).padStart(2, '0');
+
+      const prevBtn = document.getElementById('prev-page-btn');
+      const nextBtn = document.getElementById('next-page-btn');
+
+      prevBtn.disabled = cp <= 1;
+      nextBtn.disabled = cp >= tp;
+    }
+
+    document.getElementById('prev-page-btn').addEventListener('click', () => {
+      if (state.currentPage > 1) {
+        state.currentPage--;
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+
+    document.getElementById('next-page-btn').addEventListener('click', () => {
+      if (state.currentPage < totalPages()) {
+        state.currentPage++;
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+
+    // ---------------------------------------------------------------------------
+    // Price slider
+    // ---------------------------------------------------------------------------
+    const priceSlider = document.getElementById('price-slider');
+    const priceDisplay = document.getElementById('price-max-display');
+
+    priceSlider.addEventListener('input', () => {
+      state.maxPrice = parseInt(priceSlider.value, 10);
+      priceDisplay.textContent = formatRupees(state.maxPrice);
+      applyFilters();
+    });
+
+    // ---------------------------------------------------------------------------
+    // Sort
+    // ---------------------------------------------------------------------------
+    document.getElementById('sort-select').addEventListener('change', (e) => {
+      state.sortBy = e.target.value;
+      applyFilters();
+    });
+
+    // ---------------------------------------------------------------------------
+    // Clear filters
+    // ---------------------------------------------------------------------------
+    function clearAllFilters() {
+      state.selectedSizes.clear();
+      state.selectedColors.clear();
+      state.maxPrice = 35000;
+      state.sortBy = 'default';
+      priceSlider.value = 35000;
+      priceDisplay.textContent = '₹35,000';
+      document.getElementById('sort-select').value = 'default';
+      renderSizeFilters();
+      renderColorFilters();
+      applyFilters();
+    }
+
+    document.getElementById('clear-filters-btn').addEventListener('click', clearAllFilters);
+    document.getElementById('empty-clear-btn').addEventListener('click', clearAllFilters);
+
+    // ---------------------------------------------------------------------------
+    // Mobile sidebar
+    // ---------------------------------------------------------------------------
+    document.getElementById('mobile-filter-btn').addEventListener('click', () => {
+      const sidebar = document.getElementById('filter-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.style.transform = 'translateX(0)';
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function closeMobileSidebar() {
+      const sidebar = document.getElementById('filter-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.style.transform = '';
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ---------------------------------------------------------------------------
+    // Mobile nav menu
+    // ---------------------------------------------------------------------------
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // ---------------------------------------------------------------------------
+    // Cart toast
+    // ---------------------------------------------------------------------------
+    let toastTimer = null;
+
+    function showToast(productName) {
+      const toast = document.getElementById('cart-toast');
+      const msg = document.getElementById('cart-toast-msg');
+      msg.textContent = '\u201c' + productName + '\u201d added to bag';
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      toast.style.pointerEvents = 'auto';
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(16px)';
+        toast.style.pointerEvents = 'none';
+      }, 3000);
+    }
+
+    // ---------------------------------------------------------------------------
+    // URL params: pre-filter from search
+    // ---------------------------------------------------------------------------
+    function applyURLParams() {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('q');
+      if (q) {
+        // Simple name search — filter PRODUCTS down then render
+        const lower = q.toLowerCase();
+        state.filtered = PRODUCTS.filter(p =>
+          p.name.toLowerCase().includes(lower) ||
+          p.material.toLowerCase().includes(lower) ||
+          (p.category && p.category.toLowerCase().includes(lower))
+        );
+        state.currentPage = 1;
+        renderGrid();
+        return true;
+      }
+      return false;
+    }
+
+    // ---------------------------------------------------------------------------
+    // Init
+    // ---------------------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSizeFilters();
+      renderColorFilters();
+
+      if (!applyURLParams()) {
+        applyFilters();
+      }
+    });
+  </script>
+</body>
+</html>

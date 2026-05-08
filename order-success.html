@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Order Confirmed | L'ÉTÉ</title>
+  <meta name="robots" content="noindex"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
+            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
+            "primary-fixed-dim": "#debfc2","on-secondary-container": "#3b6a6f",
+            "on-primary-container": "#765e61","inverse-primary": "#debfc2","tertiary": "#615e5b",
+            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "on-secondary": "#ffffff","surface-dim": "#dadada",
+            "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
+            "error-container": "#ffdad6","error": "#ba1a1a",
+            "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
+            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
+            "primary-fixed": "#fbdbde","on-tertiary": "#ffffff","on-primary": "#ffffff",
+            "tertiary-container": "#e6e1dd","outline": "#807475",
+            "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
+            "secondary-fixed-dim": "#9fcfd5","on-error": "#ffffff",
+            "surface-container": "#eeeeee","inverse-surface": "#2f3131"
+          },
+          "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+          "spacing": {"gutter": "24px","unit": "8px","section-gap": "120px","margin-desktop": "64px","container-max": "1280px","margin-mobile": "16px"},
+          "fontFamily": {"body-md": ["Inter"],"h2": ["Playfair Display"],"body-lg": ["Inter"],"label-caps": ["Inter"],"h3": ["Playfair Display"],"h1": ["Playfair Display"]},
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "h2": ["36px", {"lineHeight": "1.2","fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "1.6","fontWeight": "400"}],
+            "label-caps": ["12px", {"lineHeight": "1.4","letterSpacing": "0.1em","fontWeight": "600"}],
+            "h3": ["24px", {"lineHeight": "1.3","fontWeight": "400"}],
+            "h1": ["48px", {"lineHeight": "1.2","letterSpacing": "-0.01em","fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #f9f9f9;
+      color: #1a1c1c;
+      overflow-x: hidden;
+    }
+    @keyframes checkPop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      70%  { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .check-animate {
+      animation: checkPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up {
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .fade-up-1 { animation-delay: 0.2s; }
+    .fade-up-2 { animation-delay: 0.35s; }
+    .fade-up-3 { animation-delay: 0.5s; }
+    .fade-up-4 { animation-delay: 0.65s; }
+    .fade-up-5 { animation-delay: 0.8s; }
+  </style>
+</head>
+<body class="font-body-md text-on-surface">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
+    <div class="flex justify-between items-center px-4 md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
+      <div class="flex items-center gap-gutter">
+        <div class="hidden md:flex gap-8">
+          <a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="collections.html">Collections</a>
+        </div>
+      </div>
+      <a href="index.html" class="font-h2 text-h3 tracking-widest text-primary">L'ÉTÉ</a>
+      <div class="flex items-center gap-gutter">
+        <a href="cart.html" class="relative cursor-pointer active:scale-95 transition-transform text-primary">
+          <span class="material-symbols-outlined">shopping_bag</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="pt-20 min-h-screen flex items-center justify-center px-4 py-16">
+    <div class="max-w-lg w-full bg-white rounded-xl shadow-[0_8px_40px_rgba(112,88,91,0.12)] p-10 md:p-14 text-center">
+
+      <!-- Checkmark Icon -->
+      <div class="flex justify-center mb-8">
+        <div class="check-animate w-24 h-24 rounded-full bg-secondary-container flex items-center justify-center">
+          <span
+            class="material-symbols-outlined text-secondary"
+            style="font-size: 52px; font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;"
+          >check_circle</span>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <h2 class="font-h2 text-h2 text-primary mb-3 fade-up fade-up-1">Order Confirmed!</h2>
+
+      <!-- Sub-text -->
+      <p class="font-body-lg text-on-surface-variant mb-8 fade-up fade-up-2">Thank you for your order.</p>
+
+      <!-- Divider -->
+      <div class="border-t border-outline-variant mb-8 fade-up fade-up-2"></div>
+
+      <!-- Order ID -->
+      <div class="bg-surface-container-low rounded-lg px-6 py-5 mb-6 fade-up fade-up-3">
+        <p class="font-label-caps text-on-surface-variant mb-2">Order ID</p>
+        <p id="order-id-display" class="font-h2 text-h3 text-primary tracking-wide break-all">—</p>
+      </div>
+
+      <!-- Confirmation email notice -->
+      <p class="font-body-md text-sm text-on-surface-variant mb-10 fade-up fade-up-4">
+        <span class="material-symbols-outlined text-secondary align-middle mr-1 text-base" style="font-variation-settings:'FILL' 1">mail</span>
+        A confirmation email has been sent to your inbox.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 fade-up fade-up-5">
+        <a
+          href="collections.html"
+          class="flex-1 py-4 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-[0.98] transition-all duration-200 text-center text-sm"
+        >
+          Continue Shopping
+        </a>
+        <a
+          href="index.html"
+          class="flex-1 py-4 border border-primary text-primary font-label-caps rounded-lg hover:bg-primary-container active:scale-[0.98] transition-all duration-200 text-center text-sm"
+        >
+          Back to Home
+        </a>
+      </div>
+
+      <!-- Brand footer line -->
+      <p class="mt-10 font-label-caps text-[10px] text-outline tracking-widest">L'ÉTÉ SUMMER COLLECTIONS</p>
+    </div>
+  </main>
+
+  <script src="js/cart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('id');
+      const display = document.getElementById('order-id-display');
+
+      if (orderId && orderId !== 'unknown') {
+        display.textContent = decodeURIComponent(orderId);
+      } else {
+        display.textContent = 'N/A';
+      }
+    });
+  </script>
+
+</body>
+</html>

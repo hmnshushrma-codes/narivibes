@@ -168,6 +168,15 @@
         color: #1a1c1c;
         overflow-x: hidden;
       }
+      @media (max-width: 639px) {
+        #email-input-row {
+          flex-direction: column !important;
+        }
+        #send-otp-btn {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+      }
       .step-connector {
         height: 1px;
         flex: 1;
@@ -328,7 +337,7 @@
                 for="email-input"
                 >Email Address</label
               >
-              <div class="flex flex-col sm:flex-row gap-3">
+              <div id="email-input-row" class="flex flex-col sm:flex-row gap-3">
                 <input
                   id="email-input"
                   type="email"

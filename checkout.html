@@ -47,7 +47,7 @@
         var el = document.getElementById("checkout-turnstile");
         if (!el || !window.turnstile) return;
         turnstile.render(el, {
-          sitekey: "0x4AAAAAADLlBDiM6IJpmlzK", 
+          sitekey: "0x4AAAAAADLlBDiM6IJpmlzK",
           theme: "light",
           size: "normal",
           callback: onTurnstileSuccess,
@@ -168,7 +168,10 @@
         color: #1a1c1c;
         overflow-x: hidden;
       }
+
+      /* MOBILE RESPONSIVE FIXES */
       @media (max-width: 639px) {
+        /* Email row stack */
         #email-input-row {
           flex-direction: column !important;
         }
@@ -176,7 +179,60 @@
           width: 100% !important;
           justify-content: center !important;
         }
+
+        /* OTP input + button stack */
+        #otp-section .flex.gap-3 {
+          flex-direction: column !important;
+        }
+        #verify-otp-btn {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+
+        /* Page title smaller */
+        h1.font-h1 {
+          font-size: 32px !important;
+          line-height: 1.2 !important;
+        }
+
+        /* Form section padding tighter */
+        .form-section {
+          padding: 20px !important;
+        }
+
+        /* Step labels smaller */
+        .step-label {
+          font-size: 9px !important;
+        }
+        .step-circle {
+          width: 32px !important;
+          height: 32px !important;
+        }
+
+        /* Order summary spacing tight */
+        aside .p-6 {
+          padding: 20px !important;
+        }
+
+        /* Main content padding */
+        main {
+          padding-left: 16px !important;
+          padding-right: 16px !important;
+          padding-top: 80px !important;
+          padding-bottom: 32px !important;
+        }
+
+        /* Promo input row */
+        .promo-row {
+          flex-wrap: wrap;
+        }
+
+        /* Order summary spacing from form on mobile */
+        aside {
+          margin-top: 24px;
+        }
       }
+
       .step-connector {
         height: 1px;
         flex: 1;
@@ -225,14 +281,21 @@
   </head>
   <body class="font-body-md text-on-surface">
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 border-b border-[#e6e1da]" style="background-color:#ffffff;">
-      <div class="relative flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+    <nav
+      class="fixed top-0 w-full z-50 border-b border-[#e6e1da]"
+      style="background-color: #ffffff"
+    >
+      <div
+        class="relative flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto"
+      >
         <div class="flex items-center gap-6">
           <a
             href="index.html"
             class="cursor-pointer text-[#666666] hover:text-[#141414] transition-colors"
           >
-            <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
+            <span class="material-symbols-outlined" style="font-size: 20px"
+              >arrow_back</span
+            >
           </a>
           <div class="hidden md:flex gap-10">
             <a
@@ -249,8 +312,13 @@
         >
         <div class="flex items-center gap-6">
           <a href="cart.html" class="cursor-pointer text-[#141414] relative">
-            <span class="material-symbols-outlined" style="font-size:20px;">shopping_bag</span>
-            <span class="cart-count-badge absolute -top-1 -right-1 bg-[#141414] text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+            <span class="material-symbols-outlined" style="font-size: 20px"
+              >shopping_bag</span
+            >
+            <span
+              class="cart-count-badge absolute -top-1 -right-1 bg-[#141414] text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden"
+              >0</span
+            >
           </a>
         </div>
       </div>
@@ -838,186 +906,208 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
-          // -------------------------------------------------------------------------
-          // Configuration
-          // -------------------------------------------------------------------------
-          const API_BASE = 'https://narivibe-worker.hmnshu26.workers.dev'; // TODO: update
-          const RAZORPAY_KEY = 'rzp_test_SSpbbZiVrSZLDs';
+      // -------------------------------------------------------------------------
+      // Configuration
+      // -------------------------------------------------------------------------
+      const API_BASE = "https://narivibe-worker.hmnshu26.workers.dev"; // TODO: update
+      const RAZORPAY_KEY = "rzp_test_SSpbbZiVrSZLDs";
       // File ke top pe ek baar define karo
-      const TURNSTILE_SITE_KEY = '0x4AAAAAADL1BDiM6IJpmlzK';
+      const TURNSTILE_SITE_KEY = "0x4AAAAAADL1BDiM6IJpmlzK";
 
-          // -------------------------------------------------------------------------
-          // State
-          // -------------------------------------------------------------------------
-          let currentStep = 1;
-          let verifiedEmail = null;
-          let shippingData = null;
-          let razorpayOrderId = null;
-          let promoDiscount = 0;
-          let countdownTimer = null;
-          let saveDebounce = null;
+      // -------------------------------------------------------------------------
+      // State
+      // -------------------------------------------------------------------------
+      let currentStep = 1;
+      let verifiedEmail = null;
+      let shippingData = null;
+      let razorpayOrderId = null;
+      let promoDiscount = 0;
+      let countdownTimer = null;
+      let saveDebounce = null;
 
-          const CHECKOUT_KEY = 'lete_checkout_session';
+      const CHECKOUT_KEY = "lete_checkout_session";
 
-          // -------------------------------------------------------------------------
-          // localStorage persistence
-          // -------------------------------------------------------------------------
-          function saveCheckoutState() {
-            clearTimeout(saveDebounce);
-            saveDebounce = setTimeout(() => {
-              try {
-                const state = {
-                  step: currentStep,
-                  email: document.getElementById('email-input').value.trim(),
-                  emailVerified: !!verifiedEmail,
-                  verifiedEmail: verifiedEmail,
-                  shippingData: shippingData,
-                  // also capture live form values in case shippingData hasn't been set yet
-                  shippingForm: {
-                    name:     document.getElementById('full-name').value.trim(),
-                    phone:    document.getElementById('phone').value.trim(),
-                    address1: document.getElementById('address1').value.trim(),
-                    address2: document.getElementById('address2').value.trim(),
-                    city:     document.getElementById('city').value.trim(),
-                    state:    document.getElementById('state').value,
-                    pincode:  document.getElementById('pincode').value.trim()
-                  },
-                  promoCode:     document.getElementById('promo-input').value.trim(),
-                  promoDiscount: promoDiscount
-                };
-                localStorage.setItem(CHECKOUT_KEY, JSON.stringify(state));
-              } catch (e) { /* storage might be full or unavailable */ }
-            }, 300);
+      // -------------------------------------------------------------------------
+      // localStorage persistence
+      // -------------------------------------------------------------------------
+      function saveCheckoutState() {
+        clearTimeout(saveDebounce);
+        saveDebounce = setTimeout(() => {
+          try {
+            const state = {
+              step: currentStep,
+              email: document.getElementById("email-input").value.trim(),
+              emailVerified: !!verifiedEmail,
+              verifiedEmail: verifiedEmail,
+              shippingData: shippingData,
+              // also capture live form values in case shippingData hasn't been set yet
+              shippingForm: {
+                name: document.getElementById("full-name").value.trim(),
+                phone: document.getElementById("phone").value.trim(),
+                address1: document.getElementById("address1").value.trim(),
+                address2: document.getElementById("address2").value.trim(),
+                city: document.getElementById("city").value.trim(),
+                state: document.getElementById("state").value,
+                pincode: document.getElementById("pincode").value.trim(),
+              },
+              promoCode: document.getElementById("promo-input").value.trim(),
+              promoDiscount: promoDiscount,
+            };
+            localStorage.setItem(CHECKOUT_KEY, JSON.stringify(state));
+          } catch (e) {
+            /* storage might be full or unavailable */
+          }
+        }, 300);
+      }
+
+      function restoreCheckoutState() {
+        try {
+          const raw = localStorage.getItem(CHECKOUT_KEY);
+          if (!raw) return;
+          const state = JSON.parse(raw);
+
+          // Restore email field
+          if (state.email) {
+            document.getElementById("email-input").value = state.email;
           }
 
-          function restoreCheckoutState() {
-            try {
-              const raw = localStorage.getItem(CHECKOUT_KEY);
-              if (!raw) return;
-              const state = JSON.parse(raw);
-
-              // Restore email field
-              if (state.email) {
-                document.getElementById('email-input').value = state.email;
-              }
-
-              // Restore promo
-              if (state.promoCode) {
-                document.getElementById('promo-input').value = state.promoCode;
-              }
-              if (state.promoDiscount) {
-                promoDiscount = state.promoDiscount;
-              }
-
-              // Restore shipping form
-              const sf = state.shippingForm || state.shippingData || {};
-              if (sf.name)     document.getElementById('full-name').value  = sf.name;
-              if (sf.phone)    document.getElementById('phone').value      = sf.phone;
-              if (sf.address1) document.getElementById('address1').value   = sf.address1;
-              if (sf.address2) document.getElementById('address2').value   = sf.address2;
-              if (sf.city)     document.getElementById('city').value       = sf.city;
-              if (sf.state)    document.getElementById('state').value      = sf.state;
-              if (sf.pincode)  document.getElementById('pincode').value    = sf.pincode;
-
-              if (state.shippingData) {
-                shippingData = state.shippingData;
-              }
-
-              // Restore verified email & step
-              if (state.emailVerified && state.verifiedEmail) {
-                verifiedEmail = state.verifiedEmail;
-                document.getElementById('email-input').disabled = true;
-                document.getElementById('otp-section').classList.add('hidden');
-                document.getElementById('email-verified-state').classList.remove('hidden');
-                document.getElementById('verified-email-display').textContent = '✓ ' + verifiedEmail + ' verified';
-              }
-
-              // Jump to saved step (but only if email was verified for step 2+)
-              if (state.step && state.step > 1 && state.emailVerified) {
-                goToStep(state.step);
-              }
-            } catch (e) {
-              console.warn('Could not restore checkout state:', e);
-            }
+          // Restore promo
+          if (state.promoCode) {
+            document.getElementById("promo-input").value = state.promoCode;
+          }
+          if (state.promoDiscount) {
+            promoDiscount = state.promoDiscount;
           }
 
-          function clearCheckoutState() {
-            localStorage.removeItem(CHECKOUT_KEY);
+          // Restore shipping form
+          const sf = state.shippingForm || state.shippingData || {};
+          if (sf.name) document.getElementById("full-name").value = sf.name;
+          if (sf.phone) document.getElementById("phone").value = sf.phone;
+          if (sf.address1)
+            document.getElementById("address1").value = sf.address1;
+          if (sf.address2)
+            document.getElementById("address2").value = sf.address2;
+          if (sf.city) document.getElementById("city").value = sf.city;
+          if (sf.state) document.getElementById("state").value = sf.state;
+          if (sf.pincode) document.getElementById("pincode").value = sf.pincode;
+
+          if (state.shippingData) {
+            shippingData = state.shippingData;
           }
 
-          // -------------------------------------------------------------------------
-          // Initialise on load
-          // -------------------------------------------------------------------------
-          document.addEventListener('DOMContentLoaded', () => {
-            restoreCheckoutState();
-            renderOrderSummary();
-            // If step wasn't restored above, show step 1 UI
-            if (currentStep === 1) updateStepUI(1);
-
-            // Save state on every input/change in the form area
-            document.querySelectorAll('input, select').forEach(el => {
-              el.addEventListener('input', saveCheckoutState);
-              el.addEventListener('change', saveCheckoutState);
-            });
-
-          });
-
-          // -------------------------------------------------------------------------
-          // Step UI
-          // -------------------------------------------------------------------------
-          function goToStep(n) {
-            currentStep = n;
-            updateStepUI(n);
-            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('step-' + n).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+          // Restore verified email & step
+          if (state.emailVerified && state.verifiedEmail) {
+            verifiedEmail = state.verifiedEmail;
+            document.getElementById("email-input").disabled = true;
+            document.getElementById("otp-section").classList.add("hidden");
+            document
+              .getElementById("email-verified-state")
+              .classList.remove("hidden");
+            document.getElementById("verified-email-display").textContent =
+              "✓ " + verifiedEmail + " verified";
           }
 
-          function updateStepUI(activeStep) {
-            [1, 2, 3].forEach(n => {
-              const circle = document.querySelector('.step-circle[data-step="' + n + '"]');
-              const label = document.querySelector('.step-label[data-step="' + n + '"]');
-
-              if (n < activeStep) {
-                circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-secondary text-on-secondary step-circle';
-                circle.innerHTML = '<span class="material-symbols-outlined text-base" style="font-variation-settings:\'FILL\' 1">check</span>';
-                label.className = 'font-label-caps text-[10px] text-secondary step-label';
-              } else if (n === activeStep) {
-                circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-primary text-on-primary step-circle';
-                circle.innerHTML = n;
-                label.className = 'font-label-caps text-[10px] text-primary step-label';
-              } else {
-                circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle';
-                circle.innerHTML = n;
-                label.className = 'font-label-caps text-[10px] text-on-surface-variant step-label';
-              }
-            });
-
-            const conn12 = document.getElementById('connector-1-2');
-            const conn23 = document.getElementById('connector-2-3');
-            conn12.classList.toggle('active', activeStep >= 2);
-            conn23.classList.toggle('active', activeStep >= 3);
+          // Jump to saved step (but only if email was verified for step 2+)
+          if (state.step && state.step > 1 && state.emailVerified) {
+            goToStep(state.step);
           }
+        } catch (e) {
+          console.warn("Could not restore checkout state:", e);
+        }
+      }
 
-          // -------------------------------------------------------------------------
-          // Order Summary Render
-          // -------------------------------------------------------------------------
-          function renderOrderSummary() {
-            const items = Cart.getItems();
-            const container = document.getElementById('summary-items');
-            const emptyMsg = document.getElementById('summary-empty');
+      function clearCheckoutState() {
+        localStorage.removeItem(CHECKOUT_KEY);
+      }
 
-            if (items.length === 0) {
-              container.innerHTML = '';
-              emptyMsg.classList.remove('hidden');
-            } else {
-              emptyMsg.classList.add('hidden');
-              container.innerHTML = items.map(item => `
+      // -------------------------------------------------------------------------
+      // Initialise on load
+      // -------------------------------------------------------------------------
+      document.addEventListener("DOMContentLoaded", () => {
+        restoreCheckoutState();
+        renderOrderSummary();
+        // If step wasn't restored above, show step 1 UI
+        if (currentStep === 1) updateStepUI(1);
+
+        // Save state on every input/change in the form area
+        document.querySelectorAll("input, select").forEach((el) => {
+          el.addEventListener("input", saveCheckoutState);
+          el.addEventListener("change", saveCheckoutState);
+        });
+      });
+
+      // -------------------------------------------------------------------------
+      // Step UI
+      // -------------------------------------------------------------------------
+      function goToStep(n) {
+        currentStep = n;
+        updateStepUI(n);
+        document
+          .querySelectorAll(".form-section")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById("step-" + n).classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function updateStepUI(activeStep) {
+        [1, 2, 3].forEach((n) => {
+          const circle = document.querySelector(
+            '.step-circle[data-step="' + n + '"]',
+          );
+          const label = document.querySelector(
+            '.step-label[data-step="' + n + '"]',
+          );
+
+          if (n < activeStep) {
+            circle.className =
+              "w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-secondary text-on-secondary step-circle";
+            circle.innerHTML =
+              '<span class="material-symbols-outlined text-base" style="font-variation-settings:\'FILL\' 1">check</span>';
+            label.className =
+              "font-label-caps text-[10px] text-secondary step-label";
+          } else if (n === activeStep) {
+            circle.className =
+              "w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-primary text-on-primary step-circle";
+            circle.innerHTML = n;
+            label.className =
+              "font-label-caps text-[10px] text-primary step-label";
+          } else {
+            circle.className =
+              "w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle";
+            circle.innerHTML = n;
+            label.className =
+              "font-label-caps text-[10px] text-on-surface-variant step-label";
+          }
+        });
+
+        const conn12 = document.getElementById("connector-1-2");
+        const conn23 = document.getElementById("connector-2-3");
+        conn12.classList.toggle("active", activeStep >= 2);
+        conn23.classList.toggle("active", activeStep >= 3);
+      }
+
+      // -------------------------------------------------------------------------
+      // Order Summary Render
+      // -------------------------------------------------------------------------
+      function renderOrderSummary() {
+        const items = Cart.getItems();
+        const container = document.getElementById("summary-items");
+        const emptyMsg = document.getElementById("summary-empty");
+
+        if (items.length === 0) {
+          container.innerHTML = "";
+          emptyMsg.classList.remove("hidden");
+        } else {
+          emptyMsg.classList.add("hidden");
+          container.innerHTML = items
+            .map(
+              (item) => `
                 <div class="flex gap-3 items-start">
                   <div class="w-16 h-20 rounded bg-surface-container overflow-hidden flex-shrink-0">
-                    ${item.image
-                      ? `<img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover"/>`
-                      : `<div class="w-full h-full bg-primary-container/40"></div>`
+                    ${
+                      item.image
+                        ? `<img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover"/>`
+                        : `<div class="w-full h-full bg-primary-container/40"></div>`
                     }
                   </div>
                   <div class="flex-1 min-w-0">
@@ -1027,415 +1117,490 @@
                   </div>
                   <span class="font-body-md text-sm font-semibold text-on-surface whitespace-nowrap">${Cart.formatPrice(item.price * item.qty)}</span>
                 </div>
-              `).join('');
-            }
+              `,
+            )
+            .join("");
+        }
 
-            const subtotal = Cart.getSubtotal();
-            const shipping = Cart.getShipping();
-            const discount = promoDiscount;
-            const total = subtotal + shipping - discount;
+        const subtotal = Cart.getSubtotal();
+        const shipping = Cart.getShipping();
+        const discount = promoDiscount;
+        const total = subtotal + shipping - discount;
 
-            document.getElementById('summary-subtotal').textContent = Cart.formatPrice(subtotal);
-            document.getElementById('summary-shipping').textContent = Cart.getShippingDisplay();
-            document.getElementById('summary-total').textContent = Cart.formatPrice(total);
+        document.getElementById("summary-subtotal").textContent =
+          Cart.formatPrice(subtotal);
+        document.getElementById("summary-shipping").textContent =
+          Cart.getShippingDisplay();
+        document.getElementById("summary-total").textContent =
+          Cart.formatPrice(total);
 
-            if (discount > 0) {
-              document.getElementById('discount-row').classList.remove('hidden');
-              document.getElementById('summary-discount').textContent = '−' + Cart.formatPrice(discount);
-            } else {
-              document.getElementById('discount-row').classList.add('hidden');
-            }
+        if (discount > 0) {
+          document.getElementById("discount-row").classList.remove("hidden");
+          document.getElementById("summary-discount").textContent =
+            "−" + Cart.formatPrice(discount);
+        } else {
+          document.getElementById("discount-row").classList.add("hidden");
+        }
 
-            if (subtotal < 5000) {
-              document.getElementById('free-shipping-notice').classList.remove('hidden');
-            } else {
-              document.getElementById('free-shipping-notice').classList.add('hidden');
-            }
+        if (subtotal < 5000) {
+          document
+            .getElementById("free-shipping-notice")
+            .classList.remove("hidden");
+        } else {
+          document
+            .getElementById("free-shipping-notice")
+            .classList.add("hidden");
+        }
 
-            // Payment step totals
-            document.getElementById('payment-subtotal').textContent = Cart.formatPrice(subtotal);
-            document.getElementById('payment-shipping').textContent = Cart.getShippingDisplay();
-            document.getElementById('payment-total').textContent = Cart.formatPrice(total);
-            document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
+        // Payment step totals
+        document.getElementById("payment-subtotal").textContent =
+          Cart.formatPrice(subtotal);
+        document.getElementById("payment-shipping").textContent =
+          Cart.getShippingDisplay();
+        document.getElementById("payment-total").textContent =
+          Cart.formatPrice(total);
+        document.getElementById("pay-btn-label").textContent =
+          "Pay " + Cart.formatPrice(total);
+      }
+
+      // -------------------------------------------------------------------------
+      // Step 1: OTP Flow
+      // -------------------------------------------------------------------------
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function showError(elId, msg) {
+        const el = document.getElementById(elId);
+        el.textContent = msg;
+        el.classList.remove("hidden");
+      }
+
+      function hideError(elId) {
+        document.getElementById(elId).classList.add("hidden");
+      }
+
+      function setLoading(btnId, labelId, spinnerId, arrowId, loading) {
+        document.getElementById(btnId).disabled = loading;
+        document.getElementById(labelId).style.opacity = loading ? "0.6" : "1";
+        document.getElementById(spinnerId).classList.toggle("hidden", !loading);
+        if (arrowId)
+          document.getElementById(arrowId).classList.toggle("hidden", loading);
+      }
+
+      async function handleSendOTP() {
+        const email = document.getElementById("email-input").value.trim();
+        hideError("email-error");
+
+        if (!validateEmail(email)) {
+          showError("email-error", "Please enter a valid email address.");
+          return;
+        }
+
+        // Require Turnstile verification
+        if (!window._tsToken) {
+          if (window._tsFailed) {
+            showError(
+              "email-error",
+              "Security check failed to load. Please refresh the page and try again.",
+            );
+          } else {
+            showError(
+              "email-error",
+              "Please complete the security check above.",
+            );
           }
+          return;
+        }
 
-          // -------------------------------------------------------------------------
-          // Step 1: OTP Flow
-          // -------------------------------------------------------------------------
-          function validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-          }
+        setLoading(
+          "send-otp-btn",
+          "send-otp-label",
+          "send-otp-spinner",
+          null,
+          true,
+        );
 
-          function showError(elId, msg) {
-            const el = document.getElementById(elId);
-            el.textContent = msg;
-            el.classList.remove('hidden');
-          }
+        try {
+          await sendOTP(email);
+          // Reset Turnstile after use so resend requires a new solve
+          if (window.turnstile) window.turnstile.reset("#checkout-turnstile");
+          window._tsToken = null;
+          document.getElementById("email-input").disabled = true;
+          document.getElementById("otp-section").classList.remove("hidden");
+          document.getElementById("otp-email-display").textContent = email;
+          document.getElementById("otp-input").focus();
+          startResendCountdown();
+        } catch (err) {
+          showError(
+            "email-error",
+            err.message || "Failed to send OTP. Please try again.",
+          );
+        } finally {
+          setLoading(
+            "send-otp-btn",
+            "send-otp-label",
+            "send-otp-spinner",
+            null,
+            false,
+          );
+        }
+      }
 
-          function hideError(elId) {
-            document.getElementById(elId).classList.add('hidden');
-          }
+      async function sendOTP(email) {
+        const res = await fetch(API_BASE + "/api/otp/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            turnstileToken: window._tsToken || "",
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to send OTP");
+        return data;
+      }
 
-          function setLoading(btnId, labelId, spinnerId, arrowId, loading) {
-            document.getElementById(btnId).disabled = loading;
-            document.getElementById(labelId).style.opacity = loading ? '0.6' : '1';
-            document.getElementById(spinnerId).classList.toggle('hidden', !loading);
-            if (arrowId) document.getElementById(arrowId).classList.toggle('hidden', loading);
-          }
+      async function handleVerifyOTP() {
+        const email = document.getElementById("email-input").value.trim();
+        const otp = document.getElementById("otp-input").value.trim();
+        hideError("otp-error");
 
-          async function handleSendOTP() {
-            const email = document.getElementById('email-input').value.trim();
-            hideError('email-error');
+        if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+          showError("otp-error", "Please enter the 6-digit code.");
+          return;
+        }
 
-            if (!validateEmail(email)) {
-              showError('email-error', 'Please enter a valid email address.');
-              return;
-            }
+        setLoading(
+          "verify-otp-btn",
+          "verify-otp-label",
+          "verify-otp-spinner",
+          null,
+          true,
+        );
 
-            // Require Turnstile verification
-            if (!window._tsToken) {
-              if (window._tsFailed) {
-                showError('email-error', 'Security check failed to load. Please refresh the page and try again.');
-              } else {
-                showError('email-error', 'Please complete the security check above.');
-              }
-              return;
-            }
+        try {
+          await verifyOTP(email, otp);
 
-            setLoading('send-otp-btn', 'send-otp-label', 'send-otp-spinner', null, true);
+          // Show verified state on step 1
+          verifiedEmail = email;
+          document.getElementById("otp-section").classList.add("hidden");
+          document
+            .getElementById("email-verified-state")
+            .classList.remove("hidden");
+          document.getElementById("verified-email-display").textContent =
+            "✓ " + email + " verified";
+          clearInterval(countdownTimer);
 
-            try {
-              await sendOTP(email);
-              // Reset Turnstile after use so resend requires a new solve
-              if (window.turnstile) window.turnstile.reset('#checkout-turnstile');
-              window._tsToken = null;
-              document.getElementById('email-input').disabled = true;
-              document.getElementById('otp-section').classList.remove('hidden');
-              document.getElementById('otp-email-display').textContent = email;
-              document.getElementById('otp-input').focus();
-              startResendCountdown();
-            } catch (err) {
-              showError('email-error', err.message || 'Failed to send OTP. Please try again.');
-            } finally {
-              setLoading('send-otp-btn', 'send-otp-label', 'send-otp-spinner', null, false);
-            }
-          }
+          // Move to step 2 with a short delay
+          setTimeout(() => goToStep(2), 600);
+        } catch (err) {
+          showError("otp-error", err.message || "Invalid or expired OTP.");
+        } finally {
+          setLoading(
+            "verify-otp-btn",
+            "verify-otp-label",
+            "verify-otp-spinner",
+            null,
+            false,
+          );
+        }
+      }
 
-          async function sendOTP(email) {
-            const res = await fetch(API_BASE + '/api/otp/send', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, turnstileToken: window._tsToken || '' })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
-            return data;
-          }
+      async function verifyOTP(email, otp) {
+        const res = await fetch(API_BASE + "/api/otp/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Verification failed");
+        return data;
+      }
 
-          async function handleVerifyOTP() {
-            const email = document.getElementById('email-input').value.trim();
-            const otp = document.getElementById('otp-input').value.trim();
-            hideError('otp-error');
+      function handleResendOTP() {
+        document.getElementById("otp-input").value = "";
+        hideError("otp-error");
+        document.getElementById("email-input").disabled = false;
+        document.getElementById("resend-btn").classList.add("hidden");
+        document.getElementById("resend-countdown").classList.add("hidden");
+        // Hide OTP section so user re-solves Turnstile before sending again
+        document.getElementById("otp-section").classList.add("hidden");
+        window._tsToken = null;
+        window._tsFailed = false;
+        var tsEl = document.getElementById("checkout-turnstile");
+        if (tsEl && window.turnstile) turnstile.reset(tsEl);
+      }
 
-            if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-              showError('otp-error', 'Please enter the 6-digit code.');
-              return;
-            }
+      function startResendCountdown() {
+        let seconds = 30;
+        document.getElementById("resend-btn").classList.add("hidden");
+        document.getElementById("resend-countdown").classList.remove("hidden");
+        document.getElementById("countdown-num").textContent = seconds;
 
-            setLoading('verify-otp-btn', 'verify-otp-label', 'verify-otp-spinner', null, true);
-
-            try {
-              await verifyOTP(email, otp);
-
-              // Show verified state on step 1
-              verifiedEmail = email;
-              document.getElementById('otp-section').classList.add('hidden');
-              document.getElementById('email-verified-state').classList.remove('hidden');
-              document.getElementById('verified-email-display').textContent = '✓ ' + email + ' verified';
-              clearInterval(countdownTimer);
-
-              // Move to step 2 with a short delay
-              setTimeout(() => goToStep(2), 600);
-            } catch (err) {
-              showError('otp-error', err.message || 'Invalid or expired OTP.');
-            } finally {
-              setLoading('verify-otp-btn', 'verify-otp-label', 'verify-otp-spinner', null, false);
-            }
-          }
-
-          async function verifyOTP(email, otp) {
-            const res = await fetch(API_BASE + '/api/otp/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, otp })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Verification failed');
-            return data;
-          }
-
-          function handleResendOTP() {
-            document.getElementById('otp-input').value = '';
-            hideError('otp-error');
-            document.getElementById('email-input').disabled = false;
-            document.getElementById('resend-btn').classList.add('hidden');
-            document.getElementById('resend-countdown').classList.add('hidden');
-            // Hide OTP section so user re-solves Turnstile before sending again
-            document.getElementById('otp-section').classList.add('hidden');
-            window._tsToken = null;
-            window._tsFailed = false;
-            var tsEl = document.getElementById('checkout-turnstile');
-            if (tsEl && window.turnstile) turnstile.reset(tsEl);
-          }
-
-          function startResendCountdown() {
-            let seconds = 30;
-            document.getElementById('resend-btn').classList.add('hidden');
-            document.getElementById('resend-countdown').classList.remove('hidden');
-            document.getElementById('countdown-num').textContent = seconds;
-
+        clearInterval(countdownTimer);
+        countdownTimer = setInterval(() => {
+          seconds--;
+          document.getElementById("countdown-num").textContent = seconds;
+          if (seconds <= 0) {
             clearInterval(countdownTimer);
-            countdownTimer = setInterval(() => {
-              seconds--;
-              document.getElementById('countdown-num').textContent = seconds;
-              if (seconds <= 0) {
-                clearInterval(countdownTimer);
-                document.getElementById('resend-countdown').classList.add('hidden');
-                document.getElementById('resend-btn').classList.remove('hidden');
-              }
-            }, 1000);
+            document.getElementById("resend-countdown").classList.add("hidden");
+            document.getElementById("resend-btn").classList.remove("hidden");
           }
+        }, 1000);
+      }
 
-          // -------------------------------------------------------------------------
-          // Step 2: Shipping
-          // -------------------------------------------------------------------------
-          function handleShippingSubmit(e) {
-            e.preventDefault();
-            const errors = validateShippingForm();
-            if (errors.length > 0) return;
+      // -------------------------------------------------------------------------
+      // Step 2: Shipping
+      // -------------------------------------------------------------------------
+      function handleShippingSubmit(e) {
+        e.preventDefault();
+        const errors = validateShippingForm();
+        if (errors.length > 0) return;
 
-            shippingData = {
-              name: document.getElementById('full-name').value.trim(),
-              phone: document.getElementById('phone').value.trim(),
-              address1: document.getElementById('address1').value.trim(),
-              address2: document.getElementById('address2').value.trim(),
-              city: document.getElementById('city').value.trim(),
-              state: document.getElementById('state').value,
-              pincode: document.getElementById('pincode').value.trim()
-            };
+        shippingData = {
+          name: document.getElementById("full-name").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          address1: document.getElementById("address1").value.trim(),
+          address2: document.getElementById("address2").value.trim(),
+          city: document.getElementById("city").value.trim(),
+          state: document.getElementById("state").value,
+          pincode: document.getElementById("pincode").value.trim(),
+        };
 
-            goToStep(3);
+        goToStep(3);
+      }
+
+      function validateShippingForm() {
+        const errors = [];
+        const fields = [
+          { id: "full-name", errId: "err-name", label: "Full name", min: 2 },
+          { id: "address1", errId: "err-address1", label: "Address", min: 5 },
+          { id: "city", errId: "err-city", label: "City", min: 2 },
+        ];
+
+        fields.forEach((f) => {
+          const val = document.getElementById(f.id).value.trim();
+          if (!val || val.length < f.min) {
+            showError(f.errId, f.label + " is required.");
+            errors.push(f.id);
+          } else {
+            hideError(f.errId);
           }
+        });
 
-          function validateShippingForm() {
-            const errors = [];
-            const fields = [
-              { id: 'full-name', errId: 'err-name', label: 'Full name', min: 2 },
-              { id: 'address1', errId: 'err-address1', label: 'Address', min: 5 },
-              { id: 'city', errId: 'err-city', label: 'City', min: 2 }
-            ];
+        const phone = document.getElementById("phone").value.trim();
+        if (!/^\d{10}$/.test(phone)) {
+          showError("err-phone", "Please enter a valid 10-digit phone number.");
+          errors.push("phone");
+        } else {
+          hideError("err-phone");
+        }
 
-            fields.forEach(f => {
-              const val = document.getElementById(f.id).value.trim();
-              if (!val || val.length < f.min) {
-                showError(f.errId, f.label + ' is required.');
-                errors.push(f.id);
-              } else {
-                hideError(f.errId);
-              }
-            });
+        const pincode = document.getElementById("pincode").value.trim();
+        if (!/^\d{6}$/.test(pincode)) {
+          showError("err-pincode", "Please enter a valid 6-digit pincode.");
+          errors.push("pincode");
+        } else {
+          hideError("err-pincode");
+        }
 
-            const phone = document.getElementById('phone').value.trim();
-            if (!/^\d{10}$/.test(phone)) {
-              showError('err-phone', 'Please enter a valid 10-digit phone number.');
-              errors.push('phone');
-            } else {
-              hideError('err-phone');
-            }
+        const state = document.getElementById("state").value;
+        if (!state) {
+          showError("err-state", "Please select your state.");
+          errors.push("state");
+        } else {
+          hideError("err-state");
+        }
 
-            const pincode = document.getElementById('pincode').value.trim();
-            if (!/^\d{6}$/.test(pincode)) {
-              showError('err-pincode', 'Please enter a valid 6-digit pincode.');
-              errors.push('pincode');
-            } else {
-              hideError('err-pincode');
-            }
+        return errors;
+      }
 
-            const state = document.getElementById('state').value;
-            if (!state) {
-              showError('err-state', 'Please select your state.');
-              errors.push('state');
-            } else {
-              hideError('err-state');
-            }
+      // -------------------------------------------------------------------------
+      // Step 3: Payment
+      // -------------------------------------------------------------------------
+      async function handlePayment() {
+        const items = Cart.getItems();
+        if (items.length === 0) {
+          alert("Your cart is empty.");
+          return;
+        }
 
-            return errors;
-          }
+        const subtotal = Cart.getSubtotal();
+        const shipping = Cart.getShipping();
+        const total = subtotal + shipping - promoDiscount;
+        const amountPaise = total * 100; // Convert to paise
 
-          // -------------------------------------------------------------------------
-          // Step 3: Payment
-          // -------------------------------------------------------------------------
-          async function handlePayment() {
-            const items = Cart.getItems();
-            if (items.length === 0) {
-              alert('Your cart is empty.');
-              return;
-            }
+        setLoading("pay-btn", "pay-btn-label", "pay-spinner", null, true);
 
-            const subtotal = Cart.getSubtotal();
-            const shipping = Cart.getShipping();
-            const total = subtotal + shipping - promoDiscount;
-            const amountPaise = total * 100; // Convert to paise
+        try {
+          const orderData = await createRazorpayOrder(amountPaise);
+          razorpayOrderId = orderData.razorpay_order_id;
+          openRazorpay(razorpayOrderId, amountPaise);
+        } catch (err) {
+          alert(err.message || "Failed to initiate payment. Please try again.");
+        } finally {
+          setLoading("pay-btn", "pay-btn-label", "pay-spinner", null, false);
+          document.getElementById("pay-btn-label").textContent =
+            "Pay " + Cart.formatPrice(total);
+        }
+      }
 
-            setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, true);
+      async function createRazorpayOrder(amountPaise) {
+        const res = await fetch(API_BASE + "/api/payment/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: amountPaise, currency: "INR" }),
+        });
+        const data = await res.json();
+        if (!res.ok)
+          throw new Error(data.error || "Could not create payment order.");
+        return data;
+      }
 
-            try {
-              const orderData = await createRazorpayOrder(amountPaise);
-              razorpayOrderId = orderData.razorpay_order_id;
-              openRazorpay(razorpayOrderId, amountPaise);
-            } catch (err) {
-              alert(err.message || 'Failed to initiate payment. Please try again.');
-            } finally {
-              setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, false);
-              document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
-            }
-          }
+      function openRazorpay(orderId, amount) {
+        const options = {
+          key: RAZORPAY_KEY,
+          amount: amount,
+          currency: "INR",
+          name: "NariVibes",
+          description: "Summer Collection",
+          image: "",
+          order_id: orderId,
+          handler: async function (response) {
+            await onPaymentSuccess(response);
+          },
+          prefill: {
+            email: verifiedEmail || "",
+            name: shippingData ? shippingData.name : "",
+            contact: shippingData ? "+91" + shippingData.phone : "",
+          },
+          theme: { color: "#70585b" },
+          modal: {
+            ondismiss: function () {
+              setLoading(
+                "pay-btn",
+                "pay-btn-label",
+                "pay-spinner",
+                null,
+                false,
+              );
+              const total =
+                Cart.getSubtotal() + Cart.getShipping() - promoDiscount;
+              document.getElementById("pay-btn-label").textContent =
+                "Pay " + Cart.formatPrice(total);
+            },
+          },
+        };
+        const rzp = new Razorpay(options);
+        rzp.on("payment.failed", function (response) {
+          alert(
+            "Payment failed: " +
+              (response.error.description ||
+                "Unknown error. Please try again."),
+          );
+        });
+        rzp.open();
+      }
 
-          async function createRazorpayOrder(amountPaise) {
-            const res = await fetch(API_BASE + '/api/payment/create', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ amount: amountPaise, currency: 'INR' })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Could not create payment order.');
-            return data;
-          }
+      async function onPaymentSuccess(response) {
+        try {
+          // Verify signature
+          await fetch(API_BASE + "/api/payment/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          });
 
-          function openRazorpay(orderId, amount) {
-            const options = {
-              key: RAZORPAY_KEY,
-              amount: amount,
-              currency: 'INR',
-              name: "NariVibes",
-              description: 'Summer Collection',
-              image: '',
-              order_id: orderId,
-              handler: async function(response) {
-                await onPaymentSuccess(response);
+          // Save order to DB
+          const subtotal = Cart.getSubtotal();
+          const shipping = Cart.getShipping();
+          const total = subtotal + shipping - promoDiscount;
+
+          const orderRes = await fetch(API_BASE + "/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              customer_email: verifiedEmail,
+              customer_name: shippingData.name,
+              customer_phone: "+91" + shippingData.phone,
+              shipping_address: {
+                line1: shippingData.address1,
+                line2: shippingData.address2,
+                city: shippingData.city,
+                state: shippingData.state,
+                pincode: shippingData.pincode,
               },
-              prefill: {
-                email: verifiedEmail || '',
-                name: shippingData ? shippingData.name : '',
-                contact: shippingData ? '+91' + shippingData.phone : ''
-              },
-              theme: { color: '#70585b' },
-              modal: {
-                ondismiss: function() {
-                  setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, false);
-                  const total = Cart.getSubtotal() + Cart.getShipping() - promoDiscount;
-                  document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
-                }
-              }
-            };
-            const rzp = new Razorpay(options);
-            rzp.on('payment.failed', function(response) {
-              alert('Payment failed: ' + (response.error.description || 'Unknown error. Please try again.'));
-            });
-            rzp.open();
-          }
+              items: Cart.getItems(),
+              subtotal: subtotal * 100,
+              shipping: shipping * 100,
+              total: total * 100,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+            }),
+          });
 
-          async function onPaymentSuccess(response) {
-            try {
-              // Verify signature
-              await fetch(API_BASE + '/api/payment/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature
-                })
-              });
+          const orderData = await orderRes.json();
+          const orderId = orderData.id || orderData.order_id || "unknown";
 
-              // Save order to DB
-              const subtotal = Cart.getSubtotal();
-              const shipping = Cart.getShipping();
-              const total = subtotal + shipping - promoDiscount;
+          Cart.clear();
+          window.location.href =
+            "order-success.html?id=" + encodeURIComponent(orderId);
+        } catch (err) {
+          console.error("[Checkout] Order save error:", err);
+          // Payment was successful even if order-save had issues — still redirect
+          Cart.clear();
+          window.location.href = "order-success.html?id=confirmed";
+        }
+      }
 
-              const orderRes = await fetch(API_BASE + '/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  customer_email: verifiedEmail,
-                  customer_name: shippingData.name,
-                  customer_phone: '+91' + shippingData.phone,
-                  shipping_address: {
-                    line1: shippingData.address1,
-                    line2: shippingData.address2,
-                    city: shippingData.city,
-                    state: shippingData.state,
-                    pincode: shippingData.pincode
-                  },
-                  items: Cart.getItems(),
-                  subtotal: subtotal * 100,
-                  shipping: shipping * 100,
-                  total: total * 100,
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id
-                })
-              });
+      // -------------------------------------------------------------------------
+      // Promo Code
+      // -------------------------------------------------------------------------
+      const PROMO_CODES = {
+        SUMMER10: 0.1,
+        LETE15: 0.15,
+        WELCOME20: 0.2,
+      };
 
-              const orderData = await orderRes.json();
-              const orderId = orderData.id || orderData.order_id || 'unknown';
+      function applyPromo() {
+        const code = document
+          .getElementById("promo-input")
+          .value.trim()
+          .toUpperCase();
+        const msgEl = document.getElementById("promo-msg");
 
-              Cart.clear();
-              window.location.href = 'order-success.html?id=' + encodeURIComponent(orderId);
-            } catch (err) {
-              console.error('[Checkout] Order save error:', err);
-              // Payment was successful even if order-save had issues — still redirect
-              Cart.clear();
-              window.location.href = 'order-success.html?id=confirmed';
-            }
-          }
+        if (!code) {
+          msgEl.textContent = "Please enter a promo code.";
+          msgEl.className = "text-sm text-error mb-2";
+          msgEl.classList.remove("hidden");
+          return;
+        }
 
-          // -------------------------------------------------------------------------
-          // Promo Code
-          // -------------------------------------------------------------------------
-          const PROMO_CODES = {
-            'SUMMER10': 0.10,
-            'LETE15': 0.15,
-            'WELCOME20': 0.20
-          };
-
-          function applyPromo() {
-            const code = document.getElementById('promo-input').value.trim().toUpperCase();
-            const msgEl = document.getElementById('promo-msg');
-
-            if (!code) {
-              msgEl.textContent = 'Please enter a promo code.';
-              msgEl.className = 'text-sm text-error mb-2';
-              msgEl.classList.remove('hidden');
-              return;
-            }
-
-            if (PROMO_CODES[code]) {
-              const subtotal = Cart.getSubtotal();
-              promoDiscount = Math.round(subtotal * PROMO_CODES[code]);
-              msgEl.textContent = 'Code applied! ' + (PROMO_CODES[code] * 100) + '% discount.';
-              msgEl.className = 'text-sm text-secondary font-semibold mb-2';
-              msgEl.classList.remove('hidden');
-              document.getElementById('promo-input').classList.add('promo-applied');
-              renderOrderSummary();
-            } else {
-              promoDiscount = 0;
-              msgEl.textContent = 'Invalid promo code.';
-              msgEl.className = 'text-sm text-error mb-2';
-              msgEl.classList.remove('hidden');
-              document.getElementById('promo-input').classList.remove('promo-applied');
-              renderOrderSummary();
-            }
-          }
+        if (PROMO_CODES[code]) {
+          const subtotal = Cart.getSubtotal();
+          promoDiscount = Math.round(subtotal * PROMO_CODES[code]);
+          msgEl.textContent =
+            "Code applied! " + PROMO_CODES[code] * 100 + "% discount.";
+          msgEl.className = "text-sm text-secondary font-semibold mb-2";
+          msgEl.classList.remove("hidden");
+          document.getElementById("promo-input").classList.add("promo-applied");
+          renderOrderSummary();
+        } else {
+          promoDiscount = 0;
+          msgEl.textContent = "Invalid promo code.";
+          msgEl.className = "text-sm text-error mb-2";
+          msgEl.classList.remove("hidden");
+          document
+            .getElementById("promo-input")
+            .classList.remove("promo-applied");
+          renderOrderSummary();
+        }
+      }
     </script>
   </body>
 </html>

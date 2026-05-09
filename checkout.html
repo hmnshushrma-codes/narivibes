@@ -1,1118 +1,1432 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="light" lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Checkout | NariVibes</title>
-  <meta name="robots" content="noindex"/>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <!-- Cloudflare Turnstile -->
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          "colors": {
-            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
-            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
-            "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
-            "primary-fixed-dim": "#debfc2","on-secondary-container": "#3b6a6f",
-            "on-primary-container": "#765e61","inverse-primary": "#debfc2","tertiary": "#615e5b",
-            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
-            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
-            "on-secondary": "#ffffff","surface-dim": "#dadada",
-            "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
-            "error-container": "#ffdad6","error": "#ba1a1a",
-            "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
-            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
-            "primary-fixed": "#fbdbde","on-tertiary": "#ffffff","on-primary": "#ffffff",
-            "tertiary-container": "#e6e1dd","outline": "#807475",
-            "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
-            "secondary-fixed-dim": "#9fcfd5","on-error": "#ffffff",
-            "surface-container": "#eeeeee","inverse-surface": "#2f3131"
-          },
-          "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
-          "spacing": {"gutter": "24px","unit": "8px","section-gap": "120px","margin-desktop": "64px","container-max": "1280px","margin-mobile": "16px"},
-          "fontFamily": {"body-md": ["Inter"],"h2": ["Playfair Display"],"body-lg": ["Inter"],"label-caps": ["Inter"],"h3": ["Playfair Display"],"h1": ["Playfair Display"]},
-          "fontSize": {
-            "body-md": ["16px", {"lineHeight": "1.6","fontWeight": "400"}],
-            "h2": ["36px", {"lineHeight": "1.2","fontWeight": "400"}],
-            "body-lg": ["18px", {"lineHeight": "1.6","fontWeight": "400"}],
-            "label-caps": ["12px", {"lineHeight": "1.4","letterSpacing": "0.1em","fontWeight": "600"}],
-            "h3": ["24px", {"lineHeight": "1.3","fontWeight": "400"}],
-            "h1": ["48px", {"lineHeight": "1.2","letterSpacing": "-0.01em","fontWeight": "400"}]
-          }
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Checkout | NariVibes</title>
+    <meta name="robots" content="noindex" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Cloudflare Turnstile -->
+    <script>
+      function onTurnstileSuccess(token) {
+        window._tsToken = token;
+        window._tsFailed = false;
+      }
+      function onTurnstileExpired() {
+        window._tsToken = null;
+      }
+      function onTurnstileError(code) {
+        console.error("[Turnstile] Error code: " + code);
+        window._tsFailed = true;
+        window._tsToken = null;
+        var el = document.getElementById("checkout-turnstile");
+        if (el) {
+          el.innerHTML =
+            '<p class="text-sm text-error py-2">' +
+            "Security check failed to load (code " +
+            code +
+            "). " +
+            '<button type="button" onclick="location.reload()" ' +
+            'class="underline font-semibold">Refresh</button> to retry.' +
+            "</p>";
         }
       }
-    }
-  </script>
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-    body {
-      background-color: #f9f9f9;
-      color: #1a1c1c;
-      overflow-x: hidden;
-    }
-    .step-connector {
-      height: 1px;
-      flex: 1;
-      background: #d2c3c4;
-    }
-    .step-connector.active {
-      background: #70585b;
-    }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px #debfc2;
-      border-color: #70585b;
-    }
-    .otp-input {
-      letter-spacing: 0.5em;
-      text-align: center;
-      font-size: 1.5rem;
-      font-family: 'Inter', sans-serif;
-    }
-    .spinner {
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      animation: spin 0.7s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .form-section { display: none; }
-    .form-section.active { display: block; }
-    .promo-applied { border-color: #37656b !important; }
-  </style>
-</head>
-<body class="font-body-md text-on-surface">
-
-  <!-- Navigation -->
-  <nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
-    <div class="flex justify-between items-center px-4 md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
-      <div class="flex items-center gap-gutter">
-        <a href="index.html" class="cursor-pointer active:scale-95 transition-transform text-on-surface-variant hover:text-primary">
-          <span class="material-symbols-outlined">arrow_back</span>
-        </a>
-        <div class="hidden md:flex gap-8">
-          <a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="collections.html">Collections</a>
+      function initTurnstile() {
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initTurnstile);
+          return;
+        }
+        var el = document.getElementById("checkout-turnstile");
+        if (!el || !window.turnstile) return;
+        turnstile.render(el, {
+          sitekey: "0x4AAAAAADLlBDiM6IJpmlzK", 
+          theme: "light",
+          size: "normal",
+          callback: onTurnstileSuccess,
+          "expired-callback": onTurnstileExpired,
+          "error-callback": onTurnstileError,
+        });
+      }
+    </script>
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=initTurnstile"
+      async
+      defer
+    ></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#e8e8e8",
+              "on-primary-fixed-variant": "#2a2a2a",
+              surface: "#f9f9f9",
+              "primary-container": "#f2ebe0",
+              "surface-bright": "#f9f9f9",
+              "outline-variant": "#d2c3c4",
+              "on-tertiary-fixed-variant": "#494644",
+              "primary-fixed-dim": "#c8c0b0",
+              "on-secondary-container": "#6b500f",
+              "on-primary-container": "#333333",
+              "inverse-primary": "#c8c0b0",
+              tertiary: "#615e5b",
+              "secondary-container": "#f0e4c4",
+              "on-background": "#1a1c1c",
+              background: "#f9f9f9",
+              secondary: "#8b6914",
+              primary: "#141414",
+              "on-surface": "#1a1c1c",
+              "on-secondary": "#ffffff",
+              "surface-dim": "#dadada",
+              "surface-container-highest": "#e2e2e2",
+              "on-surface-variant": "#4f4445",
+              "error-container": "#ffdad6",
+              error: "#ba1a1a",
+              "tertiary-fixed-dim": "#cbc5c2",
+              "tertiary-fixed": "#e7e1de",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed": "#f2e8cc",
+              "primary-fixed": "#f5f0e5",
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "tertiary-container": "#e6e1dd",
+              outline: "#807475",
+              "surface-container-low": "#f3f3f3",
+              "on-tertiary-container": "#676361",
+              "secondary-fixed-dim": "#d4b96a",
+              "on-error": "#ffffff",
+              "surface-container": "#eeeeee",
+              "inverse-surface": "#2f3131",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              gutter: "24px",
+              unit: "8px",
+              "section-gap": "120px",
+              "margin-desktop": "64px",
+              "container-max": "1280px",
+              "margin-mobile": "16px",
+            },
+            fontFamily: {
+              "body-md": ["Inter"],
+              h2: ["Playfair Display"],
+              "body-lg": ["Inter"],
+              "label-caps": ["Inter"],
+              h3: ["Playfair Display"],
+              h1: ["Playfair Display"],
+            },
+            fontSize: {
+              "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+              h2: ["36px", { lineHeight: "1.2", fontWeight: "400" }],
+              "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+              "label-caps": [
+                "12px",
+                {
+                  lineHeight: "1.4",
+                  letterSpacing: "0.1em",
+                  fontWeight: "600",
+                },
+              ],
+              h3: ["24px", { lineHeight: "1.3", fontWeight: "400" }],
+              h1: [
+                "48px",
+                {
+                  lineHeight: "1.2",
+                  letterSpacing: "-0.01em",
+                  fontWeight: "400",
+                },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      body {
+        background-color: #f9f9f9;
+        color: #1a1c1c;
+        overflow-x: hidden;
+      }
+      .step-connector {
+        height: 1px;
+        flex: 1;
+        background: #d2c3c4;
+      }
+      .step-connector.active {
+        background: #70585b;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #debfc2;
+        border-color: #70585b;
+      }
+      .otp-input {
+        letter-spacing: 0.5em;
+        text-align: center;
+        font-size: 1.5rem;
+        font-family: "Inter", sans-serif;
+      }
+      .spinner {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .form-section {
+        display: none;
+      }
+      .form-section.active {
+        display: block;
+      }
+      .promo-applied {
+        border-color: #37656b !important;
+      }
+    </style>
+  </head>
+  <body class="font-body-md text-on-surface">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 border-b border-[#e6e1da]" style="background-color:#ffffff;">
+      <div class="relative flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+        <div class="flex items-center gap-6">
+          <a
+            href="index.html"
+            class="cursor-pointer text-[#666666] hover:text-[#141414] transition-colors"
+          >
+            <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
+          </a>
+          <div class="hidden md:flex gap-10">
+            <a
+              class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666] hover:text-[#141414] transition-colors"
+              href="collections.html"
+              >Collections</a
+            >
+          </div>
+        </div>
+        <a
+          href="index.html"
+          class="absolute left-1/2 -translate-x-1/2 font-[Playfair_Display] text-[13px] tracking-[0.5em] uppercase text-[#141414] hover:opacity-60 transition-opacity whitespace-nowrap"
+          >NariVibes</a
+        >
+        <div class="flex items-center gap-6">
+          <a href="cart.html" class="cursor-pointer text-[#141414] relative">
+            <span class="material-symbols-outlined" style="font-size:20px;">shopping_bag</span>
+            <span class="cart-count-badge absolute -top-1 -right-1 bg-[#141414] text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+          </a>
         </div>
       </div>
-      <a href="index.html" class="font-h2 text-h3 tracking-widest text-primary">NariVibes</a>
-      <div class="flex items-center gap-gutter">
-        <a href="cart.html" class="relative cursor-pointer active:scale-95 transition-transform text-primary">
-          <span class="material-symbols-outlined">shopping_bag</span>
-          <span class="cart-count-badge absolute -top-1 -right-1 bg-secondary text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center" style="display:none;">0</span>
-        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 max-w-[1280px] mx-auto px-4 md:px-16 py-12">
+      <!-- Page Title -->
+      <div class="mb-10">
+        <h1 class="font-h1 text-h2 md:text-h1 text-primary mb-2">Checkout</h1>
+        <p class="text-on-surface-variant font-body-md">
+          Secure · Fast · Reliable
+        </p>
       </div>
-    </div>
-  </nav>
 
-  <!-- Main Content -->
-  <main class="pt-20 max-w-[1280px] mx-auto px-4 md:px-16 py-12">
-
-    <!-- Page Title -->
-    <div class="mb-10">
-      <h1 class="font-h1 text-h2 md:text-h1 text-primary mb-2">Checkout</h1>
-      <p class="text-on-surface-variant font-body-md">Secure · Fast · Reliable</p>
-    </div>
-
-    <!-- Step Indicators -->
-    <div class="flex items-center mb-12 max-w-sm">
-      <!-- Step 1 -->
-      <div class="flex flex-col items-center gap-1" id="step-indicator-1">
-        <div class="w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-primary text-on-primary step-circle" data-step="1">1</div>
-        <span class="font-label-caps text-[10px] text-primary step-label" data-step="1">Contact</span>
-      </div>
-      <div class="step-connector mx-2" id="connector-1-2"></div>
-      <!-- Step 2 -->
-      <div class="flex flex-col items-center gap-1" id="step-indicator-2">
-        <div class="w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle" data-step="2">2</div>
-        <span class="font-label-caps text-[10px] text-on-surface-variant step-label" data-step="2">Shipping</span>
-      </div>
-      <div class="step-connector mx-2" id="connector-2-3"></div>
-      <!-- Step 3 -->
-      <div class="flex flex-col items-center gap-1" id="step-indicator-3">
-        <div class="w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle" data-step="3">3</div>
-        <span class="font-label-caps text-[10px] text-on-surface-variant step-label" data-step="3">Payment</span>
-      </div>
-    </div>
-
-    <!-- Two-Column Layout -->
-    <div class="md:grid md:grid-cols-[1fr,380px] gap-12 items-start">
-
-      <!-- LEFT: Form Area -->
-      <div>
-
-        <!-- STEP 1: Contact / Email OTP -->
-        <div id="step-1" class="form-section active bg-white rounded-xl shadow-sm border border-outline-variant p-8">
-          <h2 class="font-h2 text-h3 text-primary mb-2">Contact Information</h2>
-          <p class="text-on-surface-variant font-body-md text-sm mb-8">We'll send a one-time verification code to your email.</p>
-
-          <!-- Email Input -->
-          <div class="mb-6">
-            <label class="font-label-caps text-on-surface-variant block mb-2" for="email-input">Email Address</label>
-            <div class="flex gap-3">
-              <input
-                id="email-input"
-                type="email"
-                placeholder="your@email.com"
-                autocomplete="email"
-                class="flex-1 border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
-              />
-              <button
-                id="send-otp-btn"
-                onclick="handleSendOTP()"
-                class="px-6 py-3.5 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-95 transition-all duration-200 whitespace-nowrap flex items-center gap-2"
-              >
-                <span id="send-otp-label">Send OTP</span>
-                <span id="send-otp-spinner" class="spinner hidden"></span>
-              </button>
-            </div>
-            <p id="email-error" class="text-error text-sm mt-2 hidden"></p>
+      <!-- Step Indicators -->
+      <div class="flex items-center mb-12 max-w-sm">
+        <!-- Step 1 -->
+        <div class="flex flex-col items-center gap-1" id="step-indicator-1">
+          <div
+            class="w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-primary text-on-primary step-circle"
+            data-step="1"
+          >
+            1
           </div>
+          <span
+            class="font-label-caps text-[10px] text-primary step-label"
+            data-step="1"
+            >Contact</span
+          >
+        </div>
+        <div class="step-connector mx-2" id="connector-1-2"></div>
+        <!-- Step 2 -->
+        <div class="flex flex-col items-center gap-1" id="step-indicator-2">
+          <div
+            class="w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle"
+            data-step="2"
+          >
+            2
+          </div>
+          <span
+            class="font-label-caps text-[10px] text-on-surface-variant step-label"
+            data-step="2"
+            >Shipping</span
+          >
+        </div>
+        <div class="step-connector mx-2" id="connector-2-3"></div>
+        <!-- Step 3 -->
+        <div class="flex flex-col items-center gap-1" id="step-indicator-3">
+          <div
+            class="w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle"
+            data-step="3"
+          >
+            3
+          </div>
+          <span
+            class="font-label-caps text-[10px] text-on-surface-variant step-label"
+            data-step="3"
+            >Payment</span
+          >
+        </div>
+      </div>
 
-          <!-- Turnstile bot protection -->
-          <div id="checkout-turnstile" class="mb-4"></div>
+      <!-- Two-Column Layout -->
+      <div class="md:grid md:grid-cols-[1fr,380px] gap-12 items-start">
+        <!-- LEFT: Form Area -->
+        <div>
+          <!-- STEP 1: Contact / Email OTP -->
+          <div
+            id="step-1"
+            class="form-section active bg-white rounded-xl shadow-sm border border-outline-variant p-8"
+          >
+            <h2 class="font-h2 text-h3 text-primary mb-2">
+              Contact Information
+            </h2>
+            <p class="text-on-surface-variant font-body-md text-sm mb-8">
+              We'll send a one-time verification code to your email.
+            </p>
 
-          <!-- OTP Input (hidden initially) -->
-          <div id="otp-section" class="hidden">
-            <div class="mb-2">
-              <label class="font-label-caps text-on-surface-variant block mb-2" for="otp-input">Verification Code</label>
-              <p class="text-sm text-on-surface-variant mb-4" id="otp-hint">Enter the 6-digit code sent to <strong id="otp-email-display"></strong></p>
-              <div class="flex gap-3">
+            <!-- Email Input -->
+            <div class="mb-6">
+              <label
+                class="font-label-caps text-on-surface-variant block mb-2"
+                for="email-input"
+                >Email Address</label
+              >
+              <div class="flex flex-col sm:flex-row gap-3">
                 <input
-                  id="otp-input"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="6"
-                  placeholder="000000"
-                  class="otp-input flex-1 border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline tracking-widest"
+                  id="email-input"
+                  type="email"
+                  placeholder="your@email.com"
+                  autocomplete="email"
+                  class="flex-1 border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
                 />
                 <button
-                  id="verify-otp-btn"
-                  onclick="handleVerifyOTP()"
-                  class="px-6 py-3.5 bg-secondary text-on-secondary font-label-caps rounded-lg hover:opacity-90 active:scale-95 transition-all duration-200 whitespace-nowrap flex items-center gap-2"
+                  id="send-otp-btn"
+                  onclick="handleSendOTP()"
+                  class="w-full sm:w-auto px-6 py-3.5 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-95 transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-2"
                 >
-                  <span id="verify-otp-label">Verify OTP</span>
-                  <span id="verify-otp-spinner" class="spinner hidden"></span>
+                  <span id="send-otp-label">Send OTP</span>
+                  <span id="send-otp-spinner" class="spinner hidden"></span>
                 </button>
               </div>
-              <p id="otp-error" class="text-error text-sm mt-2 hidden"></p>
+              <p id="email-error" class="text-error text-sm mt-2 hidden"></p>
             </div>
 
-            <!-- Resend OTP -->
-            <div class="mt-4 flex items-center gap-2">
-              <span class="text-sm text-on-surface-variant">Didn't receive the code?</span>
-              <button id="resend-btn" onclick="handleResendOTP()" class="text-sm text-secondary hover:underline font-semibold hidden">Resend OTP</button>
-              <span id="resend-countdown" class="text-sm text-outline hidden">Resend in <strong id="countdown-num">30</strong>s</span>
-            </div>
-          </div>
+            <!-- Turnstile bot protection (explicit render via initTurnstile) -->
+            <div id="checkout-turnstile" class="mb-4"></div>
 
-          <!-- Email Verified State -->
-          <div id="email-verified-state" class="hidden mt-4 flex items-center gap-2 text-secondary">
-            <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">check_circle</span>
-            <span class="font-label-caps text-secondary" id="verified-email-display">Email verified</span>
-          </div>
-        </div>
-
-        <!-- STEP 2: Shipping Address -->
-        <div id="step-2" class="form-section bg-white rounded-xl shadow-sm border border-outline-variant p-8">
-          <h2 class="font-h2 text-h3 text-primary mb-2">Shipping Details</h2>
-          <p class="text-on-surface-variant font-body-md text-sm mb-8">Please enter your delivery address.</p>
-
-          <form id="shipping-form" onsubmit="handleShippingSubmit(event)" novalidate>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-              <!-- Full Name -->
-              <div class="md:col-span-2">
-                <label class="font-label-caps text-on-surface-variant block mb-2" for="full-name">Full Name</label>
-                <input
-                  id="full-name"
-                  type="text"
-                  placeholder="As on your ID"
-                  autocomplete="name"
-                  class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
-                />
-                <p class="text-error text-sm mt-1 hidden field-error" id="err-name"></p>
+            <!-- OTP Input (hidden initially) -->
+            <div id="otp-section" class="hidden">
+              <div class="mb-2">
+                <label
+                  class="font-label-caps text-on-surface-variant block mb-2"
+                  for="otp-input"
+                  >Verification Code</label
+                >
+                <p class="text-sm text-on-surface-variant mb-4" id="otp-hint">
+                  Enter the 6-digit code sent to
+                  <strong id="otp-email-display"></strong>
+                </p>
+                <div class="flex gap-3">
+                  <input
+                    id="otp-input"
+                    type="text"
+                    inputmode="numeric"
+                    maxlength="6"
+                    placeholder="000000"
+                    class="otp-input flex-1 border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline tracking-widest"
+                  />
+                  <button
+                    id="verify-otp-btn"
+                    onclick="handleVerifyOTP()"
+                    class="px-6 py-3.5 bg-secondary text-on-secondary font-label-caps rounded-lg hover:opacity-90 active:scale-95 transition-all duration-200 whitespace-nowrap flex items-center gap-2"
+                  >
+                    <span id="verify-otp-label">Verify OTP</span>
+                    <span id="verify-otp-spinner" class="spinner hidden"></span>
+                  </button>
+                </div>
+                <p id="otp-error" class="text-error text-sm mt-2 hidden"></p>
               </div>
 
-              <!-- Phone -->
-              <div class="md:col-span-2">
-                <label class="font-label-caps text-on-surface-variant block mb-2" for="phone">Phone Number</label>
-                <div class="flex gap-2">
-                  <span class="flex items-center px-4 bg-surface-container border border-outline-variant rounded-lg text-on-surface-variant font-body-md text-sm whitespace-nowrap">+91</span>
+              <!-- Resend OTP -->
+              <div class="mt-4 flex items-center gap-2">
+                <span class="text-sm text-on-surface-variant"
+                  >Didn't receive the code?</span
+                >
+                <button
+                  id="resend-btn"
+                  onclick="handleResendOTP()"
+                  class="text-sm text-secondary hover:underline font-semibold hidden"
+                >
+                  Resend OTP
+                </button>
+                <span id="resend-countdown" class="text-sm text-outline hidden"
+                  >Resend in <strong id="countdown-num">30</strong>s</span
+                >
+              </div>
+            </div>
+
+            <!-- Email Verified State -->
+            <div
+              id="email-verified-state"
+              class="hidden mt-4 flex items-center gap-2 text-secondary"
+            >
+              <span
+                class="material-symbols-outlined text-xl"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >check_circle</span
+              >
+              <span
+                class="font-label-caps text-secondary"
+                id="verified-email-display"
+                >Email verified</span
+              >
+            </div>
+          </div>
+
+          <!-- STEP 2: Shipping Address -->
+          <div
+            id="step-2"
+            class="form-section bg-white rounded-xl shadow-sm border border-outline-variant p-8"
+          >
+            <h2 class="font-h2 text-h3 text-primary mb-2">Shipping Details</h2>
+            <p class="text-on-surface-variant font-body-md text-sm mb-8">
+              Please enter your delivery address.
+            </p>
+
+            <form
+              id="shipping-form"
+              onsubmit="handleShippingSubmit(event)"
+              novalidate
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Full Name -->
+                <div class="md:col-span-2">
+                  <label
+                    class="font-label-caps text-on-surface-variant block mb-2"
+                    for="full-name"
+                    >Full Name</label
+                  >
                   <input
-                    id="phone"
-                    type="tel"
-                    inputmode="numeric"
-                    maxlength="10"
-                    placeholder="10-digit mobile number"
-                    autocomplete="tel"
-                    class="flex-1 border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
+                    id="full-name"
+                    type="text"
+                    placeholder="As on your ID"
+                    autocomplete="name"
+                    class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
+                  />
+                  <p
+                    class="text-error text-sm mt-1 hidden field-error"
+                    id="err-name"
+                  ></p>
+                </div>
+
+                <!-- Phone -->
+                <div class="md:col-span-2">
+                  <label
+                    class="font-label-caps text-on-surface-variant block mb-2"
+                    for="phone"
+                    >Phone Number</label
+                  >
+                  <div class="flex gap-2">
+                    <span
+                      class="flex items-center px-4 bg-surface-container border border-outline-variant rounded-lg text-on-surface-variant font-body-md text-sm whitespace-nowrap"
+                      >+91</span
+                    >
+                    <input
+                      id="phone"
+                      type="tel"
+                      inputmode="numeric"
+                      maxlength="10"
+                      placeholder="10-digit mobile number"
+                      autocomplete="tel"
+                      class="flex-1 border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
+                    />
+                  </div>
+                  <p
+                    class="text-error text-sm mt-1 hidden field-error"
+                    id="err-phone"
+                  ></p>
+                </div>
+
+                <!-- Address Line 1 -->
+                <div class="md:col-span-2">
+                  <label
+                    class="font-label-caps text-on-surface-variant block mb-2"
+                    for="address1"
+                    >Address Line 1</label
+                  >
+                  <input
+                    id="address1"
+                    type="text"
+                    placeholder="House / Flat / Building No., Street"
+                    autocomplete="address-line1"
+                    class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
+                  />
+                  <p
+                    class="text-error text-sm mt-1 hidden field-error"
+                    id="err-address1"
+                  ></p>
+                </div>
+
+                <!-- Address Line 2 -->
+                <div class="md:col-span-2">
+                  <label
+                    class="font-label-caps text-on-surface-variant block mb-2"
+                    for="address2"
+                  >
+                    Address Line 2
+                    <span
+                      class="text-outline normal-case tracking-normal font-normal text-xs"
+                      >(optional)</span
+                    >
+                  </label>
+                  <input
+                    id="address2"
+                    type="text"
+                    placeholder="Area, Colony, Landmark"
+                    autocomplete="address-line2"
+                    class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
                   />
                 </div>
-                <p class="text-error text-sm mt-1 hidden field-error" id="err-phone"></p>
+
+                <!-- City -->
+                <div>
+                  <label
+                    class="font-label-caps text-on-surface-variant block mb-2"
+                    for="city"
+                    >City</label
+                  >
+                  <input
+                    id="city"
+                    type="text"
+                    placeholder="City"
+                    autocomplete="address-level2"
+                    class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
+                  />
+                  <p
+                    class="text-error text-sm mt-1 hidden field-error"
+                    id="err-city"
+                  ></p>
+                </div>
+
+                <!-- Pincode -->
+                <div>
+                  <label
+                    class="font-label-caps text-on-surface-variant block mb-2"
+                    for="pincode"
+                    >Pincode</label
+                  >
+                  <input
+                    id="pincode"
+                    type="text"
+                    inputmode="numeric"
+                    maxlength="6"
+                    placeholder="6-digit PIN"
+                    autocomplete="postal-code"
+                    class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
+                  />
+                  <p
+                    class="text-error text-sm mt-1 hidden field-error"
+                    id="err-pincode"
+                  ></p>
+                </div>
+
+                <!-- State -->
+                <div class="md:col-span-2">
+                  <label
+                    class="font-label-caps text-on-surface-variant block mb-2"
+                    for="state"
+                    >State</label
+                  >
+                  <select
+                    id="state"
+                    autocomplete="address-level1"
+                    class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 appearance-none"
+                  >
+                    <option value="">Select State</option>
+                    <option>Andhra Pradesh</option>
+                    <option>Arunachal Pradesh</option>
+                    <option>Assam</option>
+                    <option>Bihar</option>
+                    <option>Chhattisgarh</option>
+                    <option>Goa</option>
+                    <option>Gujarat</option>
+                    <option>Haryana</option>
+                    <option>Himachal Pradesh</option>
+                    <option>Jharkhand</option>
+                    <option>Karnataka</option>
+                    <option>Kerala</option>
+                    <option>Madhya Pradesh</option>
+                    <option>Maharashtra</option>
+                    <option>Manipur</option>
+                    <option>Meghalaya</option>
+                    <option>Mizoram</option>
+                    <option>Nagaland</option>
+                    <option>Odisha</option>
+                    <option>Punjab</option>
+                    <option>Rajasthan</option>
+                    <option>Sikkim</option>
+                    <option>Tamil Nadu</option>
+                    <option>Telangana</option>
+                    <option>Tripura</option>
+                    <option>Uttar Pradesh</option>
+                    <option>Uttarakhand</option>
+                    <option>West Bengal</option>
+                    <option>Andaman and Nicobar Islands</option>
+                    <option>Chandigarh</option>
+                    <option>Dadra and Nagar Haveli and Daman and Diu</option>
+                    <option>Delhi</option>
+                    <option>Jammu and Kashmir</option>
+                    <option>Ladakh</option>
+                    <option>Lakshadweep</option>
+                    <option>Puducherry</option>
+                  </select>
+                  <p
+                    class="text-error text-sm mt-1 hidden field-error"
+                    id="err-state"
+                  ></p>
+                </div>
               </div>
 
-              <!-- Address Line 1 -->
-              <div class="md:col-span-2">
-                <label class="font-label-caps text-on-surface-variant block mb-2" for="address1">Address Line 1</label>
-                <input
-                  id="address1"
-                  type="text"
-                  placeholder="House / Flat / Building No., Street"
-                  autocomplete="address-line1"
-                  class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
-                />
-                <p class="text-error text-sm mt-1 hidden field-error" id="err-address1"></p>
-              </div>
-
-              <!-- Address Line 2 -->
-              <div class="md:col-span-2">
-                <label class="font-label-caps text-on-surface-variant block mb-2" for="address2">
-                  Address Line 2 <span class="text-outline normal-case tracking-normal font-normal text-xs">(optional)</span>
-                </label>
-                <input
-                  id="address2"
-                  type="text"
-                  placeholder="Area, Colony, Landmark"
-                  autocomplete="address-line2"
-                  class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
-                />
-              </div>
-
-              <!-- City -->
-              <div>
-                <label class="font-label-caps text-on-surface-variant block mb-2" for="city">City</label>
-                <input
-                  id="city"
-                  type="text"
-                  placeholder="City"
-                  autocomplete="address-level2"
-                  class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
-                />
-                <p class="text-error text-sm mt-1 hidden field-error" id="err-city"></p>
-              </div>
-
-              <!-- Pincode -->
-              <div>
-                <label class="font-label-caps text-on-surface-variant block mb-2" for="pincode">Pincode</label>
-                <input
-                  id="pincode"
-                  type="text"
-                  inputmode="numeric"
-                  maxlength="6"
-                  placeholder="6-digit PIN"
-                  autocomplete="postal-code"
-                  class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 placeholder:text-outline"
-                />
-                <p class="text-error text-sm mt-1 hidden field-error" id="err-pincode"></p>
-              </div>
-
-              <!-- State -->
-              <div class="md:col-span-2">
-                <label class="font-label-caps text-on-surface-variant block mb-2" for="state">State</label>
-                <select
-                  id="state"
-                  autocomplete="address-level1"
-                  class="w-full border border-outline-variant rounded-lg px-5 py-3.5 text-on-surface bg-white font-body-md transition-colors duration-200 appearance-none"
+              <button
+                type="submit"
+                id="continue-payment-btn"
+                class="mt-8 w-full py-4 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+              >
+                <span id="continue-label">Continue to Payment</span>
+                <span id="continue-spinner" class="spinner hidden"></span>
+                <span
+                  class="material-symbols-outlined text-base"
+                  id="continue-arrow"
+                  >arrow_forward</span
                 >
-                  <option value="">Select State</option>
-                  <option>Andhra Pradesh</option>
-                  <option>Arunachal Pradesh</option>
-                  <option>Assam</option>
-                  <option>Bihar</option>
-                  <option>Chhattisgarh</option>
-                  <option>Goa</option>
-                  <option>Gujarat</option>
-                  <option>Haryana</option>
-                  <option>Himachal Pradesh</option>
-                  <option>Jharkhand</option>
-                  <option>Karnataka</option>
-                  <option>Kerala</option>
-                  <option>Madhya Pradesh</option>
-                  <option>Maharashtra</option>
-                  <option>Manipur</option>
-                  <option>Meghalaya</option>
-                  <option>Mizoram</option>
-                  <option>Nagaland</option>
-                  <option>Odisha</option>
-                  <option>Punjab</option>
-                  <option>Rajasthan</option>
-                  <option>Sikkim</option>
-                  <option>Tamil Nadu</option>
-                  <option>Telangana</option>
-                  <option>Tripura</option>
-                  <option>Uttar Pradesh</option>
-                  <option>Uttarakhand</option>
-                  <option>West Bengal</option>
-                  <option>Andaman and Nicobar Islands</option>
-                  <option>Chandigarh</option>
-                  <option>Dadra and Nagar Haveli and Daman and Diu</option>
-                  <option>Delhi</option>
-                  <option>Jammu and Kashmir</option>
-                  <option>Ladakh</option>
-                  <option>Lakshadweep</option>
-                  <option>Puducherry</option>
-                </select>
-                <p class="text-error text-sm mt-1 hidden field-error" id="err-state"></p>
+              </button>
+            </form>
+          </div>
+
+          <!-- STEP 3: Payment -->
+          <div
+            id="step-3"
+            class="form-section bg-white rounded-xl shadow-sm border border-outline-variant p-8"
+          >
+            <h2 class="font-h2 text-h3 text-primary mb-2">Payment</h2>
+            <p class="text-on-surface-variant font-body-md text-sm mb-8">
+              Complete your order securely via Razorpay.
+            </p>
+
+            <!-- Order Recap (brief) -->
+            <div
+              class="bg-surface-container-low rounded-lg p-5 mb-8 border border-outline-variant"
+            >
+              <p class="font-label-caps text-on-surface-variant mb-3">
+                Your Order Summary
+              </p>
+              <div class="flex justify-between font-body-md text-sm mb-1">
+                <span class="text-on-surface-variant">Subtotal</span>
+                <span
+                  id="payment-subtotal"
+                  class="text-on-surface font-semibold"
+                  >—</span
+                >
+              </div>
+              <div class="flex justify-between font-body-md text-sm mb-1">
+                <span class="text-on-surface-variant">Shipping</span>
+                <span
+                  id="payment-shipping"
+                  class="text-on-surface font-semibold"
+                  >—</span
+                >
+              </div>
+              <div
+                class="border-t border-outline-variant mt-3 pt-3 flex justify-between font-label-caps"
+              >
+                <span class="text-on-surface">Total</span>
+                <span id="payment-total" class="text-primary text-base">—</span>
               </div>
             </div>
 
+            <!-- Razorpay Button -->
             <button
-              type="submit"
-              id="continue-payment-btn"
-              class="mt-8 w-full py-4 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+              id="pay-btn"
+              onclick="handlePayment()"
+              class="w-full py-4 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3 text-sm"
             >
-              <span id="continue-label">Continue to Payment</span>
-              <span id="continue-spinner" class="spinner hidden"></span>
-              <span class="material-symbols-outlined text-base" id="continue-arrow">arrow_forward</span>
+              <span
+                class="material-symbols-outlined text-base"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >lock</span
+              >
+              <span id="pay-btn-label">Pay Now</span>
+              <span id="pay-spinner" class="spinner hidden"></span>
             </button>
-          </form>
+
+            <!-- Security Badge -->
+            <div
+              class="mt-6 flex items-center justify-center gap-3 text-outline"
+            >
+              <span
+                class="material-symbols-outlined text-xl"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >verified_user</span
+              >
+              <span class="font-label-caps text-xs"
+                >100% Secure Checkout powered by Razorpay</span
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 34 14"
+                class="h-4 opacity-60"
+                fill="#072654"
+              >
+                <path
+                  d="M25.26 0L20.5 14h-4.44L12.5 3.54 10.4 14H6L10.74 0h4.44l3.56 10.46L20.84 0h4.42z"
+                />
+                <path d="M0 14L4.74 0H9l-4.74 14H0z" fill="#3395FF" />
+              </svg>
+            </div>
+
+            <!-- Change details link -->
+            <button
+              onclick="goToStep(2)"
+              class="mt-6 w-full text-center text-sm text-secondary hover:underline font-body-md"
+            >
+              Change shipping details
+            </button>
+          </div>
         </div>
 
-        <!-- STEP 3: Payment -->
-        <div id="step-3" class="form-section bg-white rounded-xl shadow-sm border border-outline-variant p-8">
-          <h2 class="font-h2 text-h3 text-primary mb-2">Payment</h2>
-          <p class="text-on-surface-variant font-body-md text-sm mb-8">Complete your order securely via Razorpay.</p>
-
-          <!-- Order Recap (brief) -->
-          <div class="bg-surface-container-low rounded-lg p-5 mb-8 border border-outline-variant">
-            <p class="font-label-caps text-on-surface-variant mb-3">Your Order Summary</p>
-            <div class="flex justify-between font-body-md text-sm mb-1">
-              <span class="text-on-surface-variant">Subtotal</span>
-              <span id="payment-subtotal" class="text-on-surface font-semibold">—</span>
-            </div>
-            <div class="flex justify-between font-body-md text-sm mb-1">
-              <span class="text-on-surface-variant">Shipping</span>
-              <span id="payment-shipping" class="text-on-surface font-semibold">—</span>
-            </div>
-            <div class="border-t border-outline-variant mt-3 pt-3 flex justify-between font-label-caps">
-              <span class="text-on-surface">Total</span>
-              <span id="payment-total" class="text-primary text-base">—</span>
-            </div>
-          </div>
-
-          <!-- Razorpay Button -->
-          <button
-            id="pay-btn"
-            onclick="handlePayment()"
-            class="w-full py-4 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3 text-sm"
+        <!-- RIGHT: Order Summary (sticky) -->
+        <aside class="md:sticky md:top-28">
+          <div
+            class="bg-white rounded-xl shadow-sm border border-outline-variant p-6"
           >
-            <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">lock</span>
-            <span id="pay-btn-label">Pay Now</span>
-            <span id="pay-spinner" class="spinner hidden"></span>
-          </button>
+            <h3 class="font-h2 text-h3 text-primary mb-6">Order Summary</h3>
 
-          <!-- Security Badge -->
-          <div class="mt-6 flex items-center justify-center gap-3 text-outline">
-            <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">verified_user</span>
-            <span class="font-label-caps text-xs">100% Secure Checkout powered by Razorpay</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 14" class="h-4 opacity-60" fill="#072654">
-              <path d="M25.26 0L20.5 14h-4.44L12.5 3.54 10.4 14H6L10.74 0h4.44l3.56 10.46L20.84 0h4.42z"/>
-              <path d="M0 14L4.74 0H9l-4.74 14H0z" fill="#3395FF"/>
-            </svg>
+            <!-- Cart Items -->
+            <div id="summary-items" class="space-y-4 mb-6">
+              <!-- Populated by JS -->
+              <p
+                id="summary-empty"
+                class="text-center text-on-surface-variant py-4 font-body-md text-sm hidden"
+              >
+                Your cart is empty.
+              </p>
+            </div>
+
+            <div class="border-t border-outline-variant pt-5 space-y-3">
+              <!-- Promo Code -->
+              <div class="flex gap-2 mb-4">
+                <input
+                  id="promo-input"
+                  type="text"
+                  placeholder="Promo code"
+                  class="flex-1 border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface text-sm font-body-md transition-colors duration-200 placeholder:text-outline"
+                />
+                <button
+                  onclick="applyPromo()"
+                  class="px-4 py-2.5 border border-primary text-primary font-label-caps rounded-lg hover:bg-primary-container active:scale-95 transition-all text-xs"
+                >
+                  Apply
+                </button>
+              </div>
+              <p id="promo-msg" class="text-sm hidden mb-2"></p>
+
+              <div class="flex justify-between font-body-md text-sm">
+                <span class="text-on-surface-variant">Subtotal</span>
+                <span id="summary-subtotal" class="font-semibold">—</span>
+              </div>
+              <div class="flex justify-between font-body-md text-sm">
+                <span class="text-on-surface-variant">Shipping</span>
+                <span id="summary-shipping" class="font-semibold">—</span>
+              </div>
+              <div
+                id="discount-row"
+                class="flex justify-between font-body-md text-sm hidden"
+              >
+                <span class="text-secondary">Discount</span>
+                <span id="summary-discount" class="font-semibold text-secondary"
+                  >—</span
+                >
+              </div>
+              <div
+                class="border-t border-outline-variant pt-3 flex justify-between font-label-caps"
+              >
+                <span>Total</span>
+                <span id="summary-total" class="text-primary text-base">—</span>
+              </div>
+            </div>
+
+            <!-- Free Shipping Notice -->
+            <p
+              id="free-shipping-notice"
+              class="mt-4 text-xs text-secondary font-body-md hidden"
+            >
+              <span
+                class="material-symbols-outlined text-sm align-middle"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >local_shipping</span
+              >
+              Free shipping on orders above ₹5,000
+            </p>
           </div>
-
-          <!-- Change details link -->
-          <button onclick="goToStep(2)" class="mt-6 w-full text-center text-sm text-secondary hover:underline font-body-md">
-            Change shipping details
-          </button>
-        </div>
-
+        </aside>
       </div>
+    </main>
 
-      <!-- RIGHT: Order Summary (sticky) -->
-      <aside class="md:sticky md:top-28">
-        <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-6">
-          <h3 class="font-h2 text-h3 text-primary mb-6">Order Summary</h3>
+    <!-- Footer -->
+    <footer class="mt-24 py-10 border-t border-outline-variant">
+      <div
+        class="max-w-container-max mx-auto px-4 md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4"
+      >
+        <span class="font-h2 text-h3 text-primary">NariVibes</span>
+        <p
+          class="font-body-md text-[13px] text-on-tertiary-fixed-variant opacity-60"
+        >
+          © 2024 NariVibes SUMMER COLLECTIONS. ALL RIGHTS RESERVED.
+        </p>
+      </div>
+    </footer>
 
-          <!-- Cart Items -->
-          <div id="summary-items" class="space-y-4 mb-6">
-            <!-- Populated by JS -->
-            <p id="summary-empty" class="text-center text-on-surface-variant py-4 font-body-md text-sm hidden">Your cart is empty.</p>
-          </div>
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-          <div class="border-t border-outline-variant pt-5 space-y-3">
-            <!-- Promo Code -->
-            <div class="flex gap-2 mb-4">
-              <input
-                id="promo-input"
-                type="text"
-                placeholder="Promo code"
-                class="flex-1 border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface text-sm font-body-md transition-colors duration-200 placeholder:text-outline"
-              />
-              <button onclick="applyPromo()" class="px-4 py-2.5 border border-primary text-primary font-label-caps rounded-lg hover:bg-primary-container active:scale-95 transition-all text-xs">
-                Apply
-              </button>
-            </div>
-            <p id="promo-msg" class="text-sm hidden mb-2"></p>
+    <script>
+          // -------------------------------------------------------------------------
+          // Configuration
+          // -------------------------------------------------------------------------
+          const API_BASE = 'https://narivibe-worker.hmnshu26.workers.dev'; // TODO: update
+          const RAZORPAY_KEY = 'rzp_test_SSpbbZiVrSZLDs';
+      // File ke top pe ek baar define karo
+      const TURNSTILE_SITE_KEY = '0x4AAAAAADL1BDiM6IJpmlzK';
 
-            <div class="flex justify-between font-body-md text-sm">
-              <span class="text-on-surface-variant">Subtotal</span>
-              <span id="summary-subtotal" class="font-semibold">—</span>
-            </div>
-            <div class="flex justify-between font-body-md text-sm">
-              <span class="text-on-surface-variant">Shipping</span>
-              <span id="summary-shipping" class="font-semibold">—</span>
-            </div>
-            <div id="discount-row" class="flex justify-between font-body-md text-sm hidden">
-              <span class="text-secondary">Discount</span>
-              <span id="summary-discount" class="font-semibold text-secondary">—</span>
-            </div>
-            <div class="border-t border-outline-variant pt-3 flex justify-between font-label-caps">
-              <span>Total</span>
-              <span id="summary-total" class="text-primary text-base">—</span>
-            </div>
-          </div>
+          // -------------------------------------------------------------------------
+          // State
+          // -------------------------------------------------------------------------
+          let currentStep = 1;
+          let verifiedEmail = null;
+          let shippingData = null;
+          let razorpayOrderId = null;
+          let promoDiscount = 0;
+          let countdownTimer = null;
+          let saveDebounce = null;
 
-          <!-- Free Shipping Notice -->
-          <p id="free-shipping-notice" class="mt-4 text-xs text-secondary font-body-md hidden">
-            <span class="material-symbols-outlined text-sm align-middle" style="font-variation-settings:'FILL' 1">local_shipping</span>
-            Free shipping on orders above ₹5,000
-          </p>
-        </div>
-      </aside>
+          const CHECKOUT_KEY = 'lete_checkout_session';
 
-    </div>
-  </main>
+          // -------------------------------------------------------------------------
+          // localStorage persistence
+          // -------------------------------------------------------------------------
+          function saveCheckoutState() {
+            clearTimeout(saveDebounce);
+            saveDebounce = setTimeout(() => {
+              try {
+                const state = {
+                  step: currentStep,
+                  email: document.getElementById('email-input').value.trim(),
+                  emailVerified: !!verifiedEmail,
+                  verifiedEmail: verifiedEmail,
+                  shippingData: shippingData,
+                  // also capture live form values in case shippingData hasn't been set yet
+                  shippingForm: {
+                    name:     document.getElementById('full-name').value.trim(),
+                    phone:    document.getElementById('phone').value.trim(),
+                    address1: document.getElementById('address1').value.trim(),
+                    address2: document.getElementById('address2').value.trim(),
+                    city:     document.getElementById('city').value.trim(),
+                    state:    document.getElementById('state').value,
+                    pincode:  document.getElementById('pincode').value.trim()
+                  },
+                  promoCode:     document.getElementById('promo-input').value.trim(),
+                  promoDiscount: promoDiscount
+                };
+                localStorage.setItem(CHECKOUT_KEY, JSON.stringify(state));
+              } catch (e) { /* storage might be full or unavailable */ }
+            }, 300);
+          }
 
-  <!-- Footer -->
-  <footer class="mt-24 py-10 border-t border-outline-variant">
-    <div class="max-w-container-max mx-auto px-4 md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">
-      <span class="font-h2 text-h3 text-primary">NariVibes</span>
-      <p class="font-body-md text-[13px] text-on-tertiary-fixed-variant opacity-60">© 2024 NariVibes SUMMER COLLECTIONS. ALL RIGHTS RESERVED.</p>
-    </div>
-  </footer>
+          function restoreCheckoutState() {
+            try {
+              const raw = localStorage.getItem(CHECKOUT_KEY);
+              if (!raw) return;
+              const state = JSON.parse(raw);
 
-  <!-- Scripts -->
-  <script src="js/products.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-  <script>
-    // -------------------------------------------------------------------------
-    // Configuration
-    // -------------------------------------------------------------------------
-    const API_BASE = 'https://narivibe-worker.hmnshu26.workers.dev'; // TODO: update
-    const RAZORPAY_KEY = 'rzp_test_SSpbbZiVrSZLDs';
-    const TURNSTILE_SITE_KEY = '0x4AAAAAADL1BDiM6IJpmlzK';
-
-    // -------------------------------------------------------------------------
-    // Turnstile callbacks (must be global)
-    // -------------------------------------------------------------------------
-    let turnstileToken = null;
-    window.onCheckoutTurnstileSuccess = function(token) { turnstileToken = token; };
-    window.onCheckoutTurnstileExpired  = function()      { turnstileToken = null; };
-
-    // -------------------------------------------------------------------------
-    // State
-    // -------------------------------------------------------------------------
-    let currentStep = 1;
-    let verifiedEmail = null;
-    let shippingData = null;
-    let razorpayOrderId = null;
-    let promoDiscount = 0;
-    let countdownTimer = null;
-    let saveDebounce = null;
-
-    const CHECKOUT_KEY = 'lete_checkout_session';
-
-    // -------------------------------------------------------------------------
-    // localStorage persistence
-    // -------------------------------------------------------------------------
-    function saveCheckoutState() {
-      clearTimeout(saveDebounce);
-      saveDebounce = setTimeout(() => {
-        try {
-          const state = {
-            step: currentStep,
-            email: document.getElementById('email-input').value.trim(),
-            emailVerified: !!verifiedEmail,
-            verifiedEmail: verifiedEmail,
-            shippingData: shippingData,
-            // also capture live form values in case shippingData hasn't been set yet
-            shippingForm: {
-              name:     document.getElementById('full-name').value.trim(),
-              phone:    document.getElementById('phone').value.trim(),
-              address1: document.getElementById('address1').value.trim(),
-              address2: document.getElementById('address2').value.trim(),
-              city:     document.getElementById('city').value.trim(),
-              state:    document.getElementById('state').value,
-              pincode:  document.getElementById('pincode').value.trim()
-            },
-            promoCode:     document.getElementById('promo-input').value.trim(),
-            promoDiscount: promoDiscount
-          };
-          localStorage.setItem(CHECKOUT_KEY, JSON.stringify(state));
-        } catch (e) { /* storage might be full or unavailable */ }
-      }, 300);
-    }
-
-    function restoreCheckoutState() {
-      try {
-        const raw = localStorage.getItem(CHECKOUT_KEY);
-        if (!raw) return;
-        const state = JSON.parse(raw);
-
-        // Restore email field
-        if (state.email) {
-          document.getElementById('email-input').value = state.email;
-        }
-
-        // Restore promo
-        if (state.promoCode) {
-          document.getElementById('promo-input').value = state.promoCode;
-        }
-        if (state.promoDiscount) {
-          promoDiscount = state.promoDiscount;
-        }
-
-        // Restore shipping form
-        const sf = state.shippingForm || state.shippingData || {};
-        if (sf.name)     document.getElementById('full-name').value  = sf.name;
-        if (sf.phone)    document.getElementById('phone').value      = sf.phone;
-        if (sf.address1) document.getElementById('address1').value   = sf.address1;
-        if (sf.address2) document.getElementById('address2').value   = sf.address2;
-        if (sf.city)     document.getElementById('city').value       = sf.city;
-        if (sf.state)    document.getElementById('state').value      = sf.state;
-        if (sf.pincode)  document.getElementById('pincode').value    = sf.pincode;
-
-        if (state.shippingData) {
-          shippingData = state.shippingData;
-        }
-
-        // Restore verified email & step
-        if (state.emailVerified && state.verifiedEmail) {
-          verifiedEmail = state.verifiedEmail;
-          document.getElementById('email-input').disabled = true;
-          document.getElementById('otp-section').classList.add('hidden');
-          document.getElementById('email-verified-state').classList.remove('hidden');
-          document.getElementById('verified-email-display').textContent = '✓ ' + verifiedEmail + ' verified';
-        }
-
-        // Jump to saved step (but only if email was verified for step 2+)
-        if (state.step && state.step > 1 && state.emailVerified) {
-          goToStep(state.step);
-        }
-      } catch (e) {
-        console.warn('Could not restore checkout state:', e);
-      }
-    }
-
-    function clearCheckoutState() {
-      localStorage.removeItem(CHECKOUT_KEY);
-    }
-
-    // -------------------------------------------------------------------------
-    // Initialise on load
-    // -------------------------------------------------------------------------
-    document.addEventListener('DOMContentLoaded', () => {
-      restoreCheckoutState();
-      renderOrderSummary();
-      // If step wasn't restored above, show step 1 UI
-      if (currentStep === 1) updateStepUI(1);
-
-      // Save state on every input/change in the form area
-      document.querySelectorAll('input, select').forEach(el => {
-        el.addEventListener('input', saveCheckoutState);
-        el.addEventListener('change', saveCheckoutState);
-      });
-
-      // Render Turnstile widget once the API script is ready
-      function renderTurnstile() {
-        if (window.turnstile && TURNSTILE_SITE_KEY !== 'YOUR_TURNSTILE_SITE_KEY') {
-          window.turnstile.render('#checkout-turnstile', {
-            sitekey: TURNSTILE_SITE_KEY,
-            theme: 'light',
-            size: 'flexible',
-            callback: window.onCheckoutTurnstileSuccess,
-            'expired-callback': window.onCheckoutTurnstileExpired,
-          });
-        }
-      }
-      if (window.turnstile) {
-        renderTurnstile();
-      } else {
-        document.querySelector('script[src*="turnstile"]').addEventListener('load', renderTurnstile);
-      }
-    });
-
-    // -------------------------------------------------------------------------
-    // Step UI
-    // -------------------------------------------------------------------------
-    function goToStep(n) {
-      currentStep = n;
-      updateStepUI(n);
-      document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
-      document.getElementById('step-' + n).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function updateStepUI(activeStep) {
-      [1, 2, 3].forEach(n => {
-        const circle = document.querySelector('.step-circle[data-step="' + n + '"]');
-        const label = document.querySelector('.step-label[data-step="' + n + '"]');
-
-        if (n < activeStep) {
-          circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-secondary text-on-secondary step-circle';
-          circle.innerHTML = '<span class="material-symbols-outlined text-base" style="font-variation-settings:\'FILL\' 1">check</span>';
-          label.className = 'font-label-caps text-[10px] text-secondary step-label';
-        } else if (n === activeStep) {
-          circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-primary text-on-primary step-circle';
-          circle.innerHTML = n;
-          label.className = 'font-label-caps text-[10px] text-primary step-label';
-        } else {
-          circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle';
-          circle.innerHTML = n;
-          label.className = 'font-label-caps text-[10px] text-on-surface-variant step-label';
-        }
-      });
-
-      const conn12 = document.getElementById('connector-1-2');
-      const conn23 = document.getElementById('connector-2-3');
-      conn12.classList.toggle('active', activeStep >= 2);
-      conn23.classList.toggle('active', activeStep >= 3);
-    }
-
-    // -------------------------------------------------------------------------
-    // Order Summary Render
-    // -------------------------------------------------------------------------
-    function renderOrderSummary() {
-      const items = Cart.getItems();
-      const container = document.getElementById('summary-items');
-      const emptyMsg = document.getElementById('summary-empty');
-
-      if (items.length === 0) {
-        container.innerHTML = '';
-        emptyMsg.classList.remove('hidden');
-      } else {
-        emptyMsg.classList.add('hidden');
-        container.innerHTML = items.map(item => `
-          <div class="flex gap-3 items-start">
-            <div class="w-16 h-20 rounded bg-surface-container overflow-hidden flex-shrink-0">
-              ${item.image
-                ? `<img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover"/>`
-                : `<div class="w-full h-full bg-primary-container/40"></div>`
+              // Restore email field
+              if (state.email) {
+                document.getElementById('email-input').value = state.email;
               }
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-body-md text-sm font-semibold text-on-surface truncate">${item.name}</p>
-              <p class="text-xs text-on-surface-variant mt-0.5">${item.color} · ${item.size}</p>
-              <p class="text-xs text-on-surface-variant">Qty: ${item.qty}</p>
-            </div>
-            <span class="font-body-md text-sm font-semibold text-on-surface whitespace-nowrap">${Cart.formatPrice(item.price * item.qty)}</span>
-          </div>
-        `).join('');
-      }
 
-      const subtotal = Cart.getSubtotal();
-      const shipping = Cart.getShipping();
-      const discount = promoDiscount;
-      const total = subtotal + shipping - discount;
+              // Restore promo
+              if (state.promoCode) {
+                document.getElementById('promo-input').value = state.promoCode;
+              }
+              if (state.promoDiscount) {
+                promoDiscount = state.promoDiscount;
+              }
 
-      document.getElementById('summary-subtotal').textContent = Cart.formatPrice(subtotal);
-      document.getElementById('summary-shipping').textContent = Cart.getShippingDisplay();
-      document.getElementById('summary-total').textContent = Cart.formatPrice(total);
+              // Restore shipping form
+              const sf = state.shippingForm || state.shippingData || {};
+              if (sf.name)     document.getElementById('full-name').value  = sf.name;
+              if (sf.phone)    document.getElementById('phone').value      = sf.phone;
+              if (sf.address1) document.getElementById('address1').value   = sf.address1;
+              if (sf.address2) document.getElementById('address2').value   = sf.address2;
+              if (sf.city)     document.getElementById('city').value       = sf.city;
+              if (sf.state)    document.getElementById('state').value      = sf.state;
+              if (sf.pincode)  document.getElementById('pincode').value    = sf.pincode;
 
-      if (discount > 0) {
-        document.getElementById('discount-row').classList.remove('hidden');
-        document.getElementById('summary-discount').textContent = '−' + Cart.formatPrice(discount);
-      } else {
-        document.getElementById('discount-row').classList.add('hidden');
-      }
+              if (state.shippingData) {
+                shippingData = state.shippingData;
+              }
 
-      if (subtotal < 5000) {
-        document.getElementById('free-shipping-notice').classList.remove('hidden');
-      } else {
-        document.getElementById('free-shipping-notice').classList.add('hidden');
-      }
+              // Restore verified email & step
+              if (state.emailVerified && state.verifiedEmail) {
+                verifiedEmail = state.verifiedEmail;
+                document.getElementById('email-input').disabled = true;
+                document.getElementById('otp-section').classList.add('hidden');
+                document.getElementById('email-verified-state').classList.remove('hidden');
+                document.getElementById('verified-email-display').textContent = '✓ ' + verifiedEmail + ' verified';
+              }
 
-      // Payment step totals
-      document.getElementById('payment-subtotal').textContent = Cart.formatPrice(subtotal);
-      document.getElementById('payment-shipping').textContent = Cart.getShippingDisplay();
-      document.getElementById('payment-total').textContent = Cart.formatPrice(total);
-      document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
-    }
+              // Jump to saved step (but only if email was verified for step 2+)
+              if (state.step && state.step > 1 && state.emailVerified) {
+                goToStep(state.step);
+              }
+            } catch (e) {
+              console.warn('Could not restore checkout state:', e);
+            }
+          }
 
-    // -------------------------------------------------------------------------
-    // Step 1: OTP Flow
-    // -------------------------------------------------------------------------
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+          function clearCheckoutState() {
+            localStorage.removeItem(CHECKOUT_KEY);
+          }
 
-    function showError(elId, msg) {
-      const el = document.getElementById(elId);
-      el.textContent = msg;
-      el.classList.remove('hidden');
-    }
+          // -------------------------------------------------------------------------
+          // Initialise on load
+          // -------------------------------------------------------------------------
+          document.addEventListener('DOMContentLoaded', () => {
+            restoreCheckoutState();
+            renderOrderSummary();
+            // If step wasn't restored above, show step 1 UI
+            if (currentStep === 1) updateStepUI(1);
 
-    function hideError(elId) {
-      document.getElementById(elId).classList.add('hidden');
-    }
+            // Save state on every input/change in the form area
+            document.querySelectorAll('input, select').forEach(el => {
+              el.addEventListener('input', saveCheckoutState);
+              el.addEventListener('change', saveCheckoutState);
+            });
 
-    function setLoading(btnId, labelId, spinnerId, arrowId, loading) {
-      document.getElementById(btnId).disabled = loading;
-      document.getElementById(labelId).style.opacity = loading ? '0.6' : '1';
-      document.getElementById(spinnerId).classList.toggle('hidden', !loading);
-      if (arrowId) document.getElementById(arrowId).classList.toggle('hidden', loading);
-    }
+          });
 
-    async function handleSendOTP() {
-      const email = document.getElementById('email-input').value.trim();
-      hideError('email-error');
+          // -------------------------------------------------------------------------
+          // Step UI
+          // -------------------------------------------------------------------------
+          function goToStep(n) {
+            currentStep = n;
+            updateStepUI(n);
+            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + n).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
 
-      if (!validateEmail(email)) {
-        showError('email-error', 'Please enter a valid email address.');
-        return;
-      }
+          function updateStepUI(activeStep) {
+            [1, 2, 3].forEach(n => {
+              const circle = document.querySelector('.step-circle[data-step="' + n + '"]');
+              const label = document.querySelector('.step-label[data-step="' + n + '"]');
 
-      // Require Turnstile verification (only if site key is configured)
-      if (TURNSTILE_SITE_KEY !== 'YOUR_TURNSTILE_SITE_KEY' && !turnstileToken) {
-        showError('email-error', 'Please complete the security check above.');
-        return;
-      }
+              if (n < activeStep) {
+                circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-secondary text-on-secondary step-circle';
+                circle.innerHTML = '<span class="material-symbols-outlined text-base" style="font-variation-settings:\'FILL\' 1">check</span>';
+                label.className = 'font-label-caps text-[10px] text-secondary step-label';
+              } else if (n === activeStep) {
+                circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-primary text-on-primary step-circle';
+                circle.innerHTML = n;
+                label.className = 'font-label-caps text-[10px] text-primary step-label';
+              } else {
+                circle.className = 'w-9 h-9 rounded-full flex items-center justify-center font-label-caps text-sm transition-all duration-300 bg-surface-container text-on-surface-variant step-circle';
+                circle.innerHTML = n;
+                label.className = 'font-label-caps text-[10px] text-on-surface-variant step-label';
+              }
+            });
 
-      setLoading('send-otp-btn', 'send-otp-label', 'send-otp-spinner', null, true);
+            const conn12 = document.getElementById('connector-1-2');
+            const conn23 = document.getElementById('connector-2-3');
+            conn12.classList.toggle('active', activeStep >= 2);
+            conn23.classList.toggle('active', activeStep >= 3);
+          }
 
-      try {
-        await sendOTP(email);
-        // Reset Turnstile after use so resend requires a new solve
-        if (window.turnstile) window.turnstile.reset('#checkout-turnstile');
-        turnstileToken = null;
-        document.getElementById('email-input').disabled = true;
-        document.getElementById('otp-section').classList.remove('hidden');
-        document.getElementById('otp-email-display').textContent = email;
-        document.getElementById('otp-input').focus();
-        startResendCountdown();
-      } catch (err) {
-        showError('email-error', err.message || 'Failed to send OTP. Please try again.');
-      } finally {
-        setLoading('send-otp-btn', 'send-otp-label', 'send-otp-spinner', null, false);
-      }
-    }
+          // -------------------------------------------------------------------------
+          // Order Summary Render
+          // -------------------------------------------------------------------------
+          function renderOrderSummary() {
+            const items = Cart.getItems();
+            const container = document.getElementById('summary-items');
+            const emptyMsg = document.getElementById('summary-empty');
 
-    async function sendOTP(email) {
-      const res = await fetch(API_BASE + '/api/otp/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, turnstileToken: turnstileToken || '' })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
-      return data;
-    }
+            if (items.length === 0) {
+              container.innerHTML = '';
+              emptyMsg.classList.remove('hidden');
+            } else {
+              emptyMsg.classList.add('hidden');
+              container.innerHTML = items.map(item => `
+                <div class="flex gap-3 items-start">
+                  <div class="w-16 h-20 rounded bg-surface-container overflow-hidden flex-shrink-0">
+                    ${item.image
+                      ? `<img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover"/>`
+                      : `<div class="w-full h-full bg-primary-container/40"></div>`
+                    }
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-body-md text-sm font-semibold text-on-surface truncate">${item.name}</p>
+                    <p class="text-xs text-on-surface-variant mt-0.5">${item.color} · ${item.size}</p>
+                    <p class="text-xs text-on-surface-variant">Qty: ${item.qty}</p>
+                  </div>
+                  <span class="font-body-md text-sm font-semibold text-on-surface whitespace-nowrap">${Cart.formatPrice(item.price * item.qty)}</span>
+                </div>
+              `).join('');
+            }
 
-    async function handleVerifyOTP() {
-      const email = document.getElementById('email-input').value.trim();
-      const otp = document.getElementById('otp-input').value.trim();
-      hideError('otp-error');
+            const subtotal = Cart.getSubtotal();
+            const shipping = Cart.getShipping();
+            const discount = promoDiscount;
+            const total = subtotal + shipping - discount;
 
-      if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-        showError('otp-error', 'Please enter the 6-digit code.');
-        return;
-      }
+            document.getElementById('summary-subtotal').textContent = Cart.formatPrice(subtotal);
+            document.getElementById('summary-shipping').textContent = Cart.getShippingDisplay();
+            document.getElementById('summary-total').textContent = Cart.formatPrice(total);
 
-      setLoading('verify-otp-btn', 'verify-otp-label', 'verify-otp-spinner', null, true);
+            if (discount > 0) {
+              document.getElementById('discount-row').classList.remove('hidden');
+              document.getElementById('summary-discount').textContent = '−' + Cart.formatPrice(discount);
+            } else {
+              document.getElementById('discount-row').classList.add('hidden');
+            }
 
-      try {
-        await verifyOTP(email, otp);
+            if (subtotal < 5000) {
+              document.getElementById('free-shipping-notice').classList.remove('hidden');
+            } else {
+              document.getElementById('free-shipping-notice').classList.add('hidden');
+            }
 
-        // Show verified state on step 1
-        verifiedEmail = email;
-        document.getElementById('otp-section').classList.add('hidden');
-        document.getElementById('email-verified-state').classList.remove('hidden');
-        document.getElementById('verified-email-display').textContent = '✓ ' + email + ' verified';
-        clearInterval(countdownTimer);
-
-        // Move to step 2 with a short delay
-        setTimeout(() => goToStep(2), 600);
-      } catch (err) {
-        showError('otp-error', err.message || 'Invalid or expired OTP.');
-      } finally {
-        setLoading('verify-otp-btn', 'verify-otp-label', 'verify-otp-spinner', null, false);
-      }
-    }
-
-    async function verifyOTP(email, otp) {
-      const res = await fetch(API_BASE + '/api/otp/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Verification failed');
-      return data;
-    }
-
-    function handleResendOTP() {
-      const email = document.getElementById('email-input').value.trim();
-      document.getElementById('otp-input').value = '';
-      hideError('otp-error');
-      document.getElementById('email-input').disabled = false;
-      document.getElementById('resend-btn').classList.add('hidden');
-      document.getElementById('resend-countdown').classList.add('hidden');
-      handleSendOTP();
-    }
-
-    function startResendCountdown() {
-      let seconds = 30;
-      document.getElementById('resend-btn').classList.add('hidden');
-      document.getElementById('resend-countdown').classList.remove('hidden');
-      document.getElementById('countdown-num').textContent = seconds;
-
-      clearInterval(countdownTimer);
-      countdownTimer = setInterval(() => {
-        seconds--;
-        document.getElementById('countdown-num').textContent = seconds;
-        if (seconds <= 0) {
-          clearInterval(countdownTimer);
-          document.getElementById('resend-countdown').classList.add('hidden');
-          document.getElementById('resend-btn').classList.remove('hidden');
-        }
-      }, 1000);
-    }
-
-    // -------------------------------------------------------------------------
-    // Step 2: Shipping
-    // -------------------------------------------------------------------------
-    function handleShippingSubmit(e) {
-      e.preventDefault();
-      const errors = validateShippingForm();
-      if (errors.length > 0) return;
-
-      shippingData = {
-        name: document.getElementById('full-name').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        address1: document.getElementById('address1').value.trim(),
-        address2: document.getElementById('address2').value.trim(),
-        city: document.getElementById('city').value.trim(),
-        state: document.getElementById('state').value,
-        pincode: document.getElementById('pincode').value.trim()
-      };
-
-      goToStep(3);
-    }
-
-    function validateShippingForm() {
-      const errors = [];
-      const fields = [
-        { id: 'full-name', errId: 'err-name', label: 'Full name', min: 2 },
-        { id: 'address1', errId: 'err-address1', label: 'Address', min: 5 },
-        { id: 'city', errId: 'err-city', label: 'City', min: 2 }
-      ];
-
-      fields.forEach(f => {
-        const val = document.getElementById(f.id).value.trim();
-        if (!val || val.length < f.min) {
-          showError(f.errId, f.label + ' is required.');
-          errors.push(f.id);
-        } else {
-          hideError(f.errId);
-        }
-      });
-
-      const phone = document.getElementById('phone').value.trim();
-      if (!/^\d{10}$/.test(phone)) {
-        showError('err-phone', 'Please enter a valid 10-digit phone number.');
-        errors.push('phone');
-      } else {
-        hideError('err-phone');
-      }
-
-      const pincode = document.getElementById('pincode').value.trim();
-      if (!/^\d{6}$/.test(pincode)) {
-        showError('err-pincode', 'Please enter a valid 6-digit pincode.');
-        errors.push('pincode');
-      } else {
-        hideError('err-pincode');
-      }
-
-      const state = document.getElementById('state').value;
-      if (!state) {
-        showError('err-state', 'Please select your state.');
-        errors.push('state');
-      } else {
-        hideError('err-state');
-      }
-
-      return errors;
-    }
-
-    // -------------------------------------------------------------------------
-    // Step 3: Payment
-    // -------------------------------------------------------------------------
-    async function handlePayment() {
-      const items = Cart.getItems();
-      if (items.length === 0) {
-        alert('Your cart is empty.');
-        return;
-      }
-
-      const subtotal = Cart.getSubtotal();
-      const shipping = Cart.getShipping();
-      const total = subtotal + shipping - promoDiscount;
-      const amountPaise = total * 100; // Convert to paise
-
-      setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, true);
-
-      try {
-        const orderData = await createRazorpayOrder(amountPaise);
-        razorpayOrderId = orderData.razorpay_order_id;
-        openRazorpay(razorpayOrderId, amountPaise);
-      } catch (err) {
-        alert(err.message || 'Failed to initiate payment. Please try again.');
-      } finally {
-        setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, false);
-        document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
-      }
-    }
-
-    async function createRazorpayOrder(amountPaise) {
-      const res = await fetch(API_BASE + '/api/payment/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: amountPaise, currency: 'INR' })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Could not create payment order.');
-      return data;
-    }
-
-    function openRazorpay(orderId, amount) {
-      const options = {
-        key: RAZORPAY_KEY,
-        amount: amount,
-        currency: 'INR',
-        name: "NariVibes",
-        description: 'Summer Collection',
-        image: '',
-        order_id: orderId,
-        handler: async function(response) {
-          await onPaymentSuccess(response);
-        },
-        prefill: {
-          email: verifiedEmail || '',
-          name: shippingData ? shippingData.name : '',
-          contact: shippingData ? '+91' + shippingData.phone : ''
-        },
-        theme: { color: '#70585b' },
-        modal: {
-          ondismiss: function() {
-            setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, false);
-            const total = Cart.getSubtotal() + Cart.getShipping() - promoDiscount;
+            // Payment step totals
+            document.getElementById('payment-subtotal').textContent = Cart.formatPrice(subtotal);
+            document.getElementById('payment-shipping').textContent = Cart.getShippingDisplay();
+            document.getElementById('payment-total').textContent = Cart.formatPrice(total);
             document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
           }
-        }
-      };
-      const rzp = new Razorpay(options);
-      rzp.on('payment.failed', function(response) {
-        alert('Payment failed: ' + (response.error.description || 'Unknown error. Please try again.'));
-      });
-      rzp.open();
-    }
 
-    async function onPaymentSuccess(response) {
-      try {
-        // Verify signature
-        await fetch(API_BASE + '/api/payment/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature
-          })
-        });
+          // -------------------------------------------------------------------------
+          // Step 1: OTP Flow
+          // -------------------------------------------------------------------------
+          function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          }
 
-        // Save order to DB
-        const subtotal = Cart.getSubtotal();
-        const shipping = Cart.getShipping();
-        const total = subtotal + shipping - promoDiscount;
+          function showError(elId, msg) {
+            const el = document.getElementById(elId);
+            el.textContent = msg;
+            el.classList.remove('hidden');
+          }
 
-        const orderRes = await fetch(API_BASE + '/api/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customer_email: verifiedEmail,
-            customer_name: shippingData.name,
-            customer_phone: '+91' + shippingData.phone,
-            shipping_address: {
-              line1: shippingData.address1,
-              line2: shippingData.address2,
-              city: shippingData.city,
-              state: shippingData.state,
-              pincode: shippingData.pincode
-            },
-            items: Cart.getItems(),
-            subtotal: subtotal * 100,
-            shipping: shipping * 100,
-            total: total * 100,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id
-          })
-        });
+          function hideError(elId) {
+            document.getElementById(elId).classList.add('hidden');
+          }
 
-        const orderData = await orderRes.json();
-        const orderId = orderData.id || orderData.order_id || 'unknown';
+          function setLoading(btnId, labelId, spinnerId, arrowId, loading) {
+            document.getElementById(btnId).disabled = loading;
+            document.getElementById(labelId).style.opacity = loading ? '0.6' : '1';
+            document.getElementById(spinnerId).classList.toggle('hidden', !loading);
+            if (arrowId) document.getElementById(arrowId).classList.toggle('hidden', loading);
+          }
 
-        Cart.clear();
-        window.location.href = 'order-success.html?id=' + encodeURIComponent(orderId);
-      } catch (err) {
-        console.error('[Checkout] Order save error:', err);
-        // Payment was successful even if order-save had issues — still redirect
-        Cart.clear();
-        window.location.href = 'order-success.html?id=confirmed';
-      }
-    }
+          async function handleSendOTP() {
+            const email = document.getElementById('email-input').value.trim();
+            hideError('email-error');
 
-    // -------------------------------------------------------------------------
-    // Promo Code
-    // -------------------------------------------------------------------------
-    const PROMO_CODES = {
-      'SUMMER10': 0.10,
-      'LETE15': 0.15,
-      'WELCOME20': 0.20
-    };
+            if (!validateEmail(email)) {
+              showError('email-error', 'Please enter a valid email address.');
+              return;
+            }
 
-    function applyPromo() {
-      const code = document.getElementById('promo-input').value.trim().toUpperCase();
-      const msgEl = document.getElementById('promo-msg');
+            // Require Turnstile verification
+            if (!window._tsToken) {
+              if (window._tsFailed) {
+                showError('email-error', 'Security check failed to load. Please refresh the page and try again.');
+              } else {
+                showError('email-error', 'Please complete the security check above.');
+              }
+              return;
+            }
 
-      if (!code) {
-        msgEl.textContent = 'Please enter a promo code.';
-        msgEl.className = 'text-sm text-error mb-2';
-        msgEl.classList.remove('hidden');
-        return;
-      }
+            setLoading('send-otp-btn', 'send-otp-label', 'send-otp-spinner', null, true);
 
-      if (PROMO_CODES[code]) {
-        const subtotal = Cart.getSubtotal();
-        promoDiscount = Math.round(subtotal * PROMO_CODES[code]);
-        msgEl.textContent = 'Code applied! ' + (PROMO_CODES[code] * 100) + '% discount.';
-        msgEl.className = 'text-sm text-secondary font-semibold mb-2';
-        msgEl.classList.remove('hidden');
-        document.getElementById('promo-input').classList.add('promo-applied');
-        renderOrderSummary();
-      } else {
-        promoDiscount = 0;
-        msgEl.textContent = 'Invalid promo code.';
-        msgEl.className = 'text-sm text-error mb-2';
-        msgEl.classList.remove('hidden');
-        document.getElementById('promo-input').classList.remove('promo-applied');
-        renderOrderSummary();
-      }
-    }
-  </script>
+            try {
+              await sendOTP(email);
+              // Reset Turnstile after use so resend requires a new solve
+              if (window.turnstile) window.turnstile.reset('#checkout-turnstile');
+              window._tsToken = null;
+              document.getElementById('email-input').disabled = true;
+              document.getElementById('otp-section').classList.remove('hidden');
+              document.getElementById('otp-email-display').textContent = email;
+              document.getElementById('otp-input').focus();
+              startResendCountdown();
+            } catch (err) {
+              showError('email-error', err.message || 'Failed to send OTP. Please try again.');
+            } finally {
+              setLoading('send-otp-btn', 'send-otp-label', 'send-otp-spinner', null, false);
+            }
+          }
 
-</body>
+          async function sendOTP(email) {
+            const res = await fetch(API_BASE + '/api/otp/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, turnstileToken: window._tsToken || '' })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
+            return data;
+          }
+
+          async function handleVerifyOTP() {
+            const email = document.getElementById('email-input').value.trim();
+            const otp = document.getElementById('otp-input').value.trim();
+            hideError('otp-error');
+
+            if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+              showError('otp-error', 'Please enter the 6-digit code.');
+              return;
+            }
+
+            setLoading('verify-otp-btn', 'verify-otp-label', 'verify-otp-spinner', null, true);
+
+            try {
+              await verifyOTP(email, otp);
+
+              // Show verified state on step 1
+              verifiedEmail = email;
+              document.getElementById('otp-section').classList.add('hidden');
+              document.getElementById('email-verified-state').classList.remove('hidden');
+              document.getElementById('verified-email-display').textContent = '✓ ' + email + ' verified';
+              clearInterval(countdownTimer);
+
+              // Move to step 2 with a short delay
+              setTimeout(() => goToStep(2), 600);
+            } catch (err) {
+              showError('otp-error', err.message || 'Invalid or expired OTP.');
+            } finally {
+              setLoading('verify-otp-btn', 'verify-otp-label', 'verify-otp-spinner', null, false);
+            }
+          }
+
+          async function verifyOTP(email, otp) {
+            const res = await fetch(API_BASE + '/api/otp/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, otp })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Verification failed');
+            return data;
+          }
+
+          function handleResendOTP() {
+            document.getElementById('otp-input').value = '';
+            hideError('otp-error');
+            document.getElementById('email-input').disabled = false;
+            document.getElementById('resend-btn').classList.add('hidden');
+            document.getElementById('resend-countdown').classList.add('hidden');
+            // Hide OTP section so user re-solves Turnstile before sending again
+            document.getElementById('otp-section').classList.add('hidden');
+            window._tsToken = null;
+            window._tsFailed = false;
+            var tsEl = document.getElementById('checkout-turnstile');
+            if (tsEl && window.turnstile) turnstile.reset(tsEl);
+          }
+
+          function startResendCountdown() {
+            let seconds = 30;
+            document.getElementById('resend-btn').classList.add('hidden');
+            document.getElementById('resend-countdown').classList.remove('hidden');
+            document.getElementById('countdown-num').textContent = seconds;
+
+            clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+              seconds--;
+              document.getElementById('countdown-num').textContent = seconds;
+              if (seconds <= 0) {
+                clearInterval(countdownTimer);
+                document.getElementById('resend-countdown').classList.add('hidden');
+                document.getElementById('resend-btn').classList.remove('hidden');
+              }
+            }, 1000);
+          }
+
+          // -------------------------------------------------------------------------
+          // Step 2: Shipping
+          // -------------------------------------------------------------------------
+          function handleShippingSubmit(e) {
+            e.preventDefault();
+            const errors = validateShippingForm();
+            if (errors.length > 0) return;
+
+            shippingData = {
+              name: document.getElementById('full-name').value.trim(),
+              phone: document.getElementById('phone').value.trim(),
+              address1: document.getElementById('address1').value.trim(),
+              address2: document.getElementById('address2').value.trim(),
+              city: document.getElementById('city').value.trim(),
+              state: document.getElementById('state').value,
+              pincode: document.getElementById('pincode').value.trim()
+            };
+
+            goToStep(3);
+          }
+
+          function validateShippingForm() {
+            const errors = [];
+            const fields = [
+              { id: 'full-name', errId: 'err-name', label: 'Full name', min: 2 },
+              { id: 'address1', errId: 'err-address1', label: 'Address', min: 5 },
+              { id: 'city', errId: 'err-city', label: 'City', min: 2 }
+            ];
+
+            fields.forEach(f => {
+              const val = document.getElementById(f.id).value.trim();
+              if (!val || val.length < f.min) {
+                showError(f.errId, f.label + ' is required.');
+                errors.push(f.id);
+              } else {
+                hideError(f.errId);
+              }
+            });
+
+            const phone = document.getElementById('phone').value.trim();
+            if (!/^\d{10}$/.test(phone)) {
+              showError('err-phone', 'Please enter a valid 10-digit phone number.');
+              errors.push('phone');
+            } else {
+              hideError('err-phone');
+            }
+
+            const pincode = document.getElementById('pincode').value.trim();
+            if (!/^\d{6}$/.test(pincode)) {
+              showError('err-pincode', 'Please enter a valid 6-digit pincode.');
+              errors.push('pincode');
+            } else {
+              hideError('err-pincode');
+            }
+
+            const state = document.getElementById('state').value;
+            if (!state) {
+              showError('err-state', 'Please select your state.');
+              errors.push('state');
+            } else {
+              hideError('err-state');
+            }
+
+            return errors;
+          }
+
+          // -------------------------------------------------------------------------
+          // Step 3: Payment
+          // -------------------------------------------------------------------------
+          async function handlePayment() {
+            const items = Cart.getItems();
+            if (items.length === 0) {
+              alert('Your cart is empty.');
+              return;
+            }
+
+            const subtotal = Cart.getSubtotal();
+            const shipping = Cart.getShipping();
+            const total = subtotal + shipping - promoDiscount;
+            const amountPaise = total * 100; // Convert to paise
+
+            setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, true);
+
+            try {
+              const orderData = await createRazorpayOrder(amountPaise);
+              razorpayOrderId = orderData.razorpay_order_id;
+              openRazorpay(razorpayOrderId, amountPaise);
+            } catch (err) {
+              alert(err.message || 'Failed to initiate payment. Please try again.');
+            } finally {
+              setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, false);
+              document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
+            }
+          }
+
+          async function createRazorpayOrder(amountPaise) {
+            const res = await fetch(API_BASE + '/api/payment/create', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ amount: amountPaise, currency: 'INR' })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Could not create payment order.');
+            return data;
+          }
+
+          function openRazorpay(orderId, amount) {
+            const options = {
+              key: RAZORPAY_KEY,
+              amount: amount,
+              currency: 'INR',
+              name: "NariVibes",
+              description: 'Summer Collection',
+              image: '',
+              order_id: orderId,
+              handler: async function(response) {
+                await onPaymentSuccess(response);
+              },
+              prefill: {
+                email: verifiedEmail || '',
+                name: shippingData ? shippingData.name : '',
+                contact: shippingData ? '+91' + shippingData.phone : ''
+              },
+              theme: { color: '#70585b' },
+              modal: {
+                ondismiss: function() {
+                  setLoading('pay-btn', 'pay-btn-label', 'pay-spinner', null, false);
+                  const total = Cart.getSubtotal() + Cart.getShipping() - promoDiscount;
+                  document.getElementById('pay-btn-label').textContent = 'Pay ' + Cart.formatPrice(total);
+                }
+              }
+            };
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function(response) {
+              alert('Payment failed: ' + (response.error.description || 'Unknown error. Please try again.'));
+            });
+            rzp.open();
+          }
+
+          async function onPaymentSuccess(response) {
+            try {
+              // Verify signature
+              await fetch(API_BASE + '/api/payment/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature
+                })
+              });
+
+              // Save order to DB
+              const subtotal = Cart.getSubtotal();
+              const shipping = Cart.getShipping();
+              const total = subtotal + shipping - promoDiscount;
+
+              const orderRes = await fetch(API_BASE + '/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  customer_email: verifiedEmail,
+                  customer_name: shippingData.name,
+                  customer_phone: '+91' + shippingData.phone,
+                  shipping_address: {
+                    line1: shippingData.address1,
+                    line2: shippingData.address2,
+                    city: shippingData.city,
+                    state: shippingData.state,
+                    pincode: shippingData.pincode
+                  },
+                  items: Cart.getItems(),
+                  subtotal: subtotal * 100,
+                  shipping: shipping * 100,
+                  total: total * 100,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id
+                })
+              });
+
+              const orderData = await orderRes.json();
+              const orderId = orderData.id || orderData.order_id || 'unknown';
+
+              Cart.clear();
+              window.location.href = 'order-success.html?id=' + encodeURIComponent(orderId);
+            } catch (err) {
+              console.error('[Checkout] Order save error:', err);
+              // Payment was successful even if order-save had issues — still redirect
+              Cart.clear();
+              window.location.href = 'order-success.html?id=confirmed';
+            }
+          }
+
+          // -------------------------------------------------------------------------
+          // Promo Code
+          // -------------------------------------------------------------------------
+          const PROMO_CODES = {
+            'SUMMER10': 0.10,
+            'LETE15': 0.15,
+            'WELCOME20': 0.20
+          };
+
+          function applyPromo() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            const msgEl = document.getElementById('promo-msg');
+
+            if (!code) {
+              msgEl.textContent = 'Please enter a promo code.';
+              msgEl.className = 'text-sm text-error mb-2';
+              msgEl.classList.remove('hidden');
+              return;
+            }
+
+            if (PROMO_CODES[code]) {
+              const subtotal = Cart.getSubtotal();
+              promoDiscount = Math.round(subtotal * PROMO_CODES[code]);
+              msgEl.textContent = 'Code applied! ' + (PROMO_CODES[code] * 100) + '% discount.';
+              msgEl.className = 'text-sm text-secondary font-semibold mb-2';
+              msgEl.classList.remove('hidden');
+              document.getElementById('promo-input').classList.add('promo-applied');
+              renderOrderSummary();
+            } else {
+              promoDiscount = 0;
+              msgEl.textContent = 'Invalid promo code.';
+              msgEl.className = 'text-sm text-error mb-2';
+              msgEl.classList.remove('hidden');
+              document.getElementById('promo-input').classList.remove('promo-applied');
+              renderOrderSummary();
+            }
+          }
+    </script>
+  </body>
 </html>

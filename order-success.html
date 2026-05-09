@@ -14,22 +14,22 @@
       theme: {
         extend: {
           "colors": {
-            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
-            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#2a2a2a",
+            "surface": "#f9f9f9","primary-container": "#f2ebe0","surface-bright": "#f9f9f9",
             "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
-            "primary-fixed-dim": "#debfc2","on-secondary-container": "#3b6a6f",
-            "on-primary-container": "#765e61","inverse-primary": "#debfc2","tertiary": "#615e5b",
-            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
-            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "primary-fixed-dim": "#c8c0b0","on-secondary-container": "#6b500f",
+            "on-primary-container": "#333333","inverse-primary": "#c8c0b0","tertiary": "#615e5b",
+            "secondary-container": "#f0e4c4","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#8b6914","primary": "#141414","on-surface": "#1a1c1c",
             "on-secondary": "#ffffff","surface-dim": "#dadada",
             "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
             "error-container": "#ffdad6","error": "#ba1a1a",
             "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
-            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
-            "primary-fixed": "#fbdbde","on-tertiary": "#ffffff","on-primary": "#ffffff",
+            "surface-container-lowest": "#ffffff","secondary-fixed": "#f2e8cc",
+            "primary-fixed": "#f5f0e5","on-tertiary": "#ffffff","on-primary": "#ffffff",
             "tertiary-container": "#e6e1dd","outline": "#807475",
             "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
-            "secondary-fixed-dim": "#9fcfd5","on-error": "#ffffff",
+            "secondary-fixed-dim": "#d4b96a","on-error": "#ffffff",
             "surface-container": "#eeeeee","inverse-surface": "#2f3131"
           },
           "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
@@ -82,17 +82,17 @@
 <body class="font-body-md text-on-surface">
 
   <!-- Navigation -->
-  <nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
-    <div class="flex justify-between items-center px-4 md:px-margin-desktop h-20 w-full max-w-container-max mx-auto">
-      <div class="flex items-center gap-gutter">
-        <div class="hidden md:flex gap-8">
-          <a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="collections.html">Collections</a>
+  <nav class="fixed top-0 w-full z-50 border-b border-[#e6e1da]" style="background-color:#ffffff;">
+    <div class="relative flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+      <div class="flex items-center gap-10">
+        <div class="hidden md:flex gap-10">
+          <a class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666] hover:text-[#141414] transition-colors" href="collections.html">Collections</a>
         </div>
       </div>
-      <a href="index.html" class="font-h2 text-h3 tracking-widest text-primary">NariVibes</a>
-      <div class="flex items-center gap-gutter">
-        <a href="cart.html" class="relative cursor-pointer active:scale-95 transition-transform text-primary">
-          <span class="material-symbols-outlined">shopping_bag</span>
+      <a href="index.html" class="absolute left-1/2 -translate-x-1/2 font-[Playfair_Display] text-[13px] tracking-[0.5em] uppercase text-[#141414] hover:opacity-60 transition-opacity whitespace-nowrap">NariVibes</a>
+      <div class="flex items-center gap-6">
+        <a href="cart.html" class="cursor-pointer text-[#141414] relative">
+          <span class="material-symbols-outlined" style="font-size:20px;">shopping_bag</span>
         </a>
       </div>
     </div>
@@ -100,7 +100,7 @@
 
   <!-- Main -->
   <main class="pt-20 min-h-screen flex items-center justify-center px-4 py-16">
-    <div class="max-w-lg w-full bg-white rounded-xl shadow-[0_8px_40px_rgba(112,88,91,0.12)] p-10 md:p-14 text-center">
+    <div class="max-w-lg w-full bg-white rounded-xl shadow-[0_8px_40px_rgba(20,20,20,0.12)] p-10 md:p-14 text-center">
 
       <!-- Checkmark Icon -->
       <div class="flex justify-center mb-8">

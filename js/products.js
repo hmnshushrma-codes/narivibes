@@ -29,9 +29,8 @@ const PRODUCTS = [
       'Exclusive Summer 2024 Collection'
     ],
     images: [
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80',
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80',
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80'
+      'https://images.pexels.com/photos/10317113/pexels-photo-10317113.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/36134867/pexels-photo-36134867.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 18,
     featured: false,
@@ -61,8 +60,8 @@ const PRODUCTS = [
       'Handcrafted — minor natural variations are a mark of authenticity'
     ],
     images: [
-      'https://images.unsplash.com/photo-1517401836282-fa19f65a0ae8?w=800&q=80',
-      'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=800&q=80'
+      'https://images.pexels.com/photos/14377294/pexels-photo-14377294.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4155246/pexels-photo-4155246.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 30,
     featured: false,
@@ -93,8 +92,8 @@ const PRODUCTS = [
       'Fully lined with silk habotai'
     ],
     images: [
-      'https://images.unsplash.com/photo-1594938298603-c8148c4b4057?w=800&q=80',
-      'https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=800&q=80'
+      'https://images.pexels.com/photos/8767569/pexels-photo-8767569.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/35962173/pexels-photo-35962173.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 12,
     featured: false,
@@ -126,8 +125,8 @@ const PRODUCTS = [
       'Adjustable spaghetti straps with silk-covered hardware'
     ],
     images: [
-      'https://images.unsplash.com/photo-1598554747436-c9293d6a588f?w=800&q=80',
-      'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80'
+      'https://images.pexels.com/photos/8767580/pexels-photo-8767580.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/2933636/pexels-photo-2933636.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 22,
     featured: false,
@@ -157,8 +156,8 @@ const PRODUCTS = [
       'Natural patina development is a hallmark of Vachetta leather'
     ],
     images: [
-      'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&q=80',
-      'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=800&q=80'
+      'https://images.pexels.com/photos/368740/pexels-photo-368740.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/3155234/pexels-photo-3155234.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 14,
     featured: false,
@@ -189,8 +188,8 @@ const PRODUCTS = [
       'Iron while slightly damp for a crisp finish; wrinkles are natural and part of its character'
     ],
     images: [
-      'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80',
-      'https://images.unsplash.com/photo-1598554747436-c9293d6a588f?w=800&q=80'
+      'https://images.pexels.com/photos/5439054/pexels-photo-5439054.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/8886950/pexels-photo-8886950.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 35,
     featured: false,
@@ -221,9 +220,8 @@ const PRODUCTS = [
       'Adjustable halter tie neck for a custom fit'
     ],
     images: [
-      'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=800&q=80',
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80',
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80'
+      'https://images.pexels.com/photos/6387638/pexels-photo-6387638.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/8710793/pexels-photo-8710793.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 8,
     featured: true,
@@ -254,8 +252,8 @@ const PRODUCTS = [
       'Clean lenses with the provided cloth only'
     ],
     images: [
-      'https://images.unsplash.com/photo-1591561954555-607968c989ab?w=800&q=80',
-      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800&q=80'
+      'https://images.pexels.com/photos/3193648/pexels-photo-3193648.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/947844/pexels-photo-947844.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 20,
     featured: false,
@@ -285,8 +283,8 @@ const PRODUCTS = [
       'Spot clean exterior; wipe leather interior with damp cloth'
     ],
     images: [
-      'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=800&q=80',
-      'https://images.unsplash.com/photo-1591561954555-607968c989ab?w=800&q=80'
+      'https://images.pexels.com/photos/8093163/pexels-photo-8093163.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/6045068/pexels-photo-6045068.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 16,
     featured: false,
@@ -317,8 +315,8 @@ const PRODUCTS = [
       'Cool iron if required'
     ],
     images: [
-      'https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=800&q=80',
-      'https://images.unsplash.com/photo-1594938298603-c8148c4b4057?w=800&q=80'
+      'https://images.pexels.com/photos/5447529/pexels-photo-5447529.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/16239658/pexels-photo-16239658.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 25,
     featured: false,
@@ -348,8 +346,8 @@ const PRODUCTS = [
       'Handcrafted — allow a short break-in period'
     ],
     images: [
-      'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=800&q=80',
-      'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&q=80'
+      'https://images.pexels.com/photos/13991819/pexels-photo-13991819.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/8751931/pexels-photo-8751931.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 20,
     featured: false,
@@ -380,9 +378,8 @@ const PRODUCTS = [
       'Natural linen creasing is expected and part of the aesthetic'
     ],
     images: [
-      'https://images.unsplash.com/photo-1594938298603-c8148c4b4057?w=800&q=80',
-      'https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=800&q=80',
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80'
+      'https://images.pexels.com/photos/10317106/pexels-photo-10317106.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/10317127/pexels-photo-10317127.jpeg?auto=compress&cs=tinysrgb&w=800'
     ],
     stock: 19,
     featured: true,

@@ -224,11 +224,11 @@ const Cart = {
     badges.forEach((badge) => {
       if (count > 0) {
         badge.textContent = count > 99 ? '99+' : count;
-        badge.style.display = '';
+        badge.classList.remove('hidden');
         badge.setAttribute('aria-label', count + ' items in cart');
       } else {
         badge.textContent = '0';
-        badge.style.display = 'none';
+        badge.classList.add('hidden');
         badge.setAttribute('aria-label', 'Cart is empty');
       }
     });

@@ -9,6 +9,7 @@
 
 /checkout.html
   X-Robots-Tag: noindex
+  Cache-Control: no-store, no-cache
 
 /cart.html
   X-Robots-Tag: noindex

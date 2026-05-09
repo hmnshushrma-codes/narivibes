@@ -8,6 +8,8 @@ compatibility_date = "2024-09-01"
 [vars]
 ALLOWED_ORIGIN = "https://narivibes.oyenino.com,https://narivibes.pages.dev"
 ENVIRONMENT    = "production"
+FROM_EMAIL = "noreply@narivibes.oyenino.com"  # restore after Resend domain is verified
+
 
 # ---------------------------------------------------------------------------
 # Secrets — set via setup-secrets.sh (never commit secret values)

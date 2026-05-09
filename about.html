@@ -11,7 +11,7 @@
 
   <!-- Scripts & Fonts -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
   <script id="tailwind-config">
@@ -20,17 +20,17 @@
       theme: {
         extend: {
           "colors": {
-            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
-            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#2a2a2a",
+            "surface": "#f9f9f9","primary-container": "#f2ebe0","surface-bright": "#f9f9f9",
             "on-secondary-fixed": "#001f23","on-primary-fixed": "#281719",
-            "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
-            "primary-fixed-dim": "#debfc2","surface-tint": "#70585b",
+            "outline-variant": "#e6e1da","on-tertiary-fixed-variant": "#494644",
+            "primary-fixed-dim": "#c8c0b0","surface-tint": "#141414",
             "on-secondary-container": "#3b6a6f","on-primary-container": "#765e61",
-            "inverse-primary": "#debfc2","tertiary": "#615e5b","surface-variant": "#e2e2e2",
-            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
-            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "inverse-primary": "#c8c0b0","tertiary": "#615e5b","surface-variant": "#e2e2e2",
+            "secondary-container": "#f0e4c4","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#8b6914","primary": "#141414","on-surface": "#1a1c1c",
             "on-secondary": "#ffffff","surface-dim": "#dadada","on-tertiary-fixed": "#1d1b19",
-            "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
+            "surface-container-highest": "#e2e2e2","on-surface-variant": "#555555",
             "on-error-container": "#93000a","error-container": "#ffdad6","error": "#ba1a1a",
             "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
             "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
@@ -64,33 +64,36 @@
 <body class="font-[Inter]">
 
   <!-- ===== NAV ===== -->
-  <nav class="fixed top-0 w-full z-50 bg-[#f9f9f9]/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
-    <div class="flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
-      <div class="flex items-center gap-6">
-        <button class="cursor-pointer text-[#70585b]" id="mobile-menu-btn">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
-        <div class="hidden md:flex gap-8">
-          <a class="text-xs font-semibold tracking-[0.1em] uppercase text-[#4f4445] hover:text-[#70585b] transition-colors font-[Inter]" href="collections.html">Collections</a>
-          <a class="text-xs font-semibold tracking-[0.1em] uppercase hover:text-[#70585b] transition-colors font-[Inter] text-[#4f4445]" href="sustainability.html">Sustainability</a>
-          <a class="text-xs font-semibold tracking-[0.1em] uppercase hover:text-[#70585b] transition-colors font-[Inter] text-[#70585b] border-b border-[#70585b]" href="about.html">About</a>
-        </div>
-      </div>
-      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-[#70585b]">NariVibes</a>
-      <div class="flex items-center gap-6">
-        <button class="hidden md:block text-[#4f4445] hover:text-[#70585b]"><span class="material-symbols-outlined">search</span></button>
-        <a href="cart.html" class="text-[#70585b] relative">
-          <span class="material-symbols-outlined">shopping_bag</span>
-          <span class="cart-count-badge absolute -top-2 -right-2 bg-[#70585b] text-white text-xs w-5 h-5 rounded-full items-center justify-center hidden">0</span>
-        </a>
+  <nav class="fixed top-0 w-full z-50 border-b border-[#e6e1da]" style="background-color:#ffffff;">
+  <div class="relative flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+    <div class="flex items-center gap-10">
+      <button class="md:hidden cursor-pointer text-[#141414]" id="mobile-menu-btn">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="hidden md:flex gap-10">
+        <a class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666] hover:text-[#141414] transition-colors" href="collections.html">Collections</a>
+        <a class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666] hover:text-[#141414] transition-colors" href="sustainability.html">Sustainability</a>
+        <a class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#141414] border-b border-[#141414] pb-0.5" href="about.html">About</a>
       </div>
     </div>
-    <div class="hidden md:hidden bg-[#f9f9f9]/95 backdrop-blur-md border-t border-[#d2c3c4] px-4 py-4" id="mobile-menu">
-      <a class="block py-2 text-xs font-semibold tracking-widest uppercase text-[#4f4445]" href="collections.html">Collections</a>
-      <a class="block py-2 text-xs font-semibold tracking-widest uppercase text-[#4f4445]" href="sustainability.html">Sustainability</a>
-      <a class="block py-2 text-xs font-semibold tracking-widest uppercase text-[#70585b]" href="about.html">About</a>
+    <a href="index.html" class="absolute left-1/2 -translate-x-1/2 font-[Playfair_Display] text-[13px] tracking-[0.5em] uppercase text-[#141414] hover:opacity-60 transition-opacity whitespace-nowrap">NariVibes</a>
+    <div class="flex items-center gap-6">
+      <button class="hidden md:block cursor-pointer text-[#666666] hover:text-[#141414] transition-colors">
+        <span class="material-symbols-outlined" style="font-size:20px;">search</span>
+      </button>
+      <a href="cart.html" class="cursor-pointer text-[#141414] relative">
+        <span class="material-symbols-outlined" style="font-size:20px;">shopping_bag</span>
+        <span class="cart-count-badge absolute -top-1 -right-1 bg-[#141414] text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+      </a>
     </div>
-  </nav>
+  </div>
+  <!-- Mobile menu -->
+  <div class="hidden md:hidden bg-white border-t border-[#e6e1da] px-4 py-5" id="mobile-menu">
+    <a class="block py-3 font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666]" href="collections.html">Collections</a>
+    <a class="block py-3 font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666]" href="sustainability.html">Sustainability</a>
+    <a class="block py-3 font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#141414]" href="about.html">About</a>
+  </div>
+</nav>
   <script>
     document.getElementById('mobile-menu-btn').addEventListener('click', () => {
       document.getElementById('mobile-menu').classList.toggle('hidden');
@@ -106,20 +109,20 @@
 
           <!-- Text Left -->
           <div>
-            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-5">Est. 2019, India</p>
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#8b6914] font-[Inter] mb-5">Est. 2019, India</p>
             <h1 class="font-[Playfair_Display] text-[40px] md:text-[48px] leading-tight tracking-[-0.01em] text-[#1a1c1c] mb-6">
               Born at the Crossroads of Craft and Coast
             </h1>
-            <p class="text-[18px] leading-relaxed text-[#4f4445] font-[Inter] max-w-lg">
+            <p class="text-[18px] leading-relaxed text-[#555555] font-[Inter] max-w-lg">
               NariVibes was born from a single conviction: that what you wear should feel as considered as the life you are living. We are a label rooted in Indian craft heritage, guided by a love of slow living, and shaped by the light of the coast.
             </p>
           </div>
 
           <!-- Image Placeholder Right -->
-          <div class="bg-[#b8e8ee]/30 rounded-xl h-[480px] flex flex-col items-center justify-center gap-3 relative overflow-hidden">
-            <div class="absolute inset-0 opacity-20" style="background: radial-gradient(ellipse at 40% 40%, #37656b 0%, transparent 60%);"></div>
-            <span class="material-symbols-outlined text-[#37656b] text-[52px] opacity-25 relative z-10">auto_stories</span>
-            <p class="font-[Playfair_Display] italic text-[#37656b] text-2xl relative z-10">The NariVibes Story</p>
+          <div class="bg-[#f0e4c4]/30 rounded-xl h-[480px] flex flex-col items-center justify-center gap-3 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-20" style="background: radial-gradient(ellipse at 40% 40%, #8b6914 0%, transparent 60%);"></div>
+            <span class="material-symbols-outlined text-[#8b6914] text-[52px] opacity-25 relative z-10">auto_stories</span>
+            <p class="font-[Playfair_Display] italic text-[#8b6914] text-2xl relative z-10">The NariVibes Story</p>
           </div>
 
         </div>
@@ -129,20 +132,20 @@
     <!-- ===== SECTION 2: BRAND STORY ===== -->
     <section class="py-20 bg-[#f3f3f3]">
       <div class="w-full max-w-3xl mx-auto px-4 md:px-8">
-        <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-8 text-center">Our Story</p>
+        <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#8b6914] font-[Inter] mb-8 text-center">Our Story</p>
 
         <div class="space-y-6 mb-12">
-          <p class="text-[18px] leading-relaxed text-[#4f4445] font-[Inter]">
+          <p class="text-[18px] leading-relaxed text-[#555555] font-[Inter]">
             NariVibes — French for 'The Summer' — was founded by Nari, a textile designer from Chennai who spent years studying natural dyeing in Lyon before returning home with a singular vision: to create garments that feel like a second skin in the summer heat. She wanted to reconcile the European sensibility for quiet luxury with the extraordinary hand-skills of Indian weavers.
           </p>
-          <p class="text-[18px] leading-relaxed text-[#4f4445] font-[Inter]">
+          <p class="text-[18px] leading-relaxed text-[#555555] font-[Inter]">
             What began as a small studio in Auroville, crafting silk slips from fabric remnants, grew into a collection that now ships to women across India and beyond. Every piece is made in small batches to eliminate overproduction, and every design is guided by a philosophy of effortless permanence — clothes made to be worn for decades, not seasons.
           </p>
         </div>
 
         <!-- Pull Quote -->
-        <blockquote class="border-l-2 border-[#70585b] pl-8 py-2">
-          <p class="font-[Playfair_Display] italic text-[28px] md:text-[32px] leading-snug text-[#70585b] mb-4">
+        <blockquote class="border-l-2 border-[#141414] pl-8 py-2">
+          <p class="font-[Playfair_Display] italic text-[28px] md:text-[32px] leading-snug text-[#141414] mb-4">
             "I wanted to make something that felt like the air after rain."
           </p>
           <footer class="text-sm font-[Inter] text-[#807475] tracking-widest uppercase font-semibold">— Nari, Founder</footer>
@@ -154,40 +157,40 @@
     <section class="py-24 bg-[#f9f9f9]">
       <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
         <div class="text-center mb-16">
-          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-3">Values</p>
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#8b6914] font-[Inter] mb-3">Values</p>
           <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c]">What We Believe In</h2>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
           <!-- Card 1 -->
-          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(112,88,91,0.07)] flex flex-col gap-5">
-            <div class="w-14 h-14 rounded-full bg-[#fadadd] flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-[#70585b] text-2xl">hourglass_top</span>
+          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(20,20,20,0.07)] flex flex-col gap-5">
+            <div class="w-14 h-14 rounded-full bg-[#f2ebe0] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[#141414] text-2xl">hourglass_top</span>
             </div>
             <h3 class="font-[Playfair_Display] text-[24px] leading-snug text-[#1a1c1c]">Slow Fashion</h3>
-            <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+            <p class="text-[16px] leading-relaxed text-[#555555] font-[Inter]">
               We design twice a year, in small batches. No fast drops, no endless SKUs. Every collection is considered, numbered, and intentional — born from months of research into craft, colour, and the way women actually live in their clothes. We are at peace with fewer, better things.
             </p>
           </article>
 
           <!-- Card 2 -->
-          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(112,88,91,0.07)] flex flex-col gap-5">
-            <div class="w-14 h-14 rounded-full bg-[#fadadd] flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-[#70585b] text-2xl">visibility</span>
+          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(20,20,20,0.07)] flex flex-col gap-5">
+            <div class="w-14 h-14 rounded-full bg-[#f2ebe0] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[#141414] text-2xl">visibility</span>
             </div>
             <h3 class="font-[Playfair_Display] text-[24px] leading-snug text-[#1a1c1c]">Radical Transparency</h3>
-            <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+            <p class="text-[16px] leading-relaxed text-[#555555] font-[Inter]">
               We publish the full cost breakdown of every garment — materials, labour, overhead — because we believe you deserve to know what you are paying for. Transparency is not a marketing strategy for us; it is the foundation of the trust we are trying to build, one honest garment at a time.
             </p>
           </article>
 
           <!-- Card 3 -->
-          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(112,88,91,0.07)] flex flex-col gap-5">
-            <div class="w-14 h-14 rounded-full bg-[#fadadd] flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-[#70585b] text-2xl">architecture</span>
+          <article class="bg-white rounded-xl p-8 shadow-[0_2px_16px_rgba(20,20,20,0.07)] flex flex-col gap-5">
+            <div class="w-14 h-14 rounded-full bg-[#f2ebe0] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-[#141414] text-2xl">architecture</span>
             </div>
             <h3 class="font-[Playfair_Display] text-[24px] leading-snug text-[#1a1c1c]">Indian Craft Heritage</h3>
-            <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
+            <p class="text-[16px] leading-relaxed text-[#555555] font-[Inter]">
               From block-printed linens to hand-loomed silks, our techniques trace back centuries. We are custodians, not just creators — working with artisan families to document, preserve, and evolve skills that deserve to live far beyond our generation. Every piece is a collaboration between past and present.
             </p>
           </article>
@@ -197,45 +200,96 @@
     </section>
 
     <!-- ===== SECTION 4: THE FOUNDER ===== -->
-    <section class="py-24 bg-[#fbdbde]/10">
+    <section class="py-24 bg-[#faf9f6]">
       <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-          <!-- Image Placeholder Left -->
-          <div class="bg-[#fadadd]/40 rounded-xl h-[500px] flex flex-col items-center justify-center gap-3 relative overflow-hidden order-2 lg:order-1">
-            <div class="absolute inset-0 opacity-15" style="background: radial-gradient(ellipse at 60% 40%, #70585b 0%, transparent 55%);"></div>
-            <p class="font-[Playfair_Display] italic text-[#70585b] text-4xl relative z-10">Nari</p>
-            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#70585b]/50 font-[Inter] relative z-10">Founder, NariVibes</p>
+          <!-- Signature Card Left -->
+          <div class="bg-[#141414] rounded-none h-[500px] flex flex-col items-center justify-center gap-4 relative overflow-hidden order-2 lg:order-1">
+            <div class="absolute inset-0 opacity-10" style="background: radial-gradient(ellipse at 50% 40%, #8b6914 0%, transparent 60%);"></div>
+            <p class="text-[10px] font-semibold tracking-[0.35em] uppercase text-white/40 font-[Inter] relative z-10">Founder &amp; Creator</p>
+            <p style="font-family:'Great Vibes',cursive; font-size:72px; color:#ffffff; line-height:1; position:relative; z-index:10;">Oyenino</p>
+            <div class="w-12 h-[1px] bg-[#8b6914] relative z-10"></div>
+            <p class="text-[11px] font-medium tracking-[0.2em] uppercase text-white/50 font-[Inter] relative z-10">oyenino.com</p>
           </div>
 
           <!-- Text Right -->
           <div class="order-1 lg:order-2">
-            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-4">The Founder</p>
-            <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c] mb-2">Nari Krishnaswamy</h2>
-            <p class="text-[16px] text-[#37656b] font-[Inter] font-medium mb-8">Textile Designer · Slow Fashion Advocate</p>
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#8b6914] font-[Inter] mb-4">The Founder</p>
+            <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c] mb-2">The Story Behind NariVibes</h2>
+            <p class="text-[16px] text-[#8b6914] font-[Inter] font-medium mb-8">Builder · AI Entrepreneur · Startup Coach</p>
 
             <div class="space-y-5 mb-10">
-              <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
-                Nari grew up in Chennai surrounded by the rhythms of South Indian textiles — the clack of looms in Kanchipuram, the smell of indigo in fabric markets, the feel of handwoven cotton in the summer heat. She went to Lyon at 23 to study at the École des Beaux-Arts, where she deepened her understanding of natural dye chemistry and French atelier construction techniques.
+              <p class="text-[16px] leading-relaxed text-[#555555] font-[Inter]">
+                NariVibes wasn't built by a fashion house or a design agency. It was created by one person — me, Oyenino — with a laptop, a clear vision, and AI as a co-creator. No coding background required. No expensive team. Just curiosity, direction, and the willingness to learn as you go.
               </p>
-              <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
-                After a decade moving between France, Japan, and India — working with designers, studying indigo cultivation, and documenting endangered weaving traditions — Nari settled in Auroville in 2019 to found NariVibes. The name is a tribute to her years in France, and to the quality of light she has always chased.
+              <p class="text-[16px] leading-relaxed text-[#555555] font-[Inter]">
+                Every part of this site — the product pages, the checkout flow, the email system, the Cloudflare infrastructure, the payment gateway — was built with AI assistance. The whole thing. If you're reading this and thinking <em>"I could never build something like this"</em> — you're wrong. You absolutely can.
               </p>
-              <p class="text-[16px] leading-relaxed text-[#4f4445] font-[Inter]">
-                Her design philosophy is rooted in impermanence and warmth: each garment should age beautifully, carry memory, and fit into a life without demanding to be noticed. She designs for women who are already interesting — and don't need their clothes to prove it.
+              <p class="text-[16px] leading-relaxed text-[#555555] font-[Inter]">
+                I built <strong>oyenino.com</strong> to prove exactly that. A little knowledge, the right AI tools, and your idea is already halfway to reality.
               </p>
             </div>
 
-            <!-- Quote Stats -->
-            <div class="grid grid-cols-2 gap-6 pt-8 border-t border-[#d2c3c4]">
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-6 pt-8 border-t border-[#e6e1da]">
               <div>
-                <p class="font-[Playfair_Display] text-[28px] text-[#70585b] mb-1">15<span class="text-[22px]">+ yrs</span></p>
-                <p class="text-xs font-semibold tracking-[0.1em] uppercase text-[#4f4445] font-[Inter]">In Textile Design</p>
+                <p class="font-[Playfair_Display] text-[28px] text-[#141414] mb-1">1</p>
+                <p class="text-xs font-semibold tracking-[0.1em] uppercase text-[#555555] font-[Inter]">Person built this</p>
               </div>
               <div>
-                <p class="font-[Playfair_Display] text-[28px] text-[#70585b] mb-1">3 <span class="text-[22px]">countries</span></p>
-                <p class="text-xs font-semibold tracking-[0.1em] uppercase text-[#4f4445] font-[Inter]">1 Philosophy</p>
+                <p class="font-[Playfair_Display] text-[28px] text-[#141414] mb-1">AI</p>
+                <p class="text-xs font-semibold tracking-[0.1em] uppercase text-[#555555] font-[Inter]">Powered build</p>
               </div>
+              <div>
+                <p class="font-[Playfair_Display] text-[28px] text-[#141414] mb-1">₹0</p>
+                <p class="text-xs font-semibold tracking-[0.1em] uppercase text-[#555555] font-[Inter]">Agency fees</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4B: EMPOWERMENT + CTA ===== -->
+    <section class="py-24 bg-[#141414]">
+      <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+          <!-- Left: Mission -->
+          <div>
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-[#8b6914] font-[Inter] mb-4">The Thought Behind NariVibes</p>
+            <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-white mb-6">Empowering Women to Build</h2>
+            <div class="space-y-5">
+              <p class="text-[16px] leading-relaxed text-white/65 font-[Inter]">
+                NariVibes is more than a fashion label — it's a demonstration. A proof that women with a vision, whether they want to launch a brand, a service, or an idea, don't need to wait for permission, funding, or a technical co-founder.
+              </p>
+              <p class="text-[16px] leading-relaxed text-white/65 font-[Inter]">
+                AI has changed the rules. The gap between an idea and a live, functioning business has never been smaller. What used to take a team of 10 and months of development can now be done by one focused person in weeks.
+              </p>
+              <p class="text-[16px] leading-relaxed text-white/65 font-[Inter]">
+                If you're a woman who wants to start something — a brand, a platform, a venture — and you don't know where to begin, that's exactly what <strong class="text-white">oyenino.com</strong> is for.
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: CTA Card -->
+          <div class="bg-white/5 border border-white/10 rounded-none p-10 flex flex-col items-start gap-6">
+            <div>
+              <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-[#8b6914] font-[Inter] mb-3">Ready to Start?</p>
+              <h3 class="font-[Playfair_Display] text-[28px] text-white leading-tight mb-4">Let's Build Your Venture Together</h3>
+              <p class="text-[15px] leading-relaxed text-white/60 font-[Inter]">
+                Drop your idea, your question, or just a "hello" — and we'll connect. Whether you need direction, a technical partner, or just someone who's already done it, we're here.
+              </p>
+            </div>
+            <div class="w-full border-t border-white/10 pt-6">
+              <p class="text-[13px] text-white/40 font-[Inter] mb-4 tracking-[0.05em]">Visit us at</p>
+              <a href="https://oyenino.com" target="_blank" rel="noopener noreferrer"
+                 class="inline-flex items-center gap-3 bg-[#8b6914] text-white font-[Inter] text-[12px] font-semibold tracking-[0.15em] uppercase px-8 py-4 hover:bg-[#a07a1a] transition-colors duration-200">
+                oyenino.com
+                <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+              </a>
             </div>
           </div>
 
@@ -247,9 +301,9 @@
     <section class="py-24 bg-[#f9f9f9]">
       <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
         <div class="text-center mb-6">
-          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter] mb-3">Our Partners</p>
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#8b6914] font-[Inter] mb-3">Our Partners</p>
           <h2 class="font-[Playfair_Display] text-[36px] leading-tight text-[#1a1c1c] mb-4">The Hands Behind NariVibes</h2>
-          <p class="text-[18px] leading-relaxed text-[#4f4445] font-[Inter] max-w-xl mx-auto">
+          <p class="text-[18px] leading-relaxed text-[#555555] font-[Inter] max-w-xl mx-auto">
             We work with six artisan workshops across India — each with generational expertise passed down through families and communities.
           </p>
         </div>
@@ -257,78 +311,78 @@
         <div class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8">
 
           <!-- Workshop 1 -->
-          <article class="border border-[#d2c3c4] rounded-xl p-8 bg-white hover:shadow-[0_4px_20px_rgba(112,88,91,0.09)] transition-shadow duration-300">
+          <article class="border border-[#e6e1da] rounded-xl p-8 bg-white hover:shadow-[0_4px_20px_rgba(20,20,20,0.09)] transition-shadow duration-300">
             <div class="flex items-center gap-3 mb-5">
-              <div class="w-10 h-10 rounded-full bg-[#fadadd] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#70585b] text-lg">weave</span>
+              <div class="w-10 h-10 rounded-full bg-[#f2ebe0] flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-[#141414] text-lg">weave</span>
               </div>
               <div>
-                <p class="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#37656b] font-[Inter]">Madhya Pradesh</p>
+                <p class="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#8b6914] font-[Inter]">Madhya Pradesh</p>
               </div>
             </div>
             <h3 class="font-[Playfair_Display] text-[22px] text-[#1a1c1c] mb-3">Maheshwar</h3>
-            <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter] mb-5">
+            <p class="text-[15px] leading-relaxed text-[#555555] font-[Inter] mb-5">
               Master weavers of handloom cotton, working on pit looms that date back generations. The Maheshwari weave — known for its distinctive border and reversible fabric — is a UNESCO-recognised craft. We have worked with this community since 2020.
             </p>
             <div class="flex flex-wrap gap-4 pt-5 border-t border-[#e8e8e8]">
               <div>
-                <p class="font-[Playfair_Display] text-[20px] text-[#70585b]">12</p>
+                <p class="font-[Playfair_Display] text-[20px] text-[#141414]">12</p>
                 <p class="text-[11px] font-semibold uppercase tracking-widest text-[#807475] font-[Inter]">Artisans</p>
               </div>
               <div>
-                <p class="font-[Playfair_Display] text-[20px] text-[#70585b]">2020</p>
+                <p class="font-[Playfair_Display] text-[20px] text-[#141414]">2020</p>
                 <p class="text-[11px] font-semibold uppercase tracking-widest text-[#807475] font-[Inter]">Partners Since</p>
               </div>
             </div>
           </article>
 
           <!-- Workshop 2 -->
-          <article class="border border-[#d2c3c4] rounded-xl p-8 bg-white hover:shadow-[0_4px_20px_rgba(112,88,91,0.09)] transition-shadow duration-300">
+          <article class="border border-[#e6e1da] rounded-xl p-8 bg-white hover:shadow-[0_4px_20px_rgba(20,20,20,0.09)] transition-shadow duration-300">
             <div class="flex items-center gap-3 mb-5">
               <div class="w-10 h-10 rounded-full bg-[#bbebf1]/40 flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#37656b] text-lg">diamond</span>
+                <span class="material-symbols-outlined text-[#8b6914] text-lg">diamond</span>
               </div>
               <div>
-                <p class="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#37656b] font-[Inter]">Tamil Nadu</p>
+                <p class="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#8b6914] font-[Inter]">Tamil Nadu</p>
               </div>
             </div>
             <h3 class="font-[Playfair_Display] text-[22px] text-[#1a1c1c] mb-3">Kanchipuram</h3>
-            <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter] mb-5">
+            <p class="text-[15px] leading-relaxed text-[#555555] font-[Inter] mb-5">
               Silk weaving families preserving 500-year-old techniques in one of India's oldest weaving towns. Each Kanjivaram silk requires up to four days of work by two weavers working in tandem. We commission small runs that honour the craft without exploiting it.
             </p>
             <div class="flex flex-wrap gap-4 pt-5 border-t border-[#e8e8e8]">
               <div>
-                <p class="font-[Playfair_Display] text-[20px] text-[#70585b]">8</p>
+                <p class="font-[Playfair_Display] text-[20px] text-[#141414]">8</p>
                 <p class="text-[11px] font-semibold uppercase tracking-widest text-[#807475] font-[Inter]">Artisans</p>
               </div>
               <div>
-                <p class="font-[Playfair_Display] text-[20px] text-[#70585b]">500<span class="text-sm">+ yrs</span></p>
+                <p class="font-[Playfair_Display] text-[20px] text-[#141414]">500<span class="text-sm">+ yrs</span></p>
                 <p class="text-[11px] font-semibold uppercase tracking-widest text-[#807475] font-[Inter]">Tradition</p>
               </div>
             </div>
           </article>
 
           <!-- Workshop 3 -->
-          <article class="border border-[#d2c3c4] rounded-xl p-8 bg-white hover:shadow-[0_4px_20px_rgba(112,88,91,0.09)] transition-shadow duration-300">
+          <article class="border border-[#e6e1da] rounded-xl p-8 bg-white hover:shadow-[0_4px_20px_rgba(20,20,20,0.09)] transition-shadow duration-300">
             <div class="flex items-center gap-3 mb-5">
               <div class="w-10 h-10 rounded-full bg-[#e6e1dd] flex items-center justify-center flex-shrink-0">
                 <span class="material-symbols-outlined text-[#615e5b] text-lg">brush</span>
               </div>
               <div>
-                <p class="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#37656b] font-[Inter]">Rajasthan</p>
+                <p class="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#8b6914] font-[Inter]">Rajasthan</p>
               </div>
             </div>
             <h3 class="font-[Playfair_Display] text-[22px] text-[#1a1c1c] mb-3">Sanganer</h3>
-            <p class="text-[15px] leading-relaxed text-[#4f4445] font-[Inter] mb-5">
+            <p class="text-[15px] leading-relaxed text-[#555555] font-[Inter] mb-5">
               Natural dye and block-print specialists working with hand-carved teak blocks and plant-based mordants. The Sanganer block-print tradition spans centuries — each block is carved individually, making every metre of fabric subtly, beautifully unique. Zero synthetic dyes, always.
             </p>
             <div class="flex flex-wrap gap-4 pt-5 border-t border-[#e8e8e8]">
               <div>
-                <p class="font-[Playfair_Display] text-[20px] text-[#70585b]">20<span class="text-sm">+</span></p>
+                <p class="font-[Playfair_Display] text-[20px] text-[#141414]">20<span class="text-sm">+</span></p>
                 <p class="text-[11px] font-semibold uppercase tracking-widest text-[#807475] font-[Inter]">Artisans</p>
               </div>
               <div>
-                <p class="font-[Playfair_Display] text-[20px] text-[#70585b]">0</p>
+                <p class="font-[Playfair_Display] text-[20px] text-[#141414]">0</p>
                 <p class="text-[11px] font-semibold uppercase tracking-widest text-[#807475] font-[Inter]">Synthetic Dyes</p>
               </div>
             </div>
@@ -342,26 +396,26 @@
     <section class="py-20 bg-white">
       <div class="w-full max-w-[1280px] mx-auto px-4 md:px-16">
         <div class="text-center mb-12">
-          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#37656b] font-[Inter]">As Seen In</p>
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#8b6914] font-[Inter]">As Seen In</p>
         </div>
         <div class="flex flex-wrap justify-center items-center gap-10 md:gap-16">
-          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#70585b] transition-colors cursor-default select-none">Vogue India</span>
-          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#70585b] transition-colors cursor-default select-none">Elle India</span>
-          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#70585b] transition-colors cursor-default select-none">Condé Nast Traveller</span>
-          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#70585b] transition-colors cursor-default select-none">The Hindu Magazine</span>
+          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#141414] transition-colors cursor-default select-none">Vogue India</span>
+          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#141414] transition-colors cursor-default select-none">Elle India</span>
+          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#141414] transition-colors cursor-default select-none">Condé Nast Traveller</span>
+          <span class="font-[Playfair_Display] italic text-xl text-[#807475] hover:text-[#141414] transition-colors cursor-default select-none">The Hindu Magazine</span>
         </div>
         <div class="flex justify-center mt-12 gap-6 md:gap-12">
-          <div class="h-px flex-1 max-w-[120px] bg-gradient-to-r from-transparent to-[#d2c3c4] self-center"></div>
-          <span class="font-[Playfair_Display] italic text-[#d2c3c4] text-2xl">*</span>
-          <div class="h-px flex-1 max-w-[120px] bg-gradient-to-l from-transparent to-[#d2c3c4] self-center"></div>
+          <div class="h-px flex-1 max-w-[120px] bg-gradient-to-r from-transparent to-[#e6e1da] self-center"></div>
+          <span class="font-[Playfair_Display] italic text-[#e6e1da] text-2xl">*</span>
+          <div class="h-px flex-1 max-w-[120px] bg-gradient-to-l from-transparent to-[#e6e1da] self-center"></div>
         </div>
       </div>
     </section>
 
     <!-- ===== SECTION 7: CTA ===== -->
-    <section class="bg-[#70585b] py-20 px-4 md:px-16 text-center">
+    <section class="bg-[#141414] py-20 px-4 md:px-16 text-center">
       <div class="w-full max-w-[1280px] mx-auto">
-        <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#fadadd] font-[Inter] mb-5">Make it count</p>
+        <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[#f2ebe0] font-[Inter] mb-5">Make it count</p>
         <h2 class="font-[Playfair_Display] text-[36px] md:text-[42px] leading-tight text-white mb-5 max-w-2xl mx-auto">
           Ready to Wear Something That Matters?
         </h2>
@@ -371,7 +425,7 @@
         <div class="flex flex-col sm:flex-row justify-center gap-4">
           <a
             href="collections.html"
-            class="inline-flex items-center justify-center gap-2 bg-white text-[#70585b] rounded-full px-8 py-4 text-[14px] font-semibold tracking-[0.05em] font-[Inter] hover:bg-[#fadadd] transition-colors duration-200"
+            class="inline-flex items-center justify-center gap-2 bg-white text-[#141414] rounded-full px-8 py-4 text-[14px] font-semibold tracking-[0.05em] font-[Inter] hover:bg-[#f2ebe0] transition-colors duration-200"
           >
             Shop the Collection
             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -392,26 +446,26 @@
   <footer class="w-full py-16 bg-white">
     <div class="flex flex-col md:flex-row justify-between items-start px-4 md:px-16 gap-6 w-full max-w-[1280px] mx-auto">
       <div>
-        <span class="font-[Playfair_Display] text-2xl text-[#70585b] block mb-3">NariVibes</span>
+        <span class="font-[Playfair_Display] text-2xl text-[#141414] block mb-3">NariVibes</span>
         <p class="text-sm text-[#494644] max-w-xs">Crafting the essence of summer into timeless pieces for the modern wanderer.</p>
       </div>
       <div class="flex flex-wrap gap-12 mt-8 md:mt-0">
         <div class="flex flex-col gap-3">
-          <span class="text-xs font-semibold tracking-widest uppercase text-[#70585b] font-[Inter]">Shop</span>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="collections.html">Collections</a>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="collections.html">New Arrivals</a>
+          <span class="text-xs font-semibold tracking-widest uppercase text-[#141414] font-[Inter]">Shop</span>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="collections.html">Collections</a>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="collections.html">New Arrivals</a>
         </div>
         <div class="flex flex-col gap-3">
-          <span class="text-xs font-semibold tracking-widest uppercase text-[#70585b] font-[Inter]">Ethos</span>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="sustainability.html">Sustainability</a>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="sustainability.html#thrift">Thrift Programme</a>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="about.html">About Us</a>
+          <span class="text-xs font-semibold tracking-widest uppercase text-[#141414] font-[Inter]">Ethos</span>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="sustainability.html">Sustainability</a>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="sustainability.html#thrift">Thrift Programme</a>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="about.html">About Us</a>
         </div>
         <div class="flex flex-col gap-3">
-          <span class="text-xs font-semibold tracking-widest uppercase text-[#70585b] font-[Inter]">Care</span>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="#">Shipping</a>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="#">Returns</a>
-          <a class="text-sm text-[#494644] hover:text-[#70585b]" href="#">FAQ</a>
+          <span class="text-xs font-semibold tracking-widest uppercase text-[#141414] font-[Inter]">Care</span>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="#">Shipping</a>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="#">Returns</a>
+          <a class="text-sm text-[#494644] hover:text-[#141414]" href="#">FAQ</a>
         </div>
       </div>
     </div>

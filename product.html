@@ -33,24 +33,24 @@
       theme: {
         extend: {
           "colors": {
-            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#574144",
-            "surface": "#f9f9f9","primary-container": "#fadadd","surface-bright": "#f9f9f9",
+            "surface-container-high": "#e8e8e8","on-primary-fixed-variant": "#2a2a2a",
+            "surface": "#f9f9f9","primary-container": "#f2ebe0","surface-bright": "#f9f9f9",
             "on-secondary-fixed": "#001f23","on-primary-fixed": "#281719",
             "outline-variant": "#d2c3c4","on-tertiary-fixed-variant": "#494644",
-            "primary-fixed-dim": "#debfc2","surface-tint": "#70585b",
-            "on-secondary-container": "#3b6a6f","on-primary-container": "#765e61",
-            "inverse-primary": "#debfc2","tertiary": "#615e5b","surface-variant": "#e2e2e2",
-            "secondary-container": "#b8e8ee","on-background": "#1a1c1c","background": "#f9f9f9",
-            "secondary": "#37656b","primary": "#70585b","on-surface": "#1a1c1c",
+            "primary-fixed-dim": "#c8c0b0","surface-tint": "#70585b",
+            "on-secondary-container": "#6b500f","on-primary-container": "#333333",
+            "inverse-primary": "#c8c0b0","tertiary": "#615e5b","surface-variant": "#e2e2e2",
+            "secondary-container": "#f0e4c4","on-background": "#1a1c1c","background": "#f9f9f9",
+            "secondary": "#8b6914","primary": "#141414","on-surface": "#1a1c1c",
             "on-secondary": "#ffffff","surface-dim": "#dadada","on-tertiary-fixed": "#1d1b19",
             "surface-container-highest": "#e2e2e2","on-surface-variant": "#4f4445",
             "on-error-container": "#93000a","error-container": "#ffdad6","error": "#ba1a1a",
             "tertiary-fixed-dim": "#cbc5c2","tertiary-fixed": "#e7e1de",
-            "surface-container-lowest": "#ffffff","secondary-fixed": "#bbebf1",
-            "inverse-on-surface": "#f0f1f1","primary-fixed": "#fbdbde","on-tertiary": "#ffffff",
+            "surface-container-lowest": "#ffffff","secondary-fixed": "#f2e8cc",
+            "inverse-on-surface": "#f0f1f1","primary-fixed": "#f5f0e5","on-tertiary": "#ffffff",
             "on-primary": "#ffffff","tertiary-container": "#e6e1dd","outline": "#807475",
             "surface-container-low": "#f3f3f3","on-tertiary-container": "#676361",
-            "on-secondary-fixed-variant": "#1d4d53","secondary-fixed-dim": "#9fcfd5",
+            "on-secondary-fixed-variant": "#1d4d53","secondary-fixed-dim": "#d4b96a",
             "on-error": "#ffffff","surface-container": "#eeeeee","inverse-surface": "#2f3131"
           },
           "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
@@ -115,30 +115,34 @@
   <!-- ======================================================
        NAVIGATION
   ====================================================== -->
-  <nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(112,88,91,0.08)]">
-    <div class="flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
-      <div class="flex items-center gap-6">
-        <button class="cursor-pointer active:scale-95 transition-transform text-primary" id="mobile-menu-btn">
+  <nav class="fixed top-0 w-full z-50 border-b border-[#e6e1da]" style="background-color:#ffffff;">
+    <div class="relative flex justify-between items-center px-4 md:px-16 h-20 w-full max-w-[1280px] mx-auto">
+      <div class="flex items-center gap-10">
+        <button class="md:hidden cursor-pointer text-[#141414]" id="mobile-menu-btn">
           <span class="material-symbols-outlined">menu</span>
         </button>
-        <div class="hidden md:flex gap-8">
-          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="collections.html">Collections</a>
-          <a class="font-[Inter] text-[12px] font-semibold tracking-[0.1em] uppercase text-on-surface-variant hover:text-primary transition-colors" href="#">Editorial</a>
+        <div class="hidden md:flex gap-10">
+          <a class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666] hover:text-[#141414] transition-colors" href="collections.html">Collections</a>
+          <a class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666] hover:text-[#141414] transition-colors" href="sustainability.html">Sustainability</a>
+          <a class="font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666] hover:text-[#141414] transition-colors" href="about.html">About</a>
         </div>
       </div>
-      <a href="index.html" class="font-[Playfair_Display] text-2xl tracking-widest text-primary">NariVibes</a>
+      <a href="index.html" class="absolute left-1/2 -translate-x-1/2 font-[Playfair_Display] text-[13px] tracking-[0.5em] uppercase text-[#141414] hover:opacity-60 transition-opacity whitespace-nowrap">NariVibes</a>
       <div class="flex items-center gap-6">
-        <button class="hidden md:block cursor-pointer text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">search</span></button>
-        <a href="cart.html" class="cursor-pointer text-primary relative">
-          <span class="material-symbols-outlined">shopping_bag</span>
-          <span class="cart-count-badge absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+        <button class="hidden md:block cursor-pointer text-[#666666] hover:text-[#141414] transition-colors">
+          <span class="material-symbols-outlined" style="font-size:20px;">search</span>
+        </button>
+        <a href="cart.html" class="cursor-pointer text-[#141414] relative">
+          <span class="material-symbols-outlined" style="font-size:20px;">shopping_bag</span>
+          <span class="cart-count-badge absolute -top-1 -right-1 bg-[#141414] text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
         </a>
       </div>
     </div>
-    <!-- Mobile Menu -->
-    <div class="hidden md:hidden bg-surface/95 backdrop-blur-md border-t border-outline-variant px-4 py-4" id="mobile-menu">
-      <a class="block py-2 font-[Inter] text-xs font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="collections.html">Collections</a>
-      <a class="block py-2 font-[Inter] text-xs font-semibold tracking-[0.1em] uppercase text-on-surface-variant" href="#">Editorial</a>
+    <!-- Mobile menu -->
+    <div class="hidden md:hidden bg-white border-t border-[#e6e1da] px-4 py-5" id="mobile-menu">
+      <a class="block py-3 font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666]" href="collections.html">Collections</a>
+      <a class="block py-3 font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666]" href="sustainability.html">Sustainability</a>
+      <a class="block py-3 font-[Inter] text-[11px] font-medium tracking-[0.18em] uppercase text-[#666666]" href="about.html">About</a>
     </div>
   </nav>
 
@@ -337,6 +341,7 @@
 
   <!-- Scripts -->
   <script src="js/products.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/cart.js"></script>
 
   <script>
@@ -353,19 +358,23 @@
     // ============================================================
     document.addEventListener('DOMContentLoaded', function () {
       const params    = new URLSearchParams(window.location.search);
-      const productId = params.get('id') || (PRODUCTS[0] && PRODUCTS[0].id);
+      const productId = params.get('id');
 
-      currentProduct = getProductById(productId);
+      NariVibesAPI.loadProducts().then(function (products) {
+        window.PRODUCTS = products;
+        const pid = productId || (products[0] && products[0].id);
+        currentProduct = getProductById(pid);
 
-      if (!currentProduct) {
-        document.getElementById('not-found').classList.remove('hidden');
-        return;
-      }
+        if (!currentProduct) {
+          document.getElementById('not-found').classList.remove('hidden');
+          return;
+        }
 
-      renderProduct(currentProduct);
-      renderRelatedProducts(currentProduct.id);
-      initAccordions();
-      initMobileMenu();
+        renderProduct(currentProduct);
+        renderRelatedProducts(currentProduct.id);
+        initAccordions();
+        initMobileMenu();
+      });
     });
 
     // ============================================================

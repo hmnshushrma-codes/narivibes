@@ -170,6 +170,14 @@
       }
 
       /* MOBILE RESPONSIVE FIXES */
+      /* Desktop: email + button side by side */
+      #email-input-row {
+        flex-direction: row;
+      }
+      #send-otp-btn {
+        width: auto;
+      }
+
       @media (max-width: 768px) {
         /* Email row stack */
         #email-input-row {
@@ -405,7 +413,7 @@
                 for="email-input"
                 >Email Address</label
               >
-              <div id="email-input-row" class="flex flex-col sm:flex-row gap-3">
+              <div id="email-input-row" class="flex gap-3">
                 <input
                   id="email-input"
                   type="email"
@@ -416,7 +424,7 @@
                 <button
                   id="send-otp-btn"
                   onclick="handleSendOTP()"
-                  class="w-full sm:w-auto px-6 py-3.5 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-95 transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-2"
+                  class="px-6 py-3.5 bg-primary text-on-primary font-label-caps rounded-lg hover:bg-on-primary-fixed-variant active:scale-95 transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-2"
                 >
                   <span id="send-otp-label">Send OTP</span>
                   <span id="send-otp-spinner" class="spinner hidden"></span>
